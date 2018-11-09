@@ -15,7 +15,7 @@
     <link rel="dx-theme" data-theme="generic.light" href="https://cdn3.devexpress.com/jslib/18.1.5/css/dx.light.css" />
 
     <script src="https://cdn3.devexpress.com/jslib/18.1.4/js/dx.all.js"></script>
-    <script src="/static/home.js"></script>
+    <script src="/static/lists.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/styles.css" />
 
 </head>
@@ -23,10 +23,6 @@
 
 
     <div id="headerContainer">
-        <div class="userContent">
-            <div id="accountList"></div>
-            <div id="loginButton"></div>
-        </div>
         <div class="searchContent">
             <div id="searchBar"></div>
             <div id="searchCategory"></div>
@@ -35,32 +31,9 @@
         </div>
     </div>
 
-    <div class="latestContent">
-        <p id="latestText">Najnowsze oferty:</p>
-        <div id="latestProductView"></div>
-        <div id="latestButton"></div>
+    <div class="listContainer">
+        <div id="productList"></div>
     </div>
-
-
-    <div class="randomContent">
-        <p id="randomText">Losowe oferty:</p>
-        <div id="randomProductView"></div>
-        <div id="randomButton"></div>
-    </div>
-
-
-    <div class="bestUserContent">
-        <p id="bestUserText">Najlepiej oceniani użytkownicy:</p>
-        <div class="userContainer"></div>
-    </div>
-    <%--<div class="productContent">
-        <div class="productContainer"></div>
-    </div>--%>
-
-   <%-- <footer class="footer">
-        <hr>
-        <p id="footerText">Autorzy: Klaudia Sobańska Daniel Kobylski</p>
-    </footer>--%>
 
 </body>
 </html>

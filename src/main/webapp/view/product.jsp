@@ -15,52 +15,29 @@
     <link rel="dx-theme" data-theme="generic.light" href="https://cdn3.devexpress.com/jslib/18.1.5/css/dx.light.css" />
 
     <script src="https://cdn3.devexpress.com/jslib/18.1.4/js/dx.all.js"></script>
-    <script src="/static/home.js"></script>
+    <script src="/static/product.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/styles.css" />
 
 </head>
-<body class="dx-viewport allBackground allContent" >
+<body class="dx-viewport allBackground" >
 
+    <div class="header"></div>
 
-    <div id="headerContainer">
-        <div class="userContent">
-            <div id="accountList"></div>
-            <div id="loginButton"></div>
+    <div class="pContent">
+        <div class="productGallery">
+            <div id="gallery"></div>
         </div>
-        <div class="searchContent">
-            <div id="searchBar"></div>
-            <div id="searchCategory"></div>
-            <div id="searchCity"></div>
-            <div id="searchButton"></div>
+        <div class="oneProductContainer">
+            <div id="productDesc"></div>
         </div>
     </div>
 
-    <div class="latestContent">
-        <p id="latestText">Najnowsze oferty:</p>
-        <div id="latestProductView"></div>
-        <div id="latestButton"></div>
+
+    <div class="ownerContainer">
+        <div id="transactionButton"></div>
+        <div id="addFavButton"></div>
+        <div id="ownerDesc"></div>
     </div>
-
-
-    <div class="randomContent">
-        <p id="randomText">Losowe oferty:</p>
-        <div id="randomProductView"></div>
-        <div id="randomButton"></div>
-    </div>
-
-
-    <div class="bestUserContent">
-        <p id="bestUserText">Najlepiej oceniani użytkownicy:</p>
-        <div class="userContainer"></div>
-    </div>
-    <%--<div class="productContent">
-        <div class="productContainer"></div>
-    </div>--%>
-
-   <%-- <footer class="footer">
-        <hr>
-        <p id="footerText">Autorzy: Klaudia Sobańska Daniel Kobylski</p>
-    </footer>--%>
 
 </body>
 </html>
