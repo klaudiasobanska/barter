@@ -15,13 +15,15 @@ public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CITY_ID_SEQ")
-    @SequenceGenerator(name = "CITY_ID_SEQ", sequenceName = "City_id_seq", allocationSize = 1)
-    @Column(name = "city_id")
-    private Long cityId;
+    @SequenceGenerator(name = "CITY_ID_SEQ", sequenceName = "city_id_seq", allocationSize = 1)
+    @Column(name = "id")
+    private Long id;
 
-    @Column(name = "city_name")
-    private String cityName;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "voivo_id")
     private Long voivoId;
+
+
 }

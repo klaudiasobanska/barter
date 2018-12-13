@@ -1,3 +1,4 @@
+var cityId, voivoId, cityTreeId;
 $(function () {
 
     $("#searchBar").dxTextBox({
@@ -12,17 +13,54 @@ $(function () {
         showClearButton: true,
         dataSource: "./categories/all",
         placeholder: "Kategoria",
+        searchEnabled: true,
         displayExpr: 'name',
         valueExpr: 'id'
     });
 
-    $("#searchCity").dxSelectBox({
+    var makeAsyncDataSourceCity = function(path){
+        return new DevExpress.data.CustomStore({
+            loadMode: "raw",
+            key:"id",
+            load: function() {
+                return $.getJSON(path);
+            }
+        });
+    };
+
+    $("#searchCity").dxDropDownBox({
+        valueExpr: "id",
+        displayExpr: "name",
+        placeholder: "Lokalizacja",
         showClearButton: true,
-        dataSource:"./voivo/city/list",
-        placeholder: "Miejscowość",
-        displayExpr: 'name',
-        valueExpr: 'id'
+        dataSource: makeAsyncDataSourceCity("./voivo/all"),
+        contentTemplate: function(e) {
+            $treeViewProvider = $("<div>").dxTreeView({
+                dataSource: e.component.option("dataSource"),
+                displayExpr: "name",
+                height: 500,
+                onItemClick: function(d){
+                    voivoId = null;
+                    cityId = null;
+                    cityTreeId = null;
+                    if(d.node.items != 0){
+                        voivoId = d.node.itemData.id;
+                    }else {
+                        cityId = d.node.itemData.id;
+                    };
+                    e.component.option("value", d.node.itemData.name);
+                }
+
+            });
+            treeViewProvider = $treeViewProvider.dxTreeView("instance");
+
+
+            return $treeViewProvider;
+
+        }
     });
+
+
 
     $("#searchButton").dxButton({
         text: "Wyszukaj",
@@ -52,7 +90,7 @@ $(function () {
         text:"Więcej",
         icon: "chevronnext",
         onClick: function () {
-            location.href = "./lists?param="+"" + "&categoryId="+-1 + "&latest=" +true + "&random="+false;
+            location.href = "./lists?param="+"" + "&categoryId="+-1 + "&cityId="+-1 + "&voivoId="+-1 + "&latest=" +true + "&random="+false;
         }
 
     });
@@ -74,21 +112,44 @@ $(function () {
     }).dxTileView("instance");
 
 
+    $("#loginPopup").dxPopup({
+        height:450,
+        width: 400,
+        /*onHidden: function () {
+            $("#loginPopup").hide();
+        }*/
+    });
+
+
+    // $("#loginPopup").hide();
+
 
 
     $("#randomButton").dxButton({
         text:"Więcej",
         icon: "chevronnext",
         onClick: function () {
-
+            location.href = "./lists?param="+"" + "&categoryId="+-1 + "&cityId="+-1 + "&voivoId="+-1 + "&latest=" +false + "&random="+true;
         }
 
     });
 
     $("#loginButton").dxButton({
-        text:"Zaloguj sie",
+        text:"Zaloguj się",
         onClick: function () {
+            showLoginPopup();
+            /*$("#loginPopup").show();
+            $("#loginPopup").dxPopup("show");
+            loginForm();*/
+        }
+    });
 
+    $("#userMenuButton").dxButton({
+        text:"Mój Profil",
+        icon: 'user',
+        stylingMode: "text",
+        onClick: function () {
+            location.href = './user'
         }
     });
 
@@ -97,7 +158,79 @@ $(function () {
 
 
 
+
 });
+
+
+
+function showLoginPopup() {
+
+    $("#loginPopup").dxPopup("show");
+
+    loginForm();
+
+}
+
+
+function loginForm() {
+
+    $("#loginText").html("");
+    $("#loginText").append("Zaloguj się");
+
+    $("#registrationHomeText").html("");
+    $("#registrationHomeText").append("Nie masz konta?");
+
+    $("#registrationLink").html("");
+    $("#registrationLink").append("Zarejestruj się");
+
+    var data = {
+        login: "",
+        password: ""
+    };
+
+    $("#loginForm").dxForm({
+        formData: data,
+        items: [{
+            dataField: "login",
+            label: {
+                location: "top",
+                alignment: "left",
+                text: "Login lub email"
+            }
+        }, {
+            dataField: "password",
+            editorOptions: {
+                mode: 'password'
+            },
+            label: {
+                location: "top",
+                size: "20px",
+                alignment: "left",
+                text: "Hasło"
+            }
+        }]
+    });
+
+    $("#loginButtonForm").dxButton({
+        text: "Zaloguj",
+        type: "normal",
+        onClick: function (e) {
+            var loginForm = $("#loginForm").dxForm('instance');
+            var logForm = {
+                login: loginForm.getEditor('login').option('value'),
+                password: loginForm.getEditor('password').option('value')
+            };
+
+            $.post('./login', logForm, function (result) {
+            }).done(function () {
+                $("#loginPopup").dxPopup("hide");
+            })
+        }
+    });
+}
+
+
+
 
 function cardTemplate(itemData) {
     var temp =
@@ -134,9 +267,7 @@ function showBestUsers() {
 
     bestUserDate.load().done(function (result) {
         $(".userContainer").empty();
-        console.log(result);
         $.each(result, function (index, user) {
-            console.log(user);
             var temp =
                 '<div id="userCards'+ user.id +'" class = "userCards" onclick="userCardClick('+user.id + ')"> ' +
                 '<div id="img"></div>' +
@@ -159,13 +290,13 @@ function productCardClick(productId) {
 
 function searchButton() {
 
-
     var param = $("#searchBar").dxTextBox('instance').option('value');
     var categoryId = $("#searchCategory").dxSelectBox('instance').option('value');
 
 
-    location.href = "./lists?param="+param + "&categoryId="+(categoryId?categoryId:-1) + "&latest=" +false + "&random="+false;
 
+    location.href = "./lists?param="+param + "&categoryId="+(categoryId?categoryId:-1) + "&cityId="+(cityId?cityId:-1) +
+        "&voivoId="+(voivoId?voivoId:-1) + "&latest=" +false + "&random="+false;
 
 }
 

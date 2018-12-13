@@ -27,11 +27,13 @@ public class ListsPageController extends AbstractController {
     @RequestMapping(value="/lists")
     public String lists(@RequestParam("param") String param,
                         @RequestParam("categoryId") Long categoryId,
+                        @RequestParam("cityId") Long cityId,
+                        @RequestParam("voivoId") Long voivoId,
                         @RequestParam("latest") Boolean lates,
                         @RequestParam("random") Boolean random){
 
         clearSession();
-        Filter filter = new Filter(param,categoryId, lates, random);
+        Filter filter = new Filter(param,categoryId, lates, random, cityId, voivoId);
 
         session.setAttribute("filter", filter);
 

@@ -15,35 +15,22 @@
     <link rel="dx-theme" data-theme="generic.light" href="https://cdn3.devexpress.com/jslib/18.2.3/css/dx.light.css" />
 
     <script src="https://cdn3.devexpress.com/jslib/18.2.3/js/dx.all.js"></script>
-    <script src="/static/product.js"></script>
+    <script src="/static/registration.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/styles.css" />
 
 </head>
-<body class="dx-viewport allBackground" >
+<body class="dx-viewport allBackground allContent" >
 
     <div class="header"></div>
 
-    <div class="pContent">
-        <div class="productGallery">
-            <div id="gallery"></div>
+    <div class="registrationContainer">
+        <div id="registrationContent">
+            <div id="registrationText"></div>
+            <div id="registrationForm"></div>
+            <div id="registrationButtonForm"></div>
         </div>
-        <div class="oneProductContainer">
-            <div id="productDesc"></div>
-        </div>
     </div>
 
-
-    <div class="ownerContainer">
-        <div id="transactionButton"></div>
-        <div id="addFavButton"></div>
-        <div id="ownerDesc"></div>
-    </div>
-
-    <div id="addFavToast"></div>
-
-    <div id="tranPopup">
-        <div id="tranForm"></div>
-    </div>
 
 </body>
 </html>

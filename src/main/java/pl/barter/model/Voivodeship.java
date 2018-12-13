@@ -28,7 +28,7 @@ public class Voivodeship {
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "voivoId")
     @Fetch(value = FetchMode.SUBSELECT)
-    private List<City> cities=new ArrayList<>();
+    private List<City> items=new ArrayList<>();
 
 
 }

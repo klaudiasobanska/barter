@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 
@@ -23,5 +25,11 @@ public class UserDto {
     private String email;
 
     private Double rating;
+
+    private String city;
+
+    private String zipCode;
+
+    private Date birthDate;
 
 }

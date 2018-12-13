@@ -1,11 +1,18 @@
-var product;
+var product, productId;
 
 $.get('./products/current', function (data) {
 
     product = data;
+    productId = data.id;
 });
 
 $(function () {
+
+    $("#addFavToast").dxToast({
+        message: "Ofertę dodano do ulubionych",
+        type: "success",
+        displayTime: 2000
+    });
 
     $("#gallery").dxGallery({
         dataSource: product.image,
@@ -30,7 +37,9 @@ $(function () {
         text: "Dodaj do Ulubionych",
         icon: "favorites",
         onClick: function () {
-            addToFav();
+            $.post("./users/add/fav?userId="+1+"&productId="+productId, function (t) {});
+            $("#addFavToast").dxToast("show");
+
         }
     })
 
@@ -99,8 +108,8 @@ function getOwnerData() {
             '<hr id="hr3">'+
             '<div id="imgOwner"></div>'+
             '<div id="ownerLogin">'+ result[0].login  + '</div>' +
-            '<div class="loginInfo">'+
-                '<p id="loginText">Adres email:  </p>'+'<div id="ownerEmail">' + result[0].email +
+            '<div class="ownerInfo">'+
+                '<p id="ownerAddressText">Adres email:  </p>'+'<div id="ownerEmail">' + result[0].email +
             '</div>'+
             /*'<div class="addressInfo">'+
                 '<p id="loginText">Adres email:  </p>'+'<div id="ownerAddress">' + result[0].address + '</div>' +
@@ -115,6 +124,28 @@ function getOwnerData() {
 
 }
 
-function transactionButton(){
+function transactionButton() {
+
+    $("#tranPopup").dxPopup({
+        title:"Wyślij propozycję oferty",
+        height: 700,
+        width: 1000
+    }).dxPopup("show");
+
+    showTransactionForm();
+
+}
+
+function showTransactionForm() {
+
+    var tansactionData = {
+        ownerId:"",
+        clientId:"",
+        offerId:"",
+        message:"",
+
+
+
+    }
 
 }

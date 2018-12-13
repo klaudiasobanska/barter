@@ -11,45 +11,57 @@
 }
 
 #headerContainer{
-    height: 30%;
+    height: 20%;
     width: 100%;
     background-color: #222831;
-
+    margin-top: 0;
+    display: inline-block;
 }
 
 
+
 .searchContent{
-    position: absolute;
+    /*position: absolute;
     right: 20%;
     left:20%;
-    top:15%;
-    height: 10%;
+    top:5%;
+    height: 10%;*/
+    margin: 2% 20% 2% 20%;
+    height: 60%;
+
 }
 
 
 #searchBar{
-    position: absolute;
-    left: 0;
+    /*position: absolute;
+    left: 0;*/
     height: 45%;
-    top:0;
+    /*top:0;
+    width: 81%;*/
     width: 81%;
+    display: inline-block;
+    margin-bottom: 1%;
+
 }
 
 #searchCategory{
-    position: absolute;
+    /*position: absolute;
     left: 0;
-    top:53%;
+    top:53%;*/
     height: 45%;
     width: 40%;
+    display: inline-block;
+    margin-right: 0.5%;
 }
 
 
 #searchCity{
-    position: absolute;
+   /* position: absolute;
     left: 41%;
-    top: 52%;
+    top: 52%;*/
     height: 45%;
     width: 40%;
+    display: inline-block;
 }
 
 
@@ -66,16 +78,82 @@
 }
 
 #searchButton:hover {
-    background: #fc9c05;
-    border-color: #fc9c05 ;
+    background: #FDE75F;
+    border-color: #FDE75F ;
 }
 
 #searchButton{
-    position: absolute;
-    right: 0;
+    /*position: absolute;
+    right: 0;*/
+    float: right;
+    margin-right: 0;
     height: 45%;
     width: 18%;
+    display: inline-block;
+    margin-top: 0;
 }
+
+
+
+#loginButton{
+    width: 150px;
+    right: 5%;
+    font-size: large;
+    background-color: #393e46;
+    color: white;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    height: 45%;
+    box-shadow: 0 1px 4px 0 rgba(57,62,70,.2);
+    transition: .3s ease-out ;
+    font-weight: bold;
+
+
+}
+#loginButton:hover{
+   /* background-color: #ebebec;*/
+    color: #393e46;
+    border-color: #FDE75F;
+    background-color: #FDE75F;
+}
+
+.userLoginContent{
+    float: right;
+    width: 50%;
+    height: 10%;
+    position: relative
+
+}
+
+#userMenuButton{
+    color: #393e46;
+    width: 150px;
+    font-size: large;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    height: 45%;
+    transition: .3s ease-out;
+    right: 25%;
+    font-weight: bold;
+
+
+}
+
+#userMenuButton .dx-icon{
+    color: #393e46;
+    font-size: 20px;
+}
+
+#userMenuButton:hover{
+    background-color: #FDE75F;
+}
+
+
+
+
+
 /*-----------------------------*/
 /*latest content*/
 .latestContent{
@@ -90,6 +168,8 @@
 .bestUserContent{
     margin: 5% 5% 0 5%;
 }
+
+
 
 #latestText, #randomText, #bestUserText{
     font-family: Arial;
@@ -116,6 +196,9 @@
     width: 150px;
     font-size: large;
     float: right;
+    height: 40px;
+    border-color: #fcda05;
+    color: #393e46;
 
 }
 
@@ -137,11 +220,14 @@
     width: 150px;
     font-size: large;
     float: right;
+    height: 40px;
+    border-color: #fcda05;
+    color: #393e46;
 
 }
 
 #latestButton:hover, #randomButton:hover{
-    background-color: #f3f3f3;
+    background-color: #FDE75F;
 }
 
 /*----------------------------------------*/
@@ -348,8 +434,6 @@
     margin-left: 2%;
     vertical-align: top;
     float: left;
-
-
 }
 
 
@@ -364,10 +448,11 @@
 
 }
 
-.header{
+.header, .headerUser{
     height: 10%;
     background-color: #393e46;
 }
+
 
 
 .pContent{
@@ -492,8 +577,8 @@
 }
 
 #transactionButton:hover {
-    background: #fc9c05;
-    border-color: #fc9c05 ;
+    background: #FDE75F;
+    border-color: #FDE75F ;
 
 }
 
@@ -543,17 +628,15 @@
 
 }
 
-#loginText{
+#ownerAddressText{
     font-size: large;
     font-family: Arial;
     color: #393e46;
     display: inline-block;
     width: 105px;
-
-
 }
 
-.loginInfo{
+.ownerInfo{
     display: inline-block;
     margin-left: 5%;
     margin-top: 8%;
@@ -571,15 +654,15 @@
     font-family: "Arial";
     font-size: large;
     font-weight: bold;
-    color: #222831;
+    color: #393e46;
     border-color: #fcda05;
     transition: .3s ease-out ;
 
 }
 
 #addFavButton:hover {
-    background: #f3f3f3;
-    border-color: #fc9c05 ;
+    background: #FDE75F;
+
 
 }
 
@@ -610,12 +693,341 @@
 }
 
 #addFavButton:hover  .dx-icon{
-    color: #fc9c05;
+    color: #393e46;
 }
 
-#loginButton{
-    float: right;
-    margin-top: 2%;
-    width: 150px;
-    margin-right: 5%;
+.loginContainer {
+    margin-left: 5%;
+    margin-top: 5%;
+    height: 50%;
+    width: 43%;
+    /* border: 1px solid #393e46;
+     border-radius: 5px;*/
+    background-color: white;
+    box-shadow: 0 15px 50px 5px rgba(57, 62, 70, .2);
 }
+
+#loginPopup{
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+}
+
+#loginText{
+    font-size: x-large;
+    font-weight: bold;
+    margin: 5% 5% 5% 5%;
+    width: 90%;
+
+}
+
+#loginForm{
+    margin: 10% 5% 0 5%;
+
+}
+
+#loginButtonForm, #registrationButtonForm{
+    margin: 10% 20% 0 20%;
+    width: 200px;
+    background-color: #fcda05;
+    font-size: medium;
+    color: #393e46;
+    border-color: #fcda05;
+    font-weight: bold;
+    transition: .3s ease-out;
+}
+
+#logoutButton{
+    margin: 1.5% 10% 0 0;
+    float: right;
+    width: 150px;
+    background-color: #fcda05;
+    font-size: medium;
+    color: #393e46;
+    border-color: #fcda05;
+    font-weight: bold;
+    transition: .3s ease-out;
+}
+
+#logoutButton:hover{
+    background-color: #FDE75F;
+    border-color: #FDE75F;
+}
+
+
+#loginButtonForm:hover, #registrationButtonForm:hover{
+    background-color: #FDE75F;
+    border-color: #FDE75F;
+    color: #393e46;
+}
+
+#registrationHomeText{
+    margin-top: 15%;
+    display: inline-block;
+    font-size: medium;
+    color: #393e46;
+}
+
+#registrationLink{
+    margin-top: 15%;
+    display: inline-block;
+    font-size: medium;
+    color: #393e46;
+    transition: .3s ease-out;
+}
+
+#registrationLink:hover{
+    color: #fcda05;
+}
+
+
+.registrationContainer{
+    margin: 5% 35% 0 35%;
+    padding-top: 1%;
+    background-color: white;
+    box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
+    height: 60%;
+
+}
+
+#registrationContent{
+    text-align: center;
+
+}
+
+
+
+#registrationText{
+    font-size: x-large;
+    font-weight: bold;
+    margin: 4% 5% 5% 5%;
+    width: 90%;
+}
+
+#registrationForm{
+    margin: 10% 10% 0 10%;
+}
+
+
+.userMenuContainer{
+    margin: 5% 0 5% 10%;
+    background-color: white;
+    float: left;
+    display: inline-block;
+    min-height: 30%;
+    width: 25%;
+    box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
+}
+
+.userInformationContainer{
+    float: right;
+    display: inline-block;
+    margin: 5% 10% 5% 0;
+    min-height: 30%;
+    width: 50%;
+    box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
+    background-color: white;
+}
+
+#userMenuList{
+    height: 100%;
+    width: 95%;
+    margin: 3% 3% 3% 3%;
+    font-size: large;
+}
+
+#userDataContent,#userPasswordContent{
+    margin: 5% 15% 5% 15%;
+    text-align: center;
+
+
+}
+
+#headerUserDataText, #headerUserPasswordText, #headerUserOffersText, #headerUserFavText, #headerUserDeleteText{
+    margin-bottom: 5%;
+    font-size: x-large;
+    font-family: Arial;
+    color: #393e46;
+
+
+}
+
+#userDataFormButton, #userPasswordButton{
+    margin-top: 5%;
+    width: 150px;
+    color: #393e46;
+    border-color: #fcda05;
+    font-size: medium;
+    font-weight: bold;
+    transition: .3s ease-out ;
+}
+
+#userDataFormButton:hover, #userPasswordButton:hover{
+    background: #FDE75F;
+}
+
+
+.offer{
+    height: 120px;
+    display: flex;
+    align-items: center;
+}
+
+.offer > img {
+    height: 100%;
+    width: 150px;
+    float: left;
+    background-color: #393e46;
+}
+
+.offer > #name{
+    font-family: Arial;
+    font-size: x-large;
+    margin-left: 2%;
+    float: left;
+}
+
+.offer > #creationDateText{
+    font-family: Arial;
+    font-size: large;
+    float: right;
+    position: absolute;
+    right: 0;
+    margin-right: 13%;
+    margin-top: 0;
+    display: inline-block;
+    padding-right: 1%;
+}
+
+.offer > #creationDate{
+    font-family: Arial;
+    float: right;
+    font-size: large;
+    margin-right: 2%;
+    position: absolute;
+    right: 0;
+    display: inline-block;
+
+}
+
+#userOffersContent, #userFavContent, #userDeleteContent{
+    text-align: center;
+    margin: 5% 5% 5% 5%;
+
+}
+
+.userOfferListContainer, .userFavListContainer, .userDeletedOfferListContainer{
+    margin-top: 10%;
+
+}
+
+.userOffersButtonMenu, .userFavButtonMenu, .userDeletedOffersButtonMenu{
+    margin: -3% 0 5% 0;
+    width: 50%;
+    float: left;
+}
+
+#addOfferButton, #editOfferButton, #archiveOfferButton, #deleteFavButton, #deleteOfferButton, #restoreOfferButton{
+    width: 50px;
+    height: 40px;
+    border-color: #fcda05;
+    color: #393e46;
+    margin-right: 2%;
+    float: left;
+    transition: .3s ease-out ;
+
+}
+
+#addOfferButton:hover, #editOfferButton:hover, #archiveOfferButton:hover, #deleteFavButton:hover, #deleteOfferButton:hover,
+#restoreOfferButton:hover{
+    background-color: #FDE75F;
+}
+
+#addOfferButton:focus, #editOfferButton:focus, #archiveOfferButton:focus, #deleteFavButton:focus, #deleteOfferButton:focus,
+#restoreOfferButton:focus{
+    background-color: #FDE75F;
+}
+
+#addOrEditOfferPopup{
+    margin-right: auto;
+    margin-left: auto;
+    position: relative;
+}
+
+
+#cancelAddButton {
+    position: absolute;
+    bottom: 5%;
+    right: 12%;
+    width: 100px;
+    font-size: medium;
+    font-weight: bold;
+    border-color: #ff7b6a;
+    transition: .3s ease-out ;
+
+}
+
+#cancelAddButton:hover{
+    background-color: #ffbfb2;
+}
+
+#saveAddButton{
+    position: absolute;
+    bottom: 5%;
+    right: 1%;
+    width: 100px;
+    color: #393e46;
+    border-color: #fcda05;
+    font-size: medium;
+    font-weight: bold;
+    transition: .3s ease-out ;
+}
+
+#saveAddButton:hover{
+    background-color: #FDE75F;
+}
+
+#imgUserContainer{
+
+}
+
+#imgUser{
+    width: 250px;
+    height: 250px;
+    background-color: #393e46;
+    border-radius: 50%;
+    float: right;
+    box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
+    margin-bottom: 7%;
+    margin-top:10%;
+}
+
+#userImgUploaderContainer{
+    display: inline-block;
+    float: left;
+    margin-top:10%;
+    margin-bottom: 10%;
+    width: 55%;
+}
+
+#userImgUploader .dx-fileuploader-button{
+    color: #393e46;
+    border-color: #fcda05;
+    font-size: medium;
+    transition: .3s ease-out ;
+    color: #393e46;
+}
+
+
+#userImgUploader .dx-fileuploader-button:hover{
+    background-color: #FDE75F;
+    border-color: #FDE75F;
+}
+
+
+#userImgUploader .dx-fileuploader-button:focus{
+    background-color: #fef099;
+    border-color: #FDE75F;
+}
+
+
