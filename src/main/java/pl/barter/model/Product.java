@@ -1,16 +1,15 @@
 package pl.barter.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "products")
@@ -20,8 +19,6 @@ import java.util.Set;
 public class Product implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRODUCTS_ID_SEQ")
-    @SequenceGenerator(name = "PRODUCTS_ID_SEQ", sequenceName = "products_id_seq", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
@@ -40,9 +37,6 @@ public class Product implements Serializable {
     @Column(name = "category_id")
     private Long categoryId;
 
-    @Column(name = "image")
-    private byte[] image;
-
     @Column(name="city_id")
     private Long cityId;
 
@@ -53,6 +47,16 @@ public class Product implements Serializable {
     @Transient
     private String categoryName;
 
+    @Transient
+    private String cityName;
+
+
+
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "offerId")
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<OfferImage> offerImagesList=new ArrayList<>();
+
+
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,
@@ -62,15 +66,7 @@ public class Product implements Serializable {
     @JsonBackReference
     private Set<User> users = new HashSet<>();
 
-    public Product(String name, Long ownerId, Boolean active, String description, Long categoryId, byte[] image, String categoryName) {
-        this.name = name;
-        this.ownerId = ownerId;
-        this.active = active;
-        this.description = description;
-        this.categoryId = categoryId;
-        this.image = image;
-        this.categoryName = categoryName;
-    }
+
     public Product(){}
 
 }

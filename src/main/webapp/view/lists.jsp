@@ -22,6 +22,12 @@
 <body class="dx-viewport allBackground allContent" >
 
 
+    <div class="userLoginContent">
+        <div id="loginButton"></div>
+        <div id="userMenuButton"></div>
+        <div id="homeButton"></div>
+    </div>
+
     <div id="headerContainer">
         <div class="searchContent">
             <div id="searchBar"></div>

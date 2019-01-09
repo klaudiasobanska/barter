@@ -26,7 +26,7 @@ public class ProductPageController extends AbstractController {
     @RequestMapping(value = "/product")
     public String product(@RequestParam("productId") Long productId) {
         clearSession();
-        session.setAttribute("products", productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId)) );
+        session.setAttribute("products", productRepository.findActiveProduct(productId) );
         return "product";
     }
 

@@ -1,6 +1,8 @@
 var cityId, voivoId, cityTreeId;
 $(function () {
 
+
+
     $("#searchBar").dxTextBox({
         showClearButton: true,
         mode: "search",
@@ -79,9 +81,11 @@ $(function () {
         itemMargin: 40,
         showScrollbar:true,
         itemTemplate: function (itemData, itemIndex, itemElement){
-
             var temp = cardTemplate(itemData);
             itemElement.append(temp)
+
+
+
         }
 
     }).dxTileView("instance");
@@ -104,9 +108,12 @@ $(function () {
         itemMargin: 40,
         showScrollbar:true,
         itemTemplate: function (itemData, itemIndex, itemElement){
-
             var temp = cardTemplate(itemData);
-            itemElement.append(temp)
+            itemElement.append(temp);
+
+
+
+
         }
 
     }).dxTileView("instance");
@@ -154,7 +161,7 @@ $(function () {
     });
 
 
-    showBestUsers();
+    //showBestUsers();
 
 
 
@@ -233,17 +240,46 @@ function loginForm() {
 
 
 function cardTemplate(itemData) {
-    var temp =
-        '<div class="productContent">'+
-        '<div class="productContainer">'+
-        '<div>' +
-        '<div id="productCards'+ itemData.id +'" class = "productCards" onclick="productCardClick('+itemData.id + ')"> ' +
-        '<div class="productName">' + itemData.name + '</div>' +
-        '<div id="img"></div>' +
-        '<p id="categoryText">Kategoria:</p>' + '<div class="productCategory">' + itemData.categoryName + '</div>' +
-        '</div>' + '</div>'+'</div>'+'</div>';
 
-    return temp;
+    var result = $("<div>").addClass("productContent");
+    var temp =
+        '<div class="productContainer">' +
+        '<div>' +
+        '<div id="productCards ' + itemData.id + '" class = "productCards" onclick="productCardClick(' + itemData.id + ')"> ' +
+        '<div class="productNameContainer">'  +
+        '<div class="productName">' + itemData.name + '</div>' + '</div>'+
+        /*/!*'<p id="categoryText">Kategoria:</p>'*!/  '<div class="productCategory">' + itemData.categoryName + '</div>' +
+        '<div class="productLocal">' + itemData.cityName + '</div>' +*/
+        '</div>'+ '</div>' + '</div>';// + '</div>';
+
+
+
+    $.get("./image/offer?offerId="+itemData.id, function (t){
+        if (t[0] != undefined) {
+
+            $("<img id='homeImg'>").attr("src", t[0]).appendTo(result);
+        }
+
+    });
+
+    result.append(temp);
+
+    return result;
+
+
+    /*$.get("./image/offer?offerId="+itemData.id, function (t) {
+            if (t[0] != undefined) {
+                /!*$(".img").attr("src", t[0]);*!/
+                temp = temp.replace("###",t[0]);
+                console.log(temp);
+                //temp.replace()
+            }
+
+        }
+    )*/
+
+
+
 
 }
 

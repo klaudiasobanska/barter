@@ -21,11 +21,19 @@
 </head>
 <body class="dx-viewport allBackground" >
 
-    <div class="header"></div>
+
+<div class="userLoginContent">
+    <div id="loginButtonProduct"></div>
+    <div id="userMenuButtonProduct"></div>
+    <div id="homeButtonProduct"></div>
+</div>
+    <div class="header">
+
+    </div>
 
     <div class="pContent">
         <div class="productGallery">
-            <div id="gallery"></div>
+            <div data-bind="dxGallery:{dataSource: dSource}" <%--id="gallery"--%>></div>
         </div>
         <div class="oneProductContainer">
             <div id="productDesc"></div>
@@ -36,13 +44,23 @@
     <div class="ownerContainer">
         <div id="transactionButton"></div>
         <div id="addFavButton"></div>
-        <div id="ownerDesc"></div>
+        <hr id="hr3">
+        <img id='imgOwner'>
+        <div class="ownerDesc"></div>
+    </div>
+
+    <div class="ownerOfferProductContainer">
+        <div id="ownerLoginText"></div>
+        <div id="ownerOfferListProduct"></div>
     </div>
 
     <div id="addFavToast"></div>
 
     <div id="tranPopup">
         <div id="tranForm"></div>
+        <div id="clientOfferGrid"></div>
+        <div id="sendTranButton"></div>
+        <div id="cancelTranButton"></div>
     </div>
 
 </body>

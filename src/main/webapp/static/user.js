@@ -1,7 +1,7 @@
 var currentUser;
 var currentUserId;
 
-$.get('./users/find/1', function (data) {
+$.get('./users/find/2', function (data) {
     if (data.id == null) {
         location.href = './login'
     }
@@ -15,11 +15,20 @@ $.get('./users/find/1', function (data) {
 
 function showPage() {
 
+    console.log(currentUser)
+
     $("#logoutButton").dxButton({
         text: "Wyloguj",
         type: "normal",
         onClick: function () {
 
+        }
+    });
+
+    $("#homeButtonUserContent").dxButton({
+        icon:"home",
+        onClick: function () {
+            location.href = "./home";
         }
     });
 
@@ -128,7 +137,10 @@ function showPage() {
        key: "Propozycje wymiany",
        items: [{
            id: 5,
-           text: "Nadesłane"
+           text: "Nowe"
+       },{
+           id: 11,
+           text: "Aktywne"
        },{
            id: 6,
            text: "Wysłane"
@@ -142,17 +154,7 @@ function showPage() {
            id: 8,
            text: "Oferty zarchiwizowane"
        }]
-   },{
-       key: "Oceny",
-       items: [{
-           id: 9,
-           text: "Moje oceny"
-       },{
-           id: 10,
-           text: "Dodaj nową ocenę"
-       }]
-   }
-   ];
+   }];
 
 
 
@@ -168,6 +170,7 @@ function showPage() {
             $("#userOffersContent").hide();
             $("#userFavContent").hide();
             $("#userDeleteContent").hide();
+            $("#userReceivedContent").hide();
             userDataSettings();
 
         },
@@ -179,6 +182,7 @@ function showPage() {
                     $("#userOffersContent").hide();
                     $("#userFavContent").hide();
                     $("#userDeleteContent").hide();
+                    $("#userReceivedContent").hide();
                     userDataSettings();
                     break;
 
@@ -187,6 +191,7 @@ function showPage() {
                     $("#userOffersContent").hide();
                     $("#userFavContent").hide();
                     $("#userDeleteContent").hide();
+                    $("#userReceivedContent").hide();
                     $("#userPasswordContent").show();
                     userPasswordSettings();
                     break;
@@ -195,7 +200,9 @@ function showPage() {
                     $("#userPasswordContent").hide();
                     $("#userFavContent").hide();
                     $("#userDeleteContent").hide();
+                    $("#userReceivedContent").hide();
                     $("#userOffersContent").show();
+
                     userOffersSettings();
                     break;
                 case 4:
@@ -203,6 +210,7 @@ function showPage() {
                     $("#userPasswordContent").hide();
                     $("#userOffersContent").hide();
                     $("#userDeleteContent").hide();
+                    $("#userReceivedContent").hide();
                     $("#userFavContent").show();
                     userFavSettings();
                     break;
@@ -212,6 +220,9 @@ function showPage() {
                     $("#userOffersContent").hide();
                     $("#userFavContent").hide();
                     $("#userDeleteContent").hide();
+                    $("#userReceivedContent").show();
+                    receiveOfferSettings();
+                    
                     break;
                 case 6:
                     $("#userDataContent").hide();
@@ -219,6 +230,7 @@ function showPage() {
                     $("#userOffersContent").hide();
                     $("#userFavContent").hide();
                     $("#userDeleteContent").hide();
+                    $("#userReceivedContent").hide();
                     break;
                 case 7:
                     $("#userDataContent").hide();
@@ -226,12 +238,14 @@ function showPage() {
                     $("#userOffersContent").hide();
                     $("#userFavContent").hide();
                     $("#userDeleteContent").hide();
+                    $("#userReceivedContent").hide();
                     break;
                 case 8:
                     $("#userDataContent").hide();
                     $("#userPasswordContent").hide();
                     $("#userOffersContent").hide();
                     $("#userFavContent").hide();
+                    $("#userReceivedContent").hide();
                     $("#userDeleteContent").show();
                     deletedOfferSettings();
                     break;
@@ -320,6 +334,7 @@ function userDataSettings() {
     $(".userDataContent").append(temp);
 
     $("#userImgUploader").dxFileUploader({
+        name: "file",
         selectButtonText: "Wybierz zdjęcie",
         labelText: "",
         accept: "image/*",
@@ -466,24 +481,29 @@ function userPasswordSettings() {
 
 function showOffersList() {
 
-
-    $.get('./products/owner?ownerId='+ currentUserId +"&active=" +true, function (data){
+    $.get('./products/owner/list?ownerId='+ currentUserId +"&active=" +true, function (data){
     var offerList = $("#userOfferList").dxList({
         dataSource: data,
-        showSelectionControls: true,
         selectionMode: "sinle",
         height: "100%",
         noDataText: "Brak aktywnych ofert",
-        scrollingEnabled: false,
+        scrollingEnabled: true,
         selectionMode: "single",
         itemTemplate: function(e, index) {
-            var result = $("<div>").addClass("offer");
+
+            var result = $("<div>").addClass("offerAnotherList");
+
             $("<img>").attr("src", e.img).appendTo(result);
             $("<div id='name'>").text(e.name).appendTo(result);
-            $("<p id='creationDateText'>").text("Data utworzenia: ").appendTo(result);
-            $("<div id='creationDate'>").text(e.creationDate).appendTo(result);
-
+            $("<div id='AnotherOfferDetailsButtonContainer'>").append($('<div id="showAnotherOfferDetailsButton">').dxButton({
+                text:"Pokaż ofertę",
+                onClick:function () {
+                    offerLinkClick(e.id);
+                   /* e.jQueryEvent.stopPropagation();*/
+                }
+            })).appendTo(result);
             return result;
+
         }
     }).dxList("instance");
         $("#userOffersContent").append(offerList);
@@ -507,21 +527,26 @@ function showAddOrEditOfferPopup(edit) {
 
 function addOrEditOffer(edit) {
 
+    $.get("./clear/session/img" );
+
     var dataList = $("#userOfferList").dxList("instance");
 
     var newOffer = {
         name: "",
-        category: "",
-        city: "",
-        desc: "",
-        /*ownerId: currentUser;*/
-        creationDate: ""
+        categoryId: "",
+        cityId: "",
+        description: "",
+        ownerId: currentUserId,
+        creationDate: "",
+        active:true,
+
     };
+
 
     if (edit == true) {
         newOffer.name = dataList.option("selectedItems")[0].name;
-        newOffer.category = dataList.option("selectedItems")[0].categoryId;
-        newOffer.desc = dataList.option("selectedItems")[0].description;
+        newOffer.categoryId = dataList.option("selectedItems")[0].categoryId;
+        newOffer.description = dataList.option("selectedItems")[0].description;
 
     } else $("#addOfferForm").val("");
 
@@ -535,7 +560,7 @@ function addOrEditOffer(edit) {
                 text: "Nazwa oferty"
             }
         },{
-            dataField: "category",
+            dataField: "categoryId",
             editorType: "dxSelectBox",
             label: {
                 text: "Kategoria"
@@ -548,7 +573,7 @@ function addOrEditOffer(edit) {
                 placeholder: "Wybierz kategorię"
             }
         },{
-            dataField: "city",
+            dataField: "cityId",
             editorType: "dxSelectBox",
             label: {
                 text: "Miejscowość"
@@ -561,7 +586,7 @@ function addOrEditOffer(edit) {
                 placeholder: "Wybierz miejscowość"
             }
         },{
-            dataField: "desc",
+            dataField: "description",
             editorType: "dxTextArea",
             label: {
                 text: "Opis"
@@ -572,18 +597,22 @@ function addOrEditOffer(edit) {
         }]
     });
 
+
     $("#productImgUploader").dxFileUploader({
         selectButtonText: "Wybierz zdjęcia",
-        labelText: "",
+        uploadUrl:"/products/image/upload",
+        name: "file",
         accept: "image/*",
-        uploadMode: "useButtons",
-        uploadUrl:"",
+        multiple: true,
+        uploadMode: "instantly",
         maxFileSize: 5000000,
         invalidMaxFileSizeMessage: "Plik zbyt duży",
         readyToUploadMessage:"Gotowy do zapisu",
         uploadButtonText: "Zapisz zdjęcia",
         uploadedMessage:"Zapisano",
-        uploadFailedMessage: "Wystąpił błąd"
+        uploadFailedMessage: "Wystąpił błąd",
+
+
     });
 
     $("#saveAddButton").dxButton({
@@ -594,43 +623,44 @@ function addOrEditOffer(edit) {
             var f = $("#addOfferForm").dxForm('instance');
 
             var newName = f.getEditor('name').option('value');
-            var newCategory = f.getEditor('category').option('value');
-            var newCity = f.getEditor('city').option('value');
-            var newDesc = f.getEditor('desc').option('value');
-            var newCity = f.getEditor('city').option('value');
+            var newCategory = f.getEditor('categoryId').option('value');
+            var newDesc = f.getEditor('description').option('value');
+            var newCity = f.getEditor('cityId').option('value');
             var newCreationDate = getDate(new Date());
 
 
 
             newOffer.name = newName;
-            newOffer.category = newCategory;
-            newOffer.city = newCity;
-            newOffer.desc = newDesc;
-            newOffer.city = newCity;
+            newOffer.categoryId = newCategory;
+            newOffer.cityId = newCity;
+            newOffer.description = newDesc;
             newOffer.creationDate = newCreationDate;
 
 
             newOffer = JSON.stringify(newOffer);
+            console.log(newOffer);
 
             if(edit === true){
                 $.post("/products/update?id="+$("#userOfferList").dxList("instance").option("selectedItems")[0].id+"&name="+newName+
                 "&categoryId="+newCategory+"&description="+newDesc, function (result) {
-                    $("#addOfferPopup").dxPopup("hide");
+                    $("#addOrEditOfferPopup").dxPopup("hide");
                     showOffersList();
                 })
             }else {
 
+
                 $.ajax({
-                    url: '',
+                    url: './products/add',
                     type: 'post',
                     dataType: 'json',
-                    contentType: 'application/json; charset=utf-8',
+                    contentType: 'application/json',
                     success: function (result) {
                         if (result.errorMsg) {
                             console.log("error")
                         } else {
-                            $("#addOfferPopup").dxPopup("hide");
+                            $("#addOrEditOfferPopup").dxPopup("hide");
                             showOffersList();
+                            $("#productImgUploader").dxFileUploader("instance").reset();
                         }
                     },
                     data: newOffer
@@ -704,22 +734,22 @@ function showFavList() {
     var favList = $("#userFavList").dxList({
         dataSource: currentUser.fav,
         height: "100%",
-        showSelectionControls: true,
         selectionMode: "sinle",
         scrollingEnabled: false,
         selectionMode: "single",
         noDataText: "Brak ulubionych ofert",
         itemTemplate: function(e, index) {
-            var result = $("<div>").addClass("offer");
+            var result = $("<div>").addClass("offerAnotherList");
             $("<img>").attr("src", e.img).appendTo(result);
             $("<div id='name'>").text(e.name).appendTo(result);
-            $("<p id='creationDateText'>").text("Data utworzenia: ").appendTo(result);
-            $("<div id='creationDate'>").text(e.creationDate).appendTo(result);
-
+            $("<div id='AnotherOfferDetailsButtonContainer'>").append($('<div id="showAnotherOfferDetailsButton">').dxButton({
+                text:"Pokaż ofertę",
+                onClick:function () {
+                    offerLinkClick(e.id);
+                    e.jQueryEvent.stopPropagation();
+                }
+            })).appendTo(result);
             return result;
-        },
-        onItemClick: function (data) {
-            location.href = './product?productId='+data.itemData.id;
         }
     }).dxList("instance");
     $("#userFavContent").append(favList);
@@ -739,7 +769,6 @@ function deleteFavButton() {
                     $("#deleteFavToast").dxToast("show");
                     $("#userFavList").dxList('instance').option("dataSource",currentUser.fav);
                     $('#userFavList').dxList('instance').repaint();
-                    //refreshFavList();
                 })
             } else {
                 $("#noSelectedToast").dxToast("show");
@@ -765,7 +794,7 @@ function userFavSettings() {
 function refreshFavList() {
 
     var ds = $("#userFavList").dxList("instance");
-    ds.reload();
+    ds.repaint();
 
 }
 
@@ -773,19 +802,15 @@ function showDeletedOfferList() {
 
     $.get('./products/owner?ownerId='+ currentUserId +"&active=" +false, function (data){
         var offerList = $("#userDeletedOfferList").dxList({
-            dataSource: data,
+            dataSource: data.content,
             height: "100%",
-            showSelectionControls: true,
             selectionMode: "sinle",
             scrollingEnabled: false,
             noDataText: "Brak zarchiwizowanych ofert",
             itemTemplate: function(e, index) {
-                var result = $("<div>").addClass("offer");
+                var result = $("<div>").addClass("offerAnotherList");
                 $("<img>").attr("src", e.img).appendTo(result);
                 $("<div id='name'>").text(e.name).appendTo(result);
-                $("<p id='creationDateText'>").text("Data utworzenia: ").appendTo(result);
-                $("<div id='creationDate'>").text(e.creationDate).appendTo(result);
-
                 return result;
             }
         }).dxList("instance");
@@ -837,6 +862,444 @@ function deletedOfferSettings() {
 
 }
 
+function receiveOfferSettings() {
+
+    $("#headerUserReceiveText").html("");
+    $("#headerUserReceiveText").append("Nadesłane propozycje wymiany");
+
+    showUserReceiveOfferList();
+
+}
+
+function showUserReceiveOfferList() {
+
+    $.get('./transaction/new/proposal?ownerId='+ currentUserId, function (data){
+        var receiveOfferList = $("#userReceiveOfferList").dxList({
+            dataSource: data,
+            height: "100%",
+            selectionMode: "sinle",
+            scrollingEnabled: false,
+            noDataText: "Brak nowych propozycji wymiany",
+            itemTemplate: function(e, index) {
+                var result = $("<div>").addClass("offer");
+                $("<p id='offerText'>").text("Propozycja wymiany od    ").appendTo(result);
+                $("<div id='clientName'>").text(e.clientLogin).appendTo(result);
+
+                return result;
+            },
+            onItemClick: function (e){
+                showReceiveOfferPopup(e.itemData);
+            }
+        }).dxList("instance");
+        $("#userReceiveContent").append(receiveOfferList);
+    })
+
+}
+
+function showReceiveOfferPopup(transaction) {
+
+
+    $("#ReceiveOfferPopup").dxPopup({
+        title:"Propozycja transakcji",
+        onHiding: function () {
+            $("#userReceiveOfferList").dxList("instance").option("selectedItems", []);
+            //$.post('./clear/session/transaction/state', function (t) { console.log("clear") });
+        },
+        onShowing: function () {
+
+        }
+    }).dxPopup("show");
+
+    sendAnswerForm(transaction);
+
+    $("#acceptOfferToast").dxToast({
+        message: "Oferta została zaakceptowana",
+        type: "success",
+        displayTime: 2000
+    });
+
+    $("#deleteOfferToast").dxToast({
+        message: "Oferta została usunięta",
+        type: "success",
+        displayTime: 2000
+    })
+
+}
+
+function sendAnswerForm(transaction) {
+
+    var transactionData = {
+        messageClient: transaction.transactionState[0].messageClient,
+        messageOwner: "",
+        clientName: transaction.clientLogin,
+        offerName:transaction.offerName
+    };
+
+    $("#rOfferForm").dxForm({
+        formData: transactionData,
+        colCount:2,
+        labelLocation: "top",
+        items:[{
+            dataField:"clientName",
+            label: {
+                text: "Użytkownik zainteresowany wymianą"
+            },
+            editorOptions: {
+                disabled: true
+            }
+        },{
+            dataField:"offerName",
+            label: {
+                text: "Oferta"
+            },
+            editorOptions: {
+                disabled: true
+            }
+        },{
+            colSpan: 2,
+            dataField:"messageClient",
+            editorType: "dxTextArea",
+            label: {
+                text: "Wiadomość od zainteresowanego użytkownika"
+            },
+            editorOptions: {
+                height: 100,
+                disabled: true
+            }
+        },{
+            colSpan: 2,
+            dataField:"messageOwner",
+            editorType: "dxTextArea",
+            label: {
+                text: "Odpowiedz"
+            },
+            editorOptions: {
+                height: 100
+            }
+        }]
+
+    });
+
+    showProposedOffers(transaction.id);
+
+
+    $("#addAnotherOfferButton").dxButton({
+        text: "Wybierz inną ofertę użytkownika",
+        onClick: function () {
+            $("#anotherOfferPopup").dxPopup({
+                title: "Pozostałe oferty użytkownika " + transaction.clientLogin,
+
+            }).dxPopup("show");
+
+            var transactionOfferId = [-1];
+
+            $.each(transaction.transactionState,function (indexInArray, data) {
+                transactionOfferId.push(data.offerId);
+            });
+
+            var idsList = {
+                ids: transactionOfferId
+            };
+
+
+            idsList = JSON.stringify(idsList);
+
+            $.ajax({
+                url: './products/owner/another?ownerId='+transaction.clientId,
+                type: 'post',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+                    if (result.errorMsg) {
+                        console.log("error")
+                    }else{
+                        var anotherOfferList = $("#anotherOfferList").dxList({
+                            dataSource: result,
+                            height: "100%",
+                            selectionMode: "multiple",
+                            showSelectionControls: true,
+                            scrollingEnabled: true,
+                            noDataText: "Użytkownik nie ma aktywnych ofert",
+                            itemTemplate: function(e) {
+                                var result = $("<div>").addClass("offerAnotherList");
+                                $("<img>").attr("src", e.img).appendTo(result);
+                                $("<div id='name'>").text(e.name).appendTo(result);
+                                $("<div id='AnotherOfferDetailsButtonContainer'>").append($('<div id="showAnotherOfferDetailsButton">').dxButton({
+                                    text:"Pokaż ofertę",
+                                    onClick:function () {
+                                        offerLinkClick(e.id);
+                                        e.jQueryEvent.stopPropagation();
+                                    }
+                                })).appendTo(result);
+                                return result;
+                            }
+                        }).dxList("instance");
+                        $("#anotherOfferContainer").append(anotherOfferList);
+                        $('#anotherOfferList').dxList('instance').repaint();
+                    }
+                },
+                data: idsList
+            });
+
+
+            $("#acceptAnotherButton").dxButton({
+                text: "Akceptuj",
+                onClick: function () {
+                    var anotherOfferList = $("#anotherOfferList").dxList("instance").option("selectedItems");
+
+
+                    $.each(anotherOfferList,function(index, data){
+                        var offerJson = {
+                            offerId: "",
+                            sellerAccept: true,
+                            buyerAccept: false,
+                            transactionId: transaction.id,
+                            sideFlag: 0,
+                            step:2,
+                            messageOwner: $("#rOfferForm").dxForm("instance").getEditor('messageClient').option('value')
+                        };
+                        offerJson.offerId = data.id;
+                        offerJson = JSON.stringify(offerJson);
+
+                        $.ajax({
+                            url: './transaction/save/offer',
+                            type: 'post',
+                            dataType: 'json',
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (result) {
+                                if (result.errorMsg) {
+                                    console.log("error")
+                                }
+                            },
+                            data: offerJson
+                        });
+                    });
+                    $("#anotherOfferPopup").dxPopup("hide");
+                    refreshOfferGrid();
+                }
+            });
+
+            $("#cancelAnotherButton").dxButton({
+                text:"Anuluj",
+                onClick: function () {
+                    $("#anotherOfferPopup").dxPopup("hide")
+                }
+            })
+
+
+
+        }
+    });
+
+    $("#deleteROfferButton").dxButton({
+        text:"Odrzuć ofertę"
+    });
+
+    $("#acceptROfferButton").dxButton({
+        text:"Zaakceptuj i zakończ",
+        onClick: function () {
+
+            var gridOfferdata = ("#rOfferGrid").dxDataGrid("instance").option("dataSource").items();
+            $.each(gridOfferdata, function (indexInArray, data) {
+                if(data.sellerAccept === false || data.buyerAccept===false){
+                    console.log("Niezaakceptowno")
+                }
+
+
+            })
+
+        }
+    });
+
+    $("#sendResponseOfferButton").dxButton({
+        text:"Wyślij odpowiedź"
+    });
+
+
+
+    /*$("#sendTranButton").dxButton({
+        text:"Wyślij",
+        focusStateEnabled: false,
+        onClick: function () {
+
+            var f = $("#tranForm").dxForm('instance');
+
+            var saveData = {
+                ownerId: ownerId,
+                clientId: currentUser,
+                offerId: productId,
+                message: f.getEditor('message').option('value'),
+                status: 1,
+                ownerAccept: false,
+                clientAccept:true,
+                ids: []
+
+            };
+
+            var dataGrid = $("#clientOfferGrid").dxDataGrid("instance");
+
+            for (var i = 0; i<dataGrid.getSelectedRowsData().length; i++){
+                saveData.ids .push(dataGrid.getSelectedRowsData()[i].id)
+            }
+
+
+            saveData = JSON.stringify(saveData);
+
+            $.ajax({
+                url: './transaction/save',
+                type: 'post',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success: function (result) {
+                    if (result.errorMsg) {
+                        console.log("error")
+                    } else {
+                        $("#tranPopup").dxPopup("hide");
+                        dataGrid.clearSelection();
+                    }
+                },
+                data: saveData
+            });
+
+
+
+        }
+    });
+
+    $("#cancelTranButton").dxButton({
+        text:"Anuluj",
+        focusStateEnabled: false,
+        onClick: function () {
+            var dataGrid = $("#clientOfferGrid").dxDataGrid("instance");
+            $("#tranPopup").dxPopup("hide");
+            dataGrid.clearSelection();
+
+        }
+    });*/
+
+}
+
+function offerLinkClick(id) {
+    openInTab('./product?productId='+id);
+}
+
+function showProposedOffers(transactionId) {
+
+
+    var gridOfferData = new DevExpress.data.DataSource({
+
+        load: function (loadOptions) {
+
+            var d = $.Deferred();
+            $.getJSON('./transaction/offer/list', {
+                    transactionId: transactionId
+
+                }
+            ).done(function (result) {
+                d.resolve(result);
+            });
+            return d.promise();
+        }
+    });
+
+
+    $("#rOfferGrid").dxDataGrid({
+        dataSource: gridOfferData,
+        key: "id",
+        columnAutoWidth: true,
+        selection: {
+            mode: "single"
+        },
+        showBorders: true,
+        hoverStateEnabled: true,
+        scrolling: {
+            "showScrollbar": "never"
+        },
+        columns: [{
+            caption: "Nazwa oferty",
+            dataField: "offerName"
+        },{
+            caption: "Kategoria",
+            dataField: "categoryName"
+        },{
+            caption: "Akceptacja właściciela",
+            dataField: "buyerAcceptStatus"
+        },{
+            caption: "Twoja akceptacja",
+            dataField: "sellerAcceptStatus"
+        },{
+            caption:"",
+            alignment: 'center',
+            cellTemplate: function (container, options) {
+                $('<a id="showLink"/>').addClass('dx-link')
+                    .text("Pokaż ofertę")
+                    .on('dxclick', function () {
+                        openInTab('./product?productId='+options.data.offerId);
+                        //location.href = './product?productId='+options.data.offerId;
+                    })
+                    .appendTo(container);
+            }
+        },{
+            caption:"",
+            alignment: 'center',
+            cellTemplate: function (container, options) {
+                $('<a id="acceptLink"/>').addClass('dx-link')
+                    .text("Akceptuj")
+                    .on('dxclick', function () {
+                        console.log(options.data)
+                        if(option.data.sellerAccept === true){
+                            $("#acceptOfferTransaction").dxToast({
+                                text:"Oferta jest już zaakceptowana"
+                            }).dxToast("show");
+                        }else{
+                            /*$.post("./seller/accept/offer?offerId="+options.data.offerId, function (t) {
+                                $("#acceptOfferToast").dxToast("show");
+                                refreshOfferGrid();
+                                $('#anotherOfferList').dxList('instance').repaint();
+                            })*/
+                        }
+
+                    })
+                    .appendTo(container);
+            }
+        },{
+            caption:"",
+            alignment: 'center',
+            cellTemplate: function (container, options) {
+                $('<a id="deleteLink"/>').addClass('dx-link')
+                    .text("Usuń")
+                    .on('dxclick', function () {
+                        $.post("./transaction/delete/offer?offerId="+options.data.offerId,  function (t) {
+                            $("#deleteOfferToast").dxToast("show");
+                            refreshOfferGrid();
+
+                        })
+                    })
+                    .appendTo(container);
+            }
+        }]
+
+    });
+    
+    
+}
+
+function f() {
+    
+}
+
+function refreshOfferGrid() {
+    var ds = $("#rOfferGrid").dxDataGrid("getDataSource");
+    ds.reload();
+    var dataGridInstance = $("#rOfferGrid").dxDataGrid("instance");
+    dataGridInstance.clearSelection();
+    
+}
+
+function openInTab(url) {
+    window.open(url, '_blank');
+
+}
 
 function dateFormat(d) {
 

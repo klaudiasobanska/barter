@@ -32,4 +32,9 @@ public class UserDto {
 
     private Date birthDate;
 
+    private String phoneNumber;
+
+    private byte[] img;
+    private String imageType;
+
 }

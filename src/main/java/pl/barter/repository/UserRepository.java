@@ -42,9 +42,15 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     @Modifying
     @Transactional
-    @Query("update User set image=:image where id=:id")
+    @Query("update User set image=:image   where id=:id")
     void addImage(@Param("image") byte[] image,
                        @Param("id") Long id);
+    @Modifying
+    @Transactional
+    @Query("update User set imageType= :imageType where id=:id")
+    void addImageType(@Param("imageType") String imageType,
+                  @Param("id") Long id);
+
 
 
 

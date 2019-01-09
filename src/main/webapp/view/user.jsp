@@ -88,8 +88,34 @@
             </div>
         </div>
 
+        <%--NADESLANE--%>
+        <div id="userReceivedContent">
+            <div id="headerUserReceiveText"></div>
+            <div id="userReceiveOfferList"></div>
+            <div id="ReceiveOfferPopup">
+                <div id="rOfferForm"></div>
+                <div id="rOfferGrid"></div>
+                <div id="addAnotherOfferButton"></div>
+                <div id="anotherOfferPopup">
+                    <div id="anotherOfferContainer">
+                        <div id="anotherOfferList"></div>
+                    </div>
+                    <div id="acceptAnotherButton"></div>
+                    <div id="cancelAnotherButton"></div>
+                </div>
+                <div class="rOfferButtonContainer">
+                    <div id="sendResponseOfferButton"></div>
+                    <div id="acceptROfferButton"></div>
+                    <div id="deleteROfferButton"></div>
+                    <%--<div id="cancelROfferButton"></div>--%>
+                </div>
+                <div id="acceptOfferToast"></div>
+                <div id="deleteOfferToast"></div>
+            </div>
+        </div>
 
 
+        <%--ZARCHIWIZOWANE--%>
         <div id="userDeleteContent">
             <div id="headerUserDeleteText"></div>
             <div class="userDeletedOffersButtonMenu">

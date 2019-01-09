@@ -31,9 +31,9 @@ public class ListsPageController extends AbstractController {
                         @RequestParam("voivoId") Long voivoId,
                         @RequestParam("latest") Boolean lates,
                         @RequestParam("random") Boolean random){
-
+        String cityName = "";
         clearSession();
-        Filter filter = new Filter(param,categoryId, lates, random, cityId, voivoId);
+        Filter filter = new Filter(param,categoryId, lates, random, cityId, voivoId, cityName);
 
         session.setAttribute("filter", filter);
 

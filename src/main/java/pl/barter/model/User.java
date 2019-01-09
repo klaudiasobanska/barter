@@ -1,7 +1,9 @@
 package pl.barter.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -55,12 +57,18 @@ public class User {
     @Column(name = "zip_code")
     private String zipCode;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",locale = "pl_PL")
     @Column(name = "birth_date")
     private Date birthDate;
 
     @Column(name = "image")
     private byte[] image;
+
+    @Column(name = "image_type")
+    private String imageType;
 
 
     @ManyToMany(fetch = FetchType.LAZY,

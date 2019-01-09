@@ -6,13 +6,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.barter.exception.ResourceNotFoundException;
-import pl.barter.model.Filter;
-import pl.barter.model.Product;
-import pl.barter.model.ProductMap;
+import pl.barter.model.*;
+import pl.barter.model.dto.ProductDto;
+import pl.barter.repository.OfferImageRepository;
 import pl.barter.repository.ProductRepository;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,15 +29,61 @@ public class ProductController extends AbstractController {
     @Autowired
     ProductMap productMap;
 
+    @Autowired
+    OfferImageRepository offerImageRepository;
+
+    @Autowired
+    FilterMap filterMap;
+
     @RequestMapping("/products/all")
     public List<Product> findAll() {
         return productRepository.findAll();
     }
 
-    @PostMapping("/products/add")
-    public Product createProduct(@Valid @RequestBody Product product) {
-        return productRepository.save(product);
+    private Product fromDto(ProductDto productDto, List<OfferImage> files) {
+        Product p = new Product();
+        p.setId(productRepository.getNextSeriesId());
+        p.setName(productDto.getName());
+        p.setOwnerId(productDto.getOwnerId());
+        p.setActive(productDto.getActive());
+        p.setDescription(productDto.getDescription());
+        p.setCategoryId(productDto.getCategoryId());
+        p.setCityId(productDto.getCityId());
+        p.setCreationDate(productDto.getCreationDate());
+
+        for (OfferImage offerImage : files) {
+            offerImage.setId(offerImageRepository.getNextSeriesId());
+            offerImage.setOfferId(p.getId());
+
+            p.getOfferImagesList().add(offerImage);
+        }
+
+
+        return p;
     }
+
+    @PostMapping(path = "/products/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Product addProduct(@RequestBody ProductDto productDto) {
+
+
+        List<OfferImage> files = (List<OfferImage>) session.getAttribute("files");
+        if (files == null) {
+            files = new ArrayList<>();
+        }
+
+        Product newProduct = fromDto(productDto, files);
+
+        Product product = productRepository.save(newProduct);
+        session.setAttribute("files", new ArrayList<>());
+        return product;
+    }
+
+    @GetMapping("/clear/session/img")
+    public ResponseEntity clearSession(){
+        session.setAttribute("files", new ArrayList<>());
+        return ResponseEntity.ok().build();
+    }
+
 
     @GetMapping("/products/{id}")
     public Product getProductById(@PathVariable(value = "id") Long id) {
@@ -46,7 +94,7 @@ public class ProductController extends AbstractController {
 
     @PutMapping("/products/{id}")
     public ResponseEntity updateProduct(@PathVariable(value = "id") Long id,
-                               @Valid @RequestBody Product productDetails) {
+                                        @Valid @RequestBody Product productDetails) {
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
@@ -54,7 +102,6 @@ public class ProductController extends AbstractController {
         product.setName(productDetails.getName());
         product.setCategoryId(productDetails.getCategoryId());
         product.setDescription(productDetails.getDescription());
-        product.setImage(productDetails.getImage());
 
 
         Product updatedProduct = productRepository.save(product);
@@ -66,18 +113,29 @@ public class ProductController extends AbstractController {
                                              @RequestParam("categoryId") Long categoryId,
                                              @RequestParam("cityId") Long cityId,
                                              @RequestParam("voivoId") Long voivoId,
-                                             Pageable pageable){
-        Page<Product> products = productRepository.findProductByFilters("%"+param+"%",categoryId,cityId,voivoId, pageable);
+                                             Pageable pageable) {
+        Page<Product> products = productRepository.findProductByFilters("%" + param + "%", categoryId, cityId, voivoId, pageable);
+        products.forEach(p -> productMap.map(p));
+        return products;
+    }
+
+    @GetMapping("/products/search/and")
+    public Page<Product> getProductByFiltersVersionTwo(@RequestParam("param") String param,
+                                             @RequestParam("categoryId") Long categoryId,
+                                             @RequestParam("cityId") Long cityId,
+                                             @RequestParam("voivoId") Long voivoId,
+                                             Pageable pageable) {
+        Page<Product> products = productRepository.findProductByFiltersVersionTwo("%" + param + "%", categoryId, cityId, voivoId, pageable);
         products.forEach(p -> productMap.map(p));
         return products;
     }
 
     @GetMapping("/products/category")
     public Page<Product> getProductByCategory(@RequestParam("categoryId") Long categoryId,
-                                              Pageable pageable){
+                                              Pageable pageable) {
         Page<Product> products = productRepository.findByCategoryId(categoryId, pageable);
         products.forEach(p -> productMap.map(p));
-        return  products;
+        return products;
     }
 
     @GetMapping("/products/current")
@@ -106,46 +164,73 @@ public class ProductController extends AbstractController {
     @GetMapping("/filters/current")
     public Filter getFilters() {
 
-         Filter filter = (Filter) session.getAttribute("filter");
+        Filter filter = (Filter) session.getAttribute("filter");
+        filterMap.map(filter);
 
-         return filter;
+        return filter;
     }
 
     @GetMapping("/products/random")
-    public List<Product> getRandomProduct(){
+    public List<Product> getRandomProduct() {
         List<Product> products = productRepository.findRandomProduct();
-        products.forEach(p->productMap.map(p));
+        products.forEach(p -> productMap.map(p));
         return products;
     }
 
     @GetMapping("/products/latest")
-    public List<Product> getLatestProduct(){
+    public List<Product> getLatestProduct() {
         List<Product> products = productRepository.findLatestProduct();
-        products.forEach(p->productMap.map(p));
+        products.forEach(p -> productMap.map(p));
         return products;
     }
 
     @GetMapping("/products/latest/all")
-    public List<Product> getLatestProductAll(Pageable pageable){
+    public List<Product> getLatestProductAll(Pageable pageable) {
         List<Product> products = productRepository.findLatestProductAll(pageable);
-        products.forEach(p->productMap.map(p));
+        products.forEach(p -> productMap.map(p));
         return products;
     }
 
     @GetMapping("/products/random/all")
-    public List<Product> getAllRandom(Pageable pageable){
+    public List<Product> getAllRandom(Pageable pageable) {
         List<Product> products = productRepository.findAllRandom(pageable);
-        products.forEach(p->productMap.map(p));
+        products.forEach(p -> productMap.map(p));
         return products;
     }
 
     @GetMapping("/products/owner")
-    public List<Product> getProductByUserId(@RequestParam("ownerId") Long ownerId,
-                                            @RequestParam("active") Boolean active){
-        List<Product> products = productRepository.findByOwnerIdAndActive(ownerId,active);
-        products.forEach(p->productMap.map(p));
+    public Page<Product> getProductByUserId(@RequestParam("ownerId") Long ownerId,
+                                            @RequestParam("active") Boolean active,
+                                            Pageable pageable) {
+        Page<Product> products = productRepository.findByOwnerIdAndActivePage(ownerId, active, pageable);
+        products.forEach(p -> productMap.map(p));
         return products;
     }
+
+    @GetMapping("/products/owner/list")
+    public List<Product> getProductByUserIdAndActiveList(@RequestParam("ownerId") Long ownerId,
+                                                         @RequestParam("active") Boolean active) {
+        List<Product> products = productRepository.findByOwnerIdAndActive(ownerId, active);
+        products.forEach(p -> productMap.map(p));
+        return products;
+    }
+
+    @PostMapping("products/owner/another")
+    public List<Product> getProductsByAnotherList(@RequestBody ArrayId ids,
+                                                  @RequestParam("ownerId") Long ownerId) {
+        List<Product> products = productRepository.findProductNotInOffert(ids.getIds(), ownerId);
+        products.forEach(p -> productMap.map(p));
+        return products;
+    }
+
+    @GetMapping("products/owner/another/one")
+    public List<Product> getProductsByAnotherListOne(@RequestParam("productId") Long productId,
+                                                  @RequestParam("ownerId") Long ownerId) {
+        List<Product> products = productRepository.findProductNotInProductPage(productId, ownerId);
+        products.forEach(p -> productMap.map(p));
+        return products;
+    }
+
 
     @PostMapping("/products/delete")
     public ResponseEntity deleteProduct(@RequestParam("id") Long id) {
@@ -156,9 +241,10 @@ public class ProductController extends AbstractController {
 
     }
 
+
     @PostMapping("/products/active")
     public ResponseEntity activeProduct(@RequestParam("id") Long id,
-                                     @RequestParam("active") Boolean active) {
+                                        @RequestParam("active") Boolean active) {
         productRepository.activeProduct(id, active);
         return ResponseEntity.ok().build();
     }
@@ -169,7 +255,29 @@ public class ProductController extends AbstractController {
                                         @RequestParam("categoryId") Long categoryId,
                                         @RequestParam("description") String description) {
 
-        productRepository.updateProduct(id,name,categoryId,description);
+        productRepository.updateProduct(id, name, categoryId, description);
         return ResponseEntity.ok().build();
     }
+
+    @RequestMapping(value = "/products/image/upload", method = RequestMethod.POST)
+    public @ResponseBody
+    Boolean uploadDocument(@RequestParam("file") MultipartFile file
+    ) throws IOException {
+
+        List<OfferImage> files = (List<OfferImage>) session.getAttribute("files");
+        if (files == null)
+            files = new ArrayList<>();
+
+        OfferImage i  = new OfferImage();
+        i.setType(file.getContentType());
+        i.setImage(file.getBytes());
+        files.add(i);
+        session.setAttribute("files", files);
+        return true;
+    }
+
+
+
+
+
 }

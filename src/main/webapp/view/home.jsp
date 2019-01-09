@@ -50,9 +50,9 @@
         <div id="randomButton"></div>
     </div>
 
-
+    <br>
     <div class="bestUserContent">
-        <p id="bestUserText">Najlepiej oceniani użytkownicy:</p>
+        <%--<p id="bestUserText">Najlepiej oceniani użytkownicy:</p>--%>
         <div class="userContainer"></div>
     </div>
     <%--<div class="productContent">

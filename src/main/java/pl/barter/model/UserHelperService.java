@@ -14,8 +14,15 @@ public class UserHelperService {
         userDto.setLogin(user.getLogin());
         userDto.setSurname(user.getSurname());
         userDto.setAddress(user.getAddress());
+        userDto.setCity(user.getCity());
+        userDto.setZipCode(user.getZipCode());
         userDto.setRating(user.getRating());
+        userDto.setPhoneNumber(user.getPhoneNumber());
+        userDto.setBirthDate(user.getBirthDate());
         userDto.setId(user.getId());
+        userDto.setImg(user.getImage());
+        userDto.setImageType(user.getImageType());
+
 
         return userDto;
     }

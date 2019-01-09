@@ -4,6 +4,7 @@ var cityId;
 var voivoId;
 var latest;
 var random;
+var cityName;
 
 $.get('./filters/current', function (data) {
 
@@ -13,6 +14,8 @@ $.get('./filters/current', function (data) {
         voivoId=data.voivoId;
         latest = data.latest;
         random = data.random;
+        cityName = data.cityName;
+
  });
 
 
@@ -20,6 +23,32 @@ $.get('./filters/current', function (data) {
 $(function () {
 
 
+    $("#loginButton").dxButton({
+        text:"Zaloguj się",
+        onClick: function () {
+            showLoginPopup();
+            /*$("#loginPopup").show();
+            $("#loginPopup").dxPopup("show");
+            loginForm();*/
+        }
+    });
+
+    $("#homeButton").dxButton({
+        icon:"home",
+        stylingMode: "text",
+        onClick: function () {
+            location.href = "./home";
+        }
+    });
+
+    $("#userMenuButton").dxButton({
+        text:"Mój Profil",
+        icon: 'user',
+        stylingMode: "text",
+        onClick: function () {
+            location.href = './user'
+        }
+    });
 
     $("#searchBar").dxTextBox({
         showClearButton: true,
@@ -50,13 +79,17 @@ $(function () {
     };
 
     var lData;
+
     if(cityId!=-1){
         lData = cityId
-    }else{
+    }if((cityId === -1)&&(voivoId === -1)){
+        lData = ""
+    }
+    if(voivoId != -1 ){
         lData = voivoId
-
     }
 
+    console.log(lData)
 
     $("#searchCity").dxDropDownBox({
         value: lData,
@@ -67,11 +100,13 @@ $(function () {
         dataSource: makeAsyncDataSourceCity("./voivo/all"),
         onContentReady: function(data){
 
-         /* if(voivoId!=null){
-              data.component.option("value", voivoId);
-          }else{
-              data.component.option("value", cityId);
-            }*/
+            if(data === ""){
+                data.component.option("value", "Lokalizacja");
+            }
+            if(cityId!= -1){
+                data.component.option("value", cityName);
+            }
+
         },
         contentTemplate: function(e) {
             $treeViewProvider = $("<div>").dxTreeView({
@@ -213,13 +248,25 @@ function showList(data) {
     $("#productList").dxList({
         dataSource: data,
         height: "100%",
+        nextButtonText: "Więcej",
         itemTemplate: function(data, index) {
 
             var result = $("<div>").addClass("product");
 
-            $("<img>").attr("src", data.img).appendTo(result);
-            $("<div id='name'>").text(data.name).appendTo(result);
-            $("<div id='category'>").text(data.categoryName).appendTo(result);
+            $.get("./image/offer?offerId="+data.id, function (t){
+                if (t[0] != undefined) {
+                    $("<img>").attr("src", t[0]).appendTo(result);
+                    console.log(result[0]);
+                }
+                var temp =
+
+                    '<div id="textContainer">'+
+                    '<div id="name">' + data.name + '</div>' +
+                    '<div id="category">' + data.categoryName + '</div>' +
+                    '<div id="city">' + data.cityName + '</div>' +
+                    '</div>';
+                result.append(temp);
+            });
 
             return result;
 

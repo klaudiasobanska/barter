@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.barter.model.Product;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -17,11 +19,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findAll();
 
+    @Query(value = "SELECT nextval('products_id_seq')", nativeQuery =
+            true)
+    Long getNextSeriesId();
 
-    @Query(value = "select * from products p where (p.name like :param) and (:categoryId = -1 or p.category_id = cast(:categoryId as int)) " +
-            " and (((:cityId = -1 and :voivoId=-1) or (p.city_id = cast(:cityId as int))) or ( :voivoId <> -1 and p.city_id in (select c.id from city c where c.voivo_id = cast(:voivoId as int)))) ",
-            countQuery = "select count(*) from products p where (p.name like :param) and ((:categoryId = -1 or p.category_id = cast(:categoryId as int)) " +
-                    " or (:cityId = -1 or p.city_id = cast(:cityId as int)) and (p.city_id in (select c.id from city c where c.voivo_id = cast(:voivoId as int)))) ",
+
+    @Query(value = "select * from products p where ((p.name like :param) and (:categoryId = -1 or p.category_id = cast(:categoryId as int)) " +
+            " and (((:cityId = -1 and :voivoId=-1) or (p.city_id = cast(:cityId as int))) or ( :voivoId <> -1 and p.city_id in (select c.id from city c where c.voivo_id = cast(:voivoId as int))))) ",
+            countQuery = "select * from products p where ((p.name like :param) and (:categoryId = -1 or p.category_id = cast(:categoryId as int)) " +
+                    " and (((:cityId = -1 and :voivoId=-1) or (p.city_id = cast(:cityId as int))) or ( :voivoId <> -1 and p.city_id in (select c.id from city c where c.voivo_id = cast(:voivoId as int))))) ",
             nativeQuery = true)
     Page<Product> findProductByFilters(@Param("param") String param,
                                          @Param("categoryId") Long categoryId,
@@ -29,21 +35,54 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                        @Param("voivoId") Long voivoId,
                                        Pageable pageable);
 
+    @Query(value = "select * from products p where (p.name like :param) and (:categoryId = -1 or p.category_id = cast(:categoryId as int)) " +
+            " and ((p.city_id = cast(:cityId as int) and :cityId <> -1) or (:cityId = -1 and :voivoId = -1) or (:cityId = -1 and :voivoId <> -1 and p.city_id in (select c.id from city c where c.voivo_id = cast(:voivoId as int)))) ",
+            countQuery =" select * from products p where (p.name like :param) and (:categoryId = -1 or p.category_id = cast(:categoryId as int)) " +
+                    " and ((p.city_id = cast(:cityId as int) and :cityId <> -1) or (:cityId = -1 and :voivoId = -1) or (:cityId = -1 and :voivoId <> -1 and p.city_id in (select c.id from city c where c.voivo_id = cast(:voivoId as int)))) ",
+            nativeQuery = true)
+    Page<Product> findProductByFiltersVersionTwo(@Param("param") String param,
+                                       @Param("categoryId") Long categoryId,
+                                       @Param("cityId") Long cityId,
+                                       @Param("voivoId") Long voivoId,
+                                       Pageable pageable);
+
+
     Page<Product> findByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
 
     @Query(value = "select * from products order by random() limit 10", nativeQuery = true)
     List<Product> findRandomProduct();
 
-    @Query(value = "select * from products where (creation_date = current_date) or (creation_date >= current_date - integer '1') order by random() limit 10", nativeQuery = true)
+    @Query(value = "select * from products order by creation_date desc limit 10", nativeQuery = true)
     List<Product> findLatestProduct();
 
-    @Query(value = "select * from products where (creation_date = current_date) and (creation_date >= current_date - integer '1')",nativeQuery = true)
+    @Query(value = "select * from products order by creation_date desc",nativeQuery = true)
     List<Product> findLatestProductAll(Pageable pageable);
+
+    @Query(value = "select * from products p where owner_id = :ownerId and p.active = :active",
+        countQuery = "select count(*) from products p where owner_id = :ownerId and p.active = :active",
+        nativeQuery = true)
+    Page<Product> findByOwnerIdAndActivePage(@Param("ownerId") Long ownerId,@Param("active") Boolean active, Pageable pageable);
 
     List<Product> findByOwnerIdAndActive(@Param("ownerId") Long ownerId,@Param("active") Boolean active);
 
     @Query(value = "select * from products order by random()", nativeQuery = true)
     List<Product> findAllRandom(Pageable pageable);
+
+
+    @Query("select p from Product p where p.id not in (:paramList) and p.ownerId = :ownerId and p.active = true")
+    List<Product> findProductNotInOffert(@Param("paramList") List<Long> paramList,
+                                         @Param("ownerId") Long ownerId);
+
+    @Query("select p from Product p where p.id <> :productId and p.ownerId = :ownerId and p.active = true")
+    List<Product> findProductNotInProductPage(@Param("productId") Long productId,
+                                         @Param("ownerId") Long ownerId);
+
+
+    @Query("select p from Product p where p.id = :productId and active = true")
+    Product findActiveProduct(@Param("productId") Long productId);
+
+
+
 
 
     @Modifying
@@ -64,4 +103,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                     @Param("name") String name,
                     @Param("categoryId") Long categoryId,
                     @Param("description") String description);
+
+
+
+
+
 }

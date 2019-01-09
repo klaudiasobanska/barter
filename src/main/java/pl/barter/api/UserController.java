@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.barter.exception.ResourceNotFoundException;
@@ -22,6 +23,7 @@ import pl.barter.repository.UserRepository;
 import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -88,14 +90,14 @@ public class UserController extends AbstractController {
 
     @PostMapping("/users/edit")
     public ResponseEntity updateUser(@RequestParam("id") Long id,
-                                               @RequestParam("forename") String forename,
-                                               @RequestParam("surname") String surname,
-                                               @RequestParam("email") String email,
-                                               @RequestParam("address") String address,
-                                               @RequestParam("city") String city,
-                                               @RequestParam("zipCode") String zipCode
-                                               ) {
-        usersRepository.updateUser(id, forename,surname, email, address,city,zipCode);
+                                     @RequestParam("forename") String forename,
+                                     @RequestParam("surname") String surname,
+                                     @RequestParam("email") String email,
+                                     @RequestParam("address") String address,
+                                     @RequestParam("city") String city,
+                                     @RequestParam("zipCode") String zipCode
+    ) {
+        usersRepository.updateUser(id, forename, surname, email, address, city, zipCode);
         return ResponseEntity.ok().build();
     }
 
@@ -111,49 +113,50 @@ public class UserController extends AbstractController {
     }
 
     @GetMapping("/users/rating")
-    public List<BestUserData> getUserByRating(){
+    public List<BestUserData> getUserByRating() {
         List<BestUserData> users = bestUserDataRepository.getRating();
         return users;
     }
 
 
     @GetMapping("/users/product")
-    public UserDto getUserByProduct(@RequestParam("ownerId") Long ownerId){
+    public UserDto getUserByProduct(@RequestParam("ownerId") Long ownerId) {
 
         User user = usersRepository.findByProduct(ownerId);
+
         return userHelperService.mapToDto(user);
     }
 
     @RequestMapping(value = "/image/upload", method = RequestMethod.POST)
     public @ResponseBody
-    Boolean uploadDocument(@RequestParam("files") MultipartFile files,
+    Boolean uploadDocument(@RequestParam("file") MultipartFile files,
                            @RequestParam("id") Long id) throws IOException {
-
-       /* for (MultipartFile file : files) {
-
-            if (file.isEmpty()) {
-                continue;
-            }
-            try {*/
-                byte[] bytes = files.getBytes();
-                usersRepository.addImage(bytes,id);
-
-            /*} catch (IOException e) {
-                e.printStackTrace();
-            }
-*/
-      //  }
-
+        usersRepository.addImage(files.getBytes(), id);
+        usersRepository.addImageType(files.getContentType(),id);
         return true;
     }
 
-    @PostMapping("/users/delete/fav")
-    public Map<String, Object> deleteFav(@RequestParam("productId") Long productId, @RequestParam("userId") Long userId){
+    @GetMapping("/image/user")
+    public List<String> getImageUser(@RequestParam("userId") Long userId){
 
-        Product product =  productRepository.findById(productId)
+        User user = usersRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
+
+
+        List<String> imageStringList = new ArrayList<>();
+        imageStringList.add("data:"+user.getImageType()+";base64,"+Base64Utils.encodeToString(user.getImage())) ;
+
+        return imageStringList;
+
+
+    }
+
+    @PostMapping("/users/delete/fav")
+    public Map<String, Object> deleteFav(@RequestParam("productId") Long productId, @RequestParam("userId") Long userId) {
+
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
-        User user =  usersRepository.findById(userId)
+        User user = usersRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
 
         user.getFav().remove(product);
@@ -167,12 +170,12 @@ public class UserController extends AbstractController {
 
 
     @PostMapping("/users/add/fav")
-    public ResponseEntity addFav(@RequestParam("productId") Long productId, @RequestParam("userId") Long userId){
+    public ResponseEntity addFav(@RequestParam("productId") Long productId, @RequestParam("userId") Long userId) {
 
-        Product product =  productRepository.findById(productId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
-        User user =  usersRepository.findById(userId)
+        User user = usersRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
 
         user.getFav().add(product);
