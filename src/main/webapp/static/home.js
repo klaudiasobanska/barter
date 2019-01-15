@@ -285,7 +285,7 @@ function cardTemplate(itemData) {
 
 function showBestUsers() {
 
-    var bestUserDate = new DevExpress.data.DataSource({
+    var bestUserData = new DevExpress.data.DataSource({
 
         load: function () {
 
@@ -301,7 +301,7 @@ function showBestUsers() {
         }
     });
 
-    bestUserDate.load().done(function (result) {
+    bestUserData.load().done(function (result) {
         $(".userContainer").empty();
         $.each(result, function (index, user) {
             var temp =
@@ -338,7 +338,7 @@ function searchButton() {
 
 function productData() {
 
-    var productDate = new DevExpress.data.DataSource({
+    var productData = new DevExpress.data.DataSource({
 
 
         load: function (loadOptions) {
@@ -363,6 +363,6 @@ function productData() {
         }
     });
 
-    return productDate;
+    return productData;
 }
 

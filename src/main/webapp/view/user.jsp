@@ -93,27 +93,105 @@
             <div id="headerUserReceiveText"></div>
             <div id="userReceiveOfferList"></div>
             <div id="ReceiveOfferPopup">
+                <div id="popoverActiveOffer">
+                    <p>Ta oferta jest już nieaktywna i nie może być brana pod uwagę w tej transakcji. Usuń ją z proponowanych</p>
+                </div>
+                <div id="popoverActiveOfferShow">
+                    <p>Ta oferta jest już nieaktywna i nie może być brana pod uwagę w tej transakcji. Usuń ją z proponowanych</p>
+                </div>
                 <div id="rOfferForm"></div>
                 <div id="rOfferGrid"></div>
-                <div id="addAnotherOfferButton"></div>
-                <div id="anotherOfferPopup">
-                    <div id="anotherOfferContainer">
-                        <div id="anotherOfferList"></div>
+                <div class="addAnotherOfferButton"></div>
+                <div class="anotherOfferPopup">
+                    <div class="anotherOfferContainer">
+                        <div class="anotherOfferList"></div>
                     </div>
-                    <div id="acceptAnotherButton"></div>
-                    <div id="cancelAnotherButton"></div>
+                    <div class="acceptAnotherButton"></div>
+                    <div class="cancelAnotherButton"></div>
                 </div>
-                <div class="rOfferButtonContainer">
-                    <div id="sendResponseOfferButton"></div>
-                    <div id="acceptROfferButton"></div>
-                    <div id="deleteROfferButton"></div>
+                <div class="offerButtonContainer">
+                    <div id="sendResponseNewTransactionButton"></div>
+                    <div class="acceptTransactionButton"></div>
+                    <div class="rejectTransactionButton"></div>
                     <%--<div id="cancelROfferButton"></div>--%>
                 </div>
-                <div id="acceptOfferToast"></div>
-                <div id="deleteOfferToast"></div>
+                <div class="lastDeletedToast"></div>
+                <div class="acceptOfferToast"></div>
+                <div class="deleteOfferToast"></div>
+                <div class="acceptSendOfferToast"></div>
+                <div class="acceptAllSendOfferToast"></div>
+                <div class="acceptEndOfferToast"></div>
             </div>
         </div>
 
+        <%--WYSLANE--%>
+        <div id="userSendTransactionContent">
+            <div id="headerUserSendText"></div>
+            <div id="userSendOfferList"></div>
+            <div id="sendOfferPopup">
+                <div id="sOfferForm"></div>
+                <div id="sOfferGrid"></div>
+                <div class="offerButtonContainer">
+                    <div id="cancelSendOfferButton"></div>
+                </div>
+            </div>
+        </div>
+
+        <%--AKTYWNE--%>
+        <div id="userActiveTransactionContent">
+            <div id="headerUserActiveText"></div>
+            <div id="userActiveTransactionList"></div>
+            <div id="activeTransactionPopup">
+                <div id="popoverNoActiveTransaction">
+                    <p>Ta oferta jest już nieaktywna i nie może być brana pod uwagę w tej transakcji. Usuń ją z proponowanych</p>
+                </div>
+                <div id="popoverNoActiveTransactionShow">
+                    <p>Ta oferta jest już nieaktywna i nie może być brana pod uwagę w tej transakcji. Usuń ją z proponowanych</p>
+                </div>
+                <div id="aTransactionForm"></div>
+                <div id="aOfferGrid"></div>
+                <div class="addAnotherOfferButton"></div>
+                <div class="anotherOfferPopup">
+                    <div class="anotherOfferContainer">
+                        <div class="anotherOfferList"></div>
+                    </div>
+                    <div class="acceptAnotherButton"></div>
+                    <div class="cancelAnotherButton"></div>
+                </div>
+                <div class="offerButtonContainer">
+                    <div id="sendResponseActiveTransactionButton"></div>
+                    <div class="acceptTransactionButton"></div>
+                    <div class="rejectTransactionButton"></div>
+                </div>
+                <div class="lastDeletedToast"></div>
+                <div class="acceptOfferToast"></div>
+                <div class="deleteOfferToast"></div>
+                <div class="acceptSendOfferToast"></div>
+                <div class="acceptAllSendOfferToast"></div>
+                <div class="acceptEndOfferToast"></div>
+            </div>
+        </div>
+
+        <%--AKTYWNE WYSLANE--%>
+        <div id="userSentActiveTransactionContent">
+            <div id="headerUserSentActiveText"></div>
+            <div id="userSentActiveTransactionList"></div>
+            <div id="activeSentTransactionPopup">
+                <div id="aSentActiveTransactionForm"></div>
+                <div id="aSentActiveOfferGrid"></div>
+            </div>
+        </div>
+
+        <%--TRANSAKCJE ZAKONCZONE SUKCESEM--%>
+
+        <div id="userEndTransactionContent">
+            <div id="headerUserEndTransactionText"></div>
+            <div id="userEndTransactionList"></div>
+            <div id="activeEndTransactionPopup">
+                <div id="aEndTransactionForm"></div>
+                <div id="aEndTransactionOfferGrid"></div>
+            </div>
+        </div>
 
         <%--ZARCHIWIZOWANE--%>
         <div id="userDeleteContent">
@@ -135,7 +213,10 @@
         <div id="archiveUserProductToast"></div>
         <div id="restoreUserProductToast"></div>
         <div id="updateUserDataToast"></div>
+        <div id="noProposalOfferToast"></div>
     </div>
+
+
 
 </body>
 </html>

@@ -82,10 +82,7 @@ public class User {
     @JsonManagedReference
     private Set<Product> fav = new HashSet<>();
 
-    public void removeFav(Product product){
-        fav.remove(product);
-        product.getUsers().remove(this);
-    }
+
 
 
 

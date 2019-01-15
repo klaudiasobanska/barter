@@ -63,5 +63,9 @@
         <div id="cancelTranButton"></div>
     </div>
 
+    <div id="noProposalOfferToast"></div>
+    <div id="addFavErrorToast"></div>
+    <div id="transactionExistToast"></div>
+
 </body>
 </html>

@@ -22,6 +22,7 @@ public class TransactionStateMap {
                 to.setOfferName(product.getName());
                 to.setCategoryName(product.getCategoryName());
                 to.setCityName(product.getCityName());
+                to.setOfferActive(product.getActive());
             }
         }
 

@@ -1,5 +1,5 @@
 var product, productId, ownerName, ownerId;
-var currentUser = 1;
+var currentUser = 15;
 var ownerProduct;
 
 $.get('./products/current', function (data) {
@@ -8,9 +8,11 @@ $.get('./products/current', function (data) {
     productId = data.id;
     ownerId = data.ownerId;
     console.log(product);
+    getAll();
 });
 
-$(function () {
+function getAll() {
+    console.log(product)
 
     $("#loginButtonProduct").dxButton({
         text:"Zaloguj się",
@@ -45,6 +47,18 @@ $(function () {
         displayTime: 2000
     });
 
+    $("#addFavErrorToast").dxToast({
+        message: "Oferta została już dodana do ulubionych",
+        type: "error",
+        displayTime: 2000
+    });
+
+    $("#transactionExistToast").dxToast({
+        message: "Już wysłałeś propozycję wymiany",
+        type: "error",
+        displayTime: 2000
+    });
+
     showGallery();
 
     info();
@@ -54,7 +68,13 @@ $(function () {
         text: "Rozpocznij transakcję",
         icon: "email",
         onClick: function () {
-            transactionButton();
+            $.get("./transaction/exist?userId="+currentUser+"&offerId="+productId, function (t) {
+                if(t.errorMsg === "exist"){
+                    $("#transactionExistToast").dxToast("show");
+                }else{
+                    transactionButton();
+                }
+            });
         }
     });
 
@@ -62,9 +82,13 @@ $(function () {
         text: "Dodaj do Ulubionych",
         icon: "favorites",
         onClick: function () {
-            $.post("./users/add/fav?userId="+1+"&productId="+productId, function (t) {});
-            $("#addFavToast").dxToast("show");
-
+            $.post("./users/add/fav?userId="+currentUser+"&productId="+productId, function (t) {
+                if(t.errorMsg === "inFav"){
+                    $("#addFavErrorToast").dxToast("show");
+                }else{
+                    $("#addFavToast").dxToast("show");
+                }
+            });
         }
     });
 
@@ -72,7 +96,7 @@ $(function () {
     ownerUserList();
 
 
-});
+};
 
 function showGallery() {
 
@@ -90,7 +114,7 @@ function showGallery() {
             return d.promise();
         }
     });*/
-    $.get("./image/offer?offerId="+productId, function (t) {
+    /*$.get("./image/offer?offerId="+productId, function (t) {
         console.log(t)
 
         $("#dxGallery").dxGallery({
@@ -101,11 +125,12 @@ function showGallery() {
             showIndicator: true
         });
 
-    })
+    })*/
 
 
 
 }
+
 
 function dateFormat(d) {
 
@@ -125,6 +150,8 @@ function getDate(dateV) {
     }
 
 }
+
+
 
 function info() {
 
@@ -283,6 +310,12 @@ function transactionButton() {
 
 function showTransactionForm() {
 
+    $("#noProposalOfferToast").dxToast({
+        message: "Musisz zaproponować swoją ofertę na wymianę",
+        type: "error",
+        displayTime: 3000
+    });
+
     var transactionData = {
         messageClient:"",
         ownerName: ownerName,
@@ -331,48 +364,46 @@ function showTransactionForm() {
         text:"Wyślij",
         focusStateEnabled: false,
         onClick: function () {
-
-            var f = $("#tranForm").dxForm('instance');
-
-            var saveData = {
-                ownerId: ownerId,
-                clientId: currentUser,
-                offerId: productId,
-                messageClient: f.getEditor('messageClient').option('value'),
-                status: 1,
-                ownerAccept: false,
-                clientAccept:true,
-                ids: []
-
-            };
-
             var dataGrid = $("#clientOfferGrid").dxDataGrid("instance");
 
-            for (var i = 0; i<dataGrid.getSelectedRowsData().length; i++){
-                saveData.ids.push(dataGrid.getSelectedRowsData()[i].id)
+            if(dataGrid.option("dataSource").items().length===0){
+                $("#noProposalOfferToast").dxToast("show");
+            }else{
+
+                var f = $("#tranForm").dxForm('instance');
+
+                var saveData = {
+                    ownerId: ownerId,
+                    clientId: currentUser,
+                    offerId: productId,
+                    messageClient: f.getEditor('messageClient').option('value'),
+                    status: 1,
+                    ids: []
+
+                };
+
+                for (var i = 0; i<dataGrid.getSelectedRowsData().length; i++){
+                    saveData.ids.push(dataGrid.getSelectedRowsData()[i].id)
+                }
+
+                saveData = JSON.stringify(saveData);
+
+                $.ajax({
+                    url: './transaction/save',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (result) {
+                        if (result.errorMsg) {
+                            console.log("error")
+                        } else {
+                            $("#tranPopup").dxPopup("hide");
+                            dataGrid.clearSelection();
+                        }
+                    },
+                    data: saveData
+                });
             }
-
-
-            saveData = JSON.stringify(saveData);
-
-            $.ajax({
-                url: './transaction/save',
-                type: 'post',
-                dataType: 'json',
-                contentType: 'application/json; charset=utf-8',
-                success: function (result) {
-                    if (result.errorMsg) {
-                        console.log("error")
-                    } else {
-                        $("#tranPopup").dxPopup("hide");
-                        dataGrid.clearSelection();
-                    }
-                },
-                data: saveData
-            });
-
-
-
         }
     });
 
@@ -419,6 +450,7 @@ function showClientOffer(){
     $("#clientOfferGrid").dxDataGrid({
         dataSource: getListOfferOwner(),
         key: "id",
+        noDataText:"Brak aktywnych ofert lub zostały ",
         columnAutoWidth: true,
         remoteOperations: {groupPaging: true},
         selection: {
@@ -446,3 +478,5 @@ function showClientOffer(){
     })
 
 }
+
+

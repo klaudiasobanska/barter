@@ -598,7 +598,7 @@
     height: 75%;
 }
 
-#anotherOfferListText{
+.anotherOfferListText{
     text-align: center;
     font-weight: bold;
     font-size: x-large;
@@ -1225,11 +1225,11 @@
 
 }
 
-#cancelAddButton:hover, #cancelTranButton:hover, #cancelAnotherButton:hover{
+#cancelAddButton:hover, #cancelTranButton:hover, .cancelAnotherButton:hover{
     background-color: #ffbfb2;
 }
 
-#cancelAnotherButton{
+.cancelAnotherButton{
     position: absolute;
     bottom: 5%;
     right: 12%;
@@ -1241,7 +1241,7 @@
     transition: .3s ease-out ;
 }
 
-#acceptAnotherButton{
+.acceptAnotherButton{
     width: 150px;
     height: 40px;
     position: absolute;
@@ -1267,7 +1267,7 @@
     transition: .3s ease-out ;
 }
 
-#saveAddButton:hover, #sendTranButton:hover, #acceptAnotherButton:hover{
+#saveAddButton:hover, #sendTranButton:hover, .acceptAnotherButton:hover{
     background-color: #FDE75F;
 }
 
@@ -1313,7 +1313,7 @@
     border-color: #FDE75F;
 }
 
-#clientOfferGrid, #rOfferGrid{
+#clientOfferGrid, #rOfferGrid, #aOfferGrid, #aSentActiveOfferGrid, #aEndTransactionOfferGrid, #sOfferGrid{
     margin-top: 5%;
 }
 
@@ -1341,7 +1341,7 @@
 
 
 
-#anotherOfferContainer{
+.anotherOfferContainer{
     height: 80%;
 }
 
@@ -1361,18 +1361,19 @@
     color: #393e46;
 }
 
-#showAnotherOfferDetailsButton:hover, #addAnotherOfferButton:hover{
+#showAnotherOfferDetailsButton:hover, .addAnotherOfferButton:hover{
     background-color: #FDE75F;
     border-color: #FDE75F
 }
 
-#showAnotherOfferDetailsButton:focus, #addAnotherOfferButton:focus{
+#showAnotherOfferDetailsButton:focus, .addAnotherOfferButton:focus{
     background-color: #fef099;
     border-color: #FDE75F;
 }
 
-#addAnotherOfferButton{
-    margin: 2% 0 0 0;
+.addAnotherOfferButton{
+    /*margin:5% 0 0 0;*/
+    top:2%;
     transition: .3s ease-out ;
     width: 300px;
     font-size: large;
@@ -1390,7 +1391,7 @@
     height: 20%;
 }*/
 
-#deleteROfferButton{
+.rejectTransactionButton, #cancelSendOfferButton{
     position: absolute;
     bottom: 5%;
     right: 1%;
@@ -1402,7 +1403,7 @@
     transition: .3s ease-out ;
 }
 
-#acceptROfferButton{
+.acceptTransactionButton{
     width: 200px;
     height: 40px;
     position: absolute;
@@ -1415,7 +1416,7 @@
     transition: .3s ease-out ;
 }
 
-#sendResponseOfferButton{
+#sendResponseNewTransactionButton, #sendResponseActiveTransactionButton{
     width: 200px;
     height: 40px;
     position: absolute;
@@ -1430,17 +1431,17 @@
 }
 
 
-#deleteROfferButton:hover{
+.rejectTransactionButton:hover, #cancelSendOfferButton:hover{
     background-color: #ffbfb2;
 
 }
 
-#acceptROfferButton:hover{
+.acceptTransactionButton:hover{
     background-color: #d5fe8d;
 
 }
 
-#sendResponseOfferButton:hover{
+#sendResponseNewTransactionButton:hover, #sendResponseActiveTransactionButton:hover{
     background-color: #FDE75F;
 
 }

@@ -132,8 +132,9 @@ public class ProductController extends AbstractController {
 
     @GetMapping("/products/category")
     public Page<Product> getProductByCategory(@RequestParam("categoryId") Long categoryId,
+                                              @RequestParam("active") Boolean active,
                                               Pageable pageable) {
-        Page<Product> products = productRepository.findByCategoryId(categoryId, pageable);
+        Page<Product> products = productRepository.findByCategoryIdAndActive(categoryId,active, pageable);
         products.forEach(p -> productMap.map(p));
         return products;
     }
@@ -216,10 +217,32 @@ public class ProductController extends AbstractController {
     }
 
     @PostMapping("products/owner/another")
-    public List<Product> getProductsByAnotherList(@RequestBody ArrayId ids,
+    public List<Product> getProductsByAnotherList(/*@RequestBody ArrayId ids,*/
                                                   @RequestParam("ownerId") Long ownerId) {
-        List<Product> products = productRepository.findProductNotInOffert(ids.getIds(), ownerId);
+        List<Product> products = productRepository.findByOwnerIdAndActive(ownerId, true);
         products.forEach(p -> productMap.map(p));
+        List<TransactionState> transactionState =  (List<TransactionState>) session.getAttribute("transactions");
+
+        List<Product> toRemove = new ArrayList<>();
+
+        for( Product p: products){
+            for (TransactionState ts: transactionState){
+                if((ts.getOfferId() == p.getId()) && (ts.getDelete() == false)){
+                    toRemove.add(p);
+                }
+            }
+        }
+
+        products.removeAll(toRemove);
+
+        for (TransactionState ts: transactionState){
+            if (ts.getDelete() == true){
+                Product product = productRepository.findById(ts.getOfferId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Product", "id", ts.getOfferId()));
+                products.add(product);
+            }
+        }
+
         return products;
     }
 

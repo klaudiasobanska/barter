@@ -31,6 +31,13 @@ public class TransactionMap {
                 t.setClientLogin(user.getLogin());
             }
         }
+        if(t.getOwnerId() != null) {
+
+            User user = userRepository.findById(t.getOwnerId()).orElse(null);
+            if(user != null){
+                t.setOwnerLogin(user.getLogin());
+            }
+        }
         if(t.getOfferId() != null) {
 
             Product product = productRepository.findById(t.getOfferId()).orElse(null);

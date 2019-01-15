@@ -7,6 +7,9 @@ import pl.barter.model.TransactionState;
 import pl.barter.model.TransactionStateMap;
 import pl.barter.repository.TransactionStateRepository;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -30,6 +33,7 @@ public class TransactionStateService {
             transactionState.setMessageClient(transaction.getMessageClient());
             transactionState.setStep(1);
             transactionState.setSideFlag(1);
+            transactionState.setDate( new Date());
 
 
 
@@ -49,7 +53,5 @@ public class TransactionStateService {
 
 
     }
-
-
 
 }

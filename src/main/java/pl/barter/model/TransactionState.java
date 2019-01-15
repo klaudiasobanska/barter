@@ -1,11 +1,13 @@
 package pl.barter.model;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "transaction_state")
@@ -42,6 +44,10 @@ public class TransactionState {
     @Column(name = "message_owner")
     private String messageOwner;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone="Europe/Warsaw", locale = "pl_PL")
+    @Column(name = "date")
+    private Date date;
+
     @Transient
     private String offerName;
 
@@ -59,5 +65,8 @@ public class TransactionState {
 
     @Transient
     private Boolean delete=false;
+
+    @Transient
+    private Boolean OfferActive;
 
 }

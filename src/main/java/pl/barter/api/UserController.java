@@ -143,10 +143,12 @@ public class UserController extends AbstractController {
 
 
         List<String> imageStringList = new ArrayList<>();
-        imageStringList.add("data:"+user.getImageType()+";base64,"+Base64Utils.encodeToString(user.getImage())) ;
+        if(user.getImage()!=null){
+            imageStringList.add("data:"+user.getImageType()+";base64,"+Base64Utils.encodeToString(user.getImage())) ;
+
+        }
 
         return imageStringList;
-
 
     }
 
@@ -170,7 +172,7 @@ public class UserController extends AbstractController {
 
 
     @PostMapping("/users/add/fav")
-    public ResponseEntity addFav(@RequestParam("productId") Long productId, @RequestParam("userId") Long userId) {
+    public  Map<String, Object> addFav(@RequestParam("productId") Long productId, @RequestParam("userId") Long userId) {
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
@@ -178,13 +180,22 @@ public class UserController extends AbstractController {
         User user = usersRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
 
-        user.getFav().add(product);
-        product.getUsers().add(user);
+        /*POBRAC ZALOGOWANEGO UZYTKOWNIKA*/
 
-        usersRepository.save(user);
+        /*if(user.getId() == currentUser){
+            return simpleErrorResult("Oferta należy do użytkownika");
+        }
+*/
+        if(user.getFav().contains(product)){
+            return simpleErrorResult("inFav");
+        }else {
 
-        return ResponseEntity.ok().build();
+            user.getFav().add(product);
+            product.getUsers().add(user);
 
+            usersRepository.save(user);
+            return simpleOkResult();
+        }
     }
 
 }

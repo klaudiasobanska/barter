@@ -11,6 +11,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 @Entity
 @Table(name = "transactions")
@@ -49,6 +51,9 @@ public class Transaction {
     private String clientLogin;
 
     @Transient
+    private String ownerLogin;
+
+    @Transient
     private String offerName;
 
     @Transient
@@ -58,9 +63,23 @@ public class Transaction {
     private String messageClient;
 
 
-
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "transactionId")
     @Fetch(value = FetchMode.SUBSELECT)
     private List<TransactionState> transactionState=new ArrayList<>();
+
+    public List<TransactionState> getTransactionStateMaxStep(){
+        List<TransactionState> transactionStatesList = new ArrayList<>();
+        OptionalInt max = transactionState.stream().mapToInt(TransactionState::getStep).max();
+        if(max.isPresent()){
+            for(TransactionState t: transactionState){
+                if (t.getStep() == max.getAsInt()){
+                    transactionStatesList.add(t);
+                }
+            }
+            return transactionStatesList;
+        }
+
+        return null;
+    }
 
 }

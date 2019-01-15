@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import pl.barter.model.Product;
 import pl.barter.model.TransactionState;
 
 import java.util.List;
@@ -20,4 +21,12 @@ public interface TransactionStateRepository extends JpaRepository<TransactionSta
     Long getNextSeriesId();
 
     List<TransactionState> findByTransactionId(@Param("transactionId") Long transactionId);
+
+    List<TransactionState> findByTransactionIdAndStep(@Param("transactionId") Long transactionId,
+                                                      @Param("step") Integer step);
+
+    @Query(value = "select *  from transaction_state where transaction_id = :transactionId and step = (select max(step) from transaction_state where " +
+            "transaction_id = :transactionId)",
+    nativeQuery = true)
+    List<TransactionState> findByTransactionIdAndMaxStep(@Param("transactionId") Long transactionId);
 }
