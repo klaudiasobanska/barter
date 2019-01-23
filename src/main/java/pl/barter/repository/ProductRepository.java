@@ -29,11 +29,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             countQuery = "select * from products p where ((p.active = true) and (p.name like :param) and (:categoryId = -1 or p.category_id = cast(:categoryId as int)) " +
                     " and (((:cityId = -1 and :voivoId=-1) or (p.city_id = cast(:cityId as int))) or ( :voivoId <> -1 and p.city_id in (select c.id from city c where c.voivo_id = cast(:voivoId as int))))) ",
             nativeQuery = true)
-    Page<Product> findProductByFilters(@Param("param") String param,
-                                         @Param("categoryId") Long categoryId,
+    List<Product> findProductByFilters(@Param("param") String param,
+                                       @Param("categoryId") Long categoryId,
                                        @Param("cityId") Long cityId,
-                                       @Param("voivoId") Long voivoId,
-                                       Pageable pageable);
+                                       @Param("voivoId") Long voivoId);
 
     @Query(value = "select * from products p where (p.active = true) and (p.name like :param) and (:categoryId = -1 or p.category_id = cast(:categoryId as int)) " +
             " and ((p.city_id = cast(:cityId as int) and :cityId <> -1) or (:cityId = -1 and :voivoId = -1) or (:cityId = -1 and :voivoId <> -1 and p.city_id in (select c.id from city c where c.voivo_id = cast(:voivoId as int)))) ",

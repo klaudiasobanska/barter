@@ -16,12 +16,12 @@
 
     <script src="https://cdn3.devexpress.com/jslib/18.2.3/js/dx.all.js"></script>
     <script src="/static/registration.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css" />
+    <link rel="stylesheet" type="text/css" href="/static/stylesGreen.css" />
 
 </head>
 <body class="dx-viewport allBackground allContent" >
 
-    <div class="header"></div>
+    <div class="headerContainer"></div>
 
     <div class="registrationContainer">
         <div id="registrationContent">

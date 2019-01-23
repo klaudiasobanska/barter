@@ -109,12 +109,11 @@ public class ProductController extends AbstractController {
     }
 
     @GetMapping("/products/search")
-    public Page<Product> getProductByFilters(@RequestParam("param") String param,
+    public List<Product> getProductByFilters(@RequestParam("param") String param,
                                              @RequestParam("categoryId") Long categoryId,
                                              @RequestParam("cityId") Long cityId,
-                                             @RequestParam("voivoId") Long voivoId,
-                                             Pageable pageable) {
-        Page<Product> products = productRepository.findProductByFilters("%" + param + "%", categoryId, cityId, voivoId, pageable);
+                                             @RequestParam("voivoId") Long voivoId) {
+        List<Product> products = productRepository.findProductByFilters("%" + param + "%", categoryId, cityId, voivoId);
         products.forEach(p -> productMap.map(p));
         return products;
     }
@@ -216,7 +215,7 @@ public class ProductController extends AbstractController {
         return products;
     }
 
-    @PostMapping("products/owner/another")
+    @GetMapping("products/owner/another")
     public List<Product> getProductsByAnotherList(/*@RequestBody ArrayId ids,*/
                                                   @RequestParam("ownerId") Long ownerId) {
         List<Product> products = productRepository.findByOwnerIdAndActive(ownerId, true);
@@ -235,13 +234,13 @@ public class ProductController extends AbstractController {
 
         products.removeAll(toRemove);
 
-        for (TransactionState ts: transactionState){
+       /* for (TransactionState ts: transactionState){
             if (ts.getDelete() == true){
                 Product product = productRepository.findById(ts.getOfferId())
                         .orElseThrow(() -> new ResourceNotFoundException("Product", "id", ts.getOfferId()));
                 products.add(product);
             }
-        }
+        }*/
 
         return products;
     }

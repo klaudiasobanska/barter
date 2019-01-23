@@ -9,13 +9,17 @@ $.get('./products/current', function (data) {
     ownerId = data.ownerId;
     console.log(product);
     getAll();
+
+
 });
 
 function getAll() {
     console.log(product)
 
-    $("#loginButtonProduct").dxButton({
+    $("#loginButton").dxButton({
         text:"Zaloguj się",
+        icon: 'user',
+        stylingMode: "text",
         onClick: function () {
             showLoginPopup();
             /*$("#loginPopup").show();
@@ -24,7 +28,7 @@ function getAll() {
         }
     });
 
-    $("#homeButtonProduct").dxButton({
+    $("#homeButton").dxButton({
         icon:"home",
         stylingMode: "text",
         onClick: function () {
@@ -100,34 +104,17 @@ function getAll() {
 
 function showGallery() {
 
-    /*var dataSource = new DevExpress.data.DataSource({
-        load: function () {
+    $.get("./image/offer?offerId="+productId, function (t) {
 
-            var d = $.Deferred();
-            $.getJSON('./image/offer', {
-                offerId : product.productId ? product.productId : null
-                }
-            ).done(function (result) {
-                d.resolve(result);
-            });
-
-            return d.promise();
-        }
-    });*/
-    /*$.get("./image/offer?offerId="+productId, function (t) {
-        console.log(t)
-
-        $("#dxGallery").dxGallery({
-            dataSource: t[0],
-            loop: true,
-            slideshowDelay: 2000,
+        $("#gallery").dxGallery({
+            width: '100%',
+            height: '100%',
+            dataSource: t,
             showNavButtons: true,
             showIndicator: true
         });
 
-    })*/
-
-
+    })
 
 }
 
@@ -159,11 +146,11 @@ function info() {
 
     var temp =
         '<div id="productName">'+ product.name  + '</div>' +
-        '<div id="productDate">' + getDate(product.creationDate) + '</div>' + '<p id="creationDateText">Dodano:</p>'+
+        '<p id="categoryText">Kategoria:</p>'+'<div id="productCategory">' + product.categoryName + '</div>' +
+        '<p id="cityText">Miasto:</p>'+'<div id="productCity">' + product.cityName + '</div>' +
+        '<p id="creationDateText">Dodano:</p>'+'<div id="productDate">' + getDate(product.creationDate) + '</div>' +
         '<hr id="hr1">'+
         '<div id="productDescription">' + product.description + '</div>' +
-        '<hr id="hr2">'+
-        '<div id="productCategory">' + product.categoryName + '</div>' +
         '</div>' ;
 
 
@@ -225,8 +212,8 @@ function showOwnerData(){
                 '<div id="textOwnerContainer">' +
                 '<div id="ownerLogin">' + result[0].login + '</div>' +
                 '<div class="ownerInfo">' +
-                '<p id="ownerAddressText">Adres email: <span id ="ownerEmail" >' + result[0].email + '</span> </p>' + '<br>' +
-                '<p id="ownerPhoneText">Telefon: <span id ="ownerPhone" >' + phoneNumber + '</span> </p>' +
+                '<p id="ownerAddressText">Email: <span id ="ownerEmail" >' + result[0].email + '</span> </p>' +
+                '<p id="ownerPhoneText">Tel: <span id ="ownerPhone" >' + phoneNumber + '</span> </p>' +
 
                 '</div>' +
                 '</div>';
@@ -262,7 +249,23 @@ function ownerUserList(){
             }
         });
 
-            $("#ownerOfferListProduct").dxList({
+        $("#ownerOfferListProduct").dxTileView({
+            dataSource: ownerListData,
+            direction: "horizontal",
+            height: 360,
+            baseItemHeight: 320,
+            baseItemWidth: 300,
+            itemMargin: 10,
+            showScrollbar: true,
+            itemTemplate: function (itemData, itemIndex, itemElement) {
+                var temp = cardTemplate(itemData);
+                itemElement.append(temp);
+            }
+
+        }).dxTileView("instance");
+    })
+
+           /* $("#ownerOfferListProduct").dxList({
                 dataSource: ownerListData,
                 scrollingEnabled: true,
                 noDataText: "Użytkownik nie ma aktywnych ofert",
@@ -282,26 +285,19 @@ function ownerUserList(){
                     return resultHTML;
                 }
             })
-    });
+    });*/
 
 
 }
 
-function openInTab(url) {
-    window.open(url, '_blank');
-
-}
-
-function offerLinkClick(id) {
-    openInTab('./product?productId='+id);
-}
 
 function transactionButton() {
 
     $("#tranPopup").dxPopup({
         title:"Wyślij propozycję oferty",
-        height: 700,
-        width: 1000
+        height: 650,
+        width: 800,
+        shadingColor: "#32323280",
     }).dxPopup("show");
 
     showTransactionForm();

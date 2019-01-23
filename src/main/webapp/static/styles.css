@@ -1,6 +1,6 @@
 
 .allBackground{
-    background-color: #fffef8;
+    background-color: #f3f4ee;
 }
 
 .allContent{
@@ -10,7 +10,7 @@
 
 }
 
-#headerContainer{
+.headerContainer{
     height: 20%;
     width: 100%;
     background-color: #222831;
@@ -28,6 +28,7 @@
     height: 10%;*/
     margin: 2% 20% 2% 20%;
     height: 60%;
+    background-color: #05A2FC;
 
 }
 

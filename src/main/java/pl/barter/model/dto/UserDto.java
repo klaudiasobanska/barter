@@ -36,5 +36,6 @@ public class UserDto {
 
     private byte[] img;
     private String imageType;
+    private String imageString;
 
 }

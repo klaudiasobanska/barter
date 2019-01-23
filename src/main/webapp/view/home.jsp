@@ -16,61 +16,73 @@
 
     <script src="https://cdn3.devexpress.com/jslib/18.2.3/js/dx.all.js"></script>
     <script src="/static/home.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css" />
+    <link rel="stylesheet" type="text/css" href="/static/stylesGreen.css" />
+    <link rel="stylesheet" type="text/css" href="/static/stylesLogin.css" />
+    <link rel="stylesheet" type="text/css" href="/static/stylesProductCard.css" />
 
 </head>
 <body class="dx-viewport allBackground allContent" >
 
-
-    <div class="userLoginContent">
-            <div id="loginButton"></div>
-            <div id="userMenuButton"></div>
-        </div>
-    <div id="headerContainer">
+    <div class="headerContainer">
+        <img id="logo" src="./static/logo.png"></img>
         <div class="searchContent">
             <div id="searchBar"></div>
-            <div id="searchButton"></div>
-            <div id="searchCategory"></div>
             <div id="searchCity"></div>
-
+            <div id="searchButton"></div>
         </div>
+           <%-- <div id="searchCategory"></div>
+            <div id="searchCity"></div>--%>
 
+        <div class="userLoginContent">
+            <div id="loginButton"></div>
+            <%-- <div id="userMenuButton"></div>--%>
+        </div>
+    </div>
+    <div class="categoryContainer">
+        <div id="categoryTab"></div>
     </div>
 
     <div class="latestContent">
-        <p id="latestText">Najnowsze oferty:</p>
+        <div id="latestTextContent">
+            <p id="latestText">Najnowsze oferty:</p>
+            <div id="latestButton"></div>
+        </div>
         <div id="latestProductView"></div>
-        <div id="latestButton"></div>
+
     </div>
 
 
-    <div class="randomContent">
-        <p id="randomText">Losowe oferty:</p>
-        <div id="randomProductView"></div>
-        <div id="randomButton"></div>
-    </div>
+        <div class="randomContent">
+            <div id="randomTextContent">
+                <p id="randomText">Losowe oferty:</p>
+                <div id="randomButton"></div>
+            </div>
+            <div id="randomProductView"></div>
 
-    <br>
-    <div class="bestUserContent">
-        <%--<p id="bestUserText">Najlepiej oceniani użytkownicy:</p>--%>
-        <div class="userContainer"></div>
-    </div>
-    <%--<div class="productContent">
-        <div class="productContainer"></div>
-    </div>--%>
+        </div>
+    <%--
+           <br>
+           <div class="bestUserContent">
+               &lt;%&ndash;<p id="bestUserText">Najlepiej oceniani użytkownicy:</p>&ndash;%&gt;
+               <div class="userContainer"></div>
+           </div>
+           &lt;%&ndash;<div class="productContent">
+               <div class="productContainer"></div>
+           </div>&ndash;%&gt;
 
-   <%-- <footer class="footer">
-        <hr>
-        <p id="footerText">Autorzy: Klaudia Sobańska Daniel Kobylski</p>
-    </footer>--%>
+          &lt;%&ndash; <footer class="footer">
+               <hr>
+               <p id="footerText">Autorzy: Klaudia Sobańska Daniel Kobylski</p>
+           </footer>&ndash;%&gt;
+           --%>
 
-    <div id="loginPopup">
-        <div id="loginText"></div>
-        <div id="loginForm"></div>
-        <div id="loginButtonForm"></div>
-        <div id="registrationHomeText"></div>
-        <a href="./registration" id="registrationLink"></a>
-    </div>
+           <div id="loginPopup">
+               <div id="loginText"></div>
+               <div id="loginForm"></div>
+               <div id="loginButtonForm"></div>
+               <div id="registrationHomeText"></div>
+               <a href="./registration" id="registrationLink"></a>
+           </div>
 
 </body>
 </html>

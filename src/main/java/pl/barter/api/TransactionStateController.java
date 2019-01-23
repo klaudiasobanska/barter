@@ -54,6 +54,8 @@ public class TransactionStateController extends AbstractController {
             }
         }*/
 
+
+
         return notDeleted;
 
     }

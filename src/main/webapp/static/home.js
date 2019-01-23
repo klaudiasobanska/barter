@@ -6,18 +6,37 @@ $(function () {
     $("#searchBar").dxTextBox({
         showClearButton: true,
         mode: "search",
-        onEnterKey: function (e){
+        onEnterKey: function (){
             searchButton();
         }
     });
 
-    $("#searchCategory").dxSelectBox({
-        showClearButton: true,
+    $("#categoryTab").dxList({
         dataSource: "./categories/all",
-        placeholder: "Kategoria",
-        searchEnabled: true,
         displayExpr: 'name',
-        valueExpr: 'id'
+        valueExpr: 'id',
+        itemTemplate: function(data){
+            var result = $("<div>").addClass("category");
+            var temp =
+                '<img id="iconC" src="./static/icon/'+data.icon+'">'+
+                '<div id="name">' + data.name + '</div>' ;
+
+            result.append(temp);
+            return result;
+        },
+        onItemClick: function (e) {
+            location.href = "./lists?param=" + "&categoryId="+( e.itemData.id? e.itemData.id:-1) + "&cityId="+(cityId?cityId:-1) +
+                "&voivoId="+(voivoId?voivoId:-1) + "&latest=" +false + "&random="+false;
+
+        }
+    });
+
+    $("#searchButton").dxButton({
+        text: "Szukaj",
+        onClick: function () {
+            searchButton();
+        }
+
     });
 
     var makeAsyncDataSourceCity = function(path){
@@ -64,21 +83,15 @@ $(function () {
 
 
 
-    $("#searchButton").dxButton({
-        text: "Wyszukaj",
-        onClick: function () {
-            searchButton();
-        }
 
-    });
 
     $("#latestProductView").dxTileView({
         dataSource: "./products/latest",
         direction: "horizontal",
-        height: 500,
-        baseItemHeight: 400,
+        height: 360,
+        baseItemHeight: 320,
         baseItemWidth: 300,
-        itemMargin: 40,
+        itemMargin: 10,
         showScrollbar:true,
         itemTemplate: function (itemData, itemIndex, itemElement){
             var temp = cardTemplate(itemData);
@@ -92,7 +105,7 @@ $(function () {
 
     $("#latestButton").dxButton({
         text:"Więcej",
-        icon: "chevronnext",
+        stylingMode: "text",
         onClick: function () {
             location.href = "./lists?param="+"" + "&categoryId="+-1 + "&cityId="+-1 + "&voivoId="+-1 + "&latest=" +true + "&random="+false;
         }
@@ -102,10 +115,10 @@ $(function () {
     $("#randomProductView").dxTileView({
         dataSource: "./products/random",
         direction: "horizontal",
-        height: 500,
-        baseItemHeight: 400,
+        height: 360,
+        baseItemHeight: 320,
         baseItemWidth: 300,
-        itemMargin: 40,
+        itemMargin: 10,
         showScrollbar:true,
         itemTemplate: function (itemData, itemIndex, itemElement){
             var temp = cardTemplate(itemData);
@@ -122,9 +135,7 @@ $(function () {
     $("#loginPopup").dxPopup({
         height:450,
         width: 400,
-        /*onHidden: function () {
-            $("#loginPopup").hide();
-        }*/
+        shadingColor: "#32323280"
     });
 
 
@@ -134,7 +145,7 @@ $(function () {
 
     $("#randomButton").dxButton({
         text:"Więcej",
-        icon: "chevronnext",
+        stylingMode: "text",
         onClick: function () {
             location.href = "./lists?param="+"" + "&categoryId="+-1 + "&cityId="+-1 + "&voivoId="+-1 + "&latest=" +false + "&random="+true;
         }
@@ -143,6 +154,8 @@ $(function () {
 
     $("#loginButton").dxButton({
         text:"Zaloguj się",
+        icon: 'user',
+        stylingMode: "text",
         onClick: function () {
             showLoginPopup();
             /*$("#loginPopup").show();
@@ -230,6 +243,7 @@ function loginForm() {
 
             $.post('./login', logForm, function (result) {
             }).done(function () {
+                location.href = './home';
                 $("#loginPopup").dxPopup("hide");
             })
         }
@@ -242,43 +256,22 @@ function loginForm() {
 function cardTemplate(itemData) {
 
     var result = $("<div>").addClass("productContent");
-    var temp =
-        '<div class="productContainer">' +
-        '<div>' +
-        '<div id="productCards ' + itemData.id + '" class = "productCards" onclick="productCardClick(' + itemData.id + ')"> ' +
-        '<div class="productNameContainer">'  +
-        '<div class="productName">' + itemData.name + '</div>' + '</div>'+
-        /*/!*'<p id="categoryText">Kategoria:</p>'*!/  '<div class="productCategory">' + itemData.categoryName + '</div>' +
-        '<div class="productLocal">' + itemData.cityName + '</div>' +*/
-        '</div>'+ '</div>' + '</div>';// + '</div>';
-
-
 
     $.get("./image/offer?offerId="+itemData.id, function (t){
         if (t[0] != undefined) {
 
-            $("<img id='homeImg'>").attr("src", t[0]).appendTo(result);
+            $('<img  id="homeImg ' + itemData.id + '" onclick="productCardClick(' + itemData.id +')" >').attr("src", t[0]).appendTo(result);
+
         }
 
     });
+    var temp = '<div class="productName ' + itemData.id + '" onclick="productCardClick(' + itemData.id + ')">' + itemData.name + '</div>'+
+        '<div class="overlay ' + itemData.id + '" onclick="productCardClick(' + itemData.id +')">'+'<img id="iconSearch" src="./static/icon/search.png">'+'</div>';
+
 
     result.append(temp);
 
     return result;
-
-
-    /*$.get("./image/offer?offerId="+itemData.id, function (t) {
-            if (t[0] != undefined) {
-                /!*$(".img").attr("src", t[0]);*!/
-                temp = temp.replace("###",t[0]);
-                console.log(temp);
-                //temp.replace()
-            }
-
-        }
-    )*/
-
-
 
 
 }
@@ -327,42 +320,12 @@ function productCardClick(productId) {
 function searchButton() {
 
     var param = $("#searchBar").dxTextBox('instance').option('value');
-    var categoryId = $("#searchCategory").dxSelectBox('instance').option('value');
 
 
-
-    location.href = "./lists?param="+param + "&categoryId="+(categoryId?categoryId:-1) + "&cityId="+(cityId?cityId:-1) +
+    location.href = "./lists?param="+param + "&categoryId="+(-1) + "&cityId="+(cityId?cityId:-1) +
         "&voivoId="+(voivoId?voivoId:-1) + "&latest=" +false + "&random="+false;
 
 }
 
-function productData() {
 
-    var productData = new DevExpress.data.DataSource({
-
-
-        load: function (loadOptions) {
-
-            var params = {
-                param: $("#searchBar").dxTextBox('instance').option('value'),
-                categoryId: -1
-            };
-            var d = $.Deferred();
-            $.getJSON('/products/search', {
-                    param: params.param ? params.param : "",
-                    categoryId: params.categoryId ? params.categoryId : -1,
-                    page: loadOptions.skip / loadOptions.take,
-                    size: loadOptions.take
-                }
-            ).done(function (result) {
-                d.resolve(result.content, {
-                    totalCount: result.totalElements
-                });
-            });
-            return d.promise();
-        }
-    });
-
-    return productData;
-}
 

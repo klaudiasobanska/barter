@@ -16,35 +16,44 @@
 
     <script src="https://cdn3.devexpress.com/jslib/18.2.3/js/dx.all.js"></script>
     <script src="/static/product.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css" />
+    <script src="/static/home.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/stylesGreenProduct.css" />
+    <link rel="stylesheet" type="text/css" href="/static/stylesLogin.css" />
+    <link rel="stylesheet" type="text/css" href="/static/stylesProductCard.css" />
+
 
 </head>
 <body class="dx-viewport allBackground" >
 
-
-<div class="userLoginContent">
-    <div id="loginButtonProduct"></div>
-    <div id="userMenuButtonProduct"></div>
-    <div id="homeButtonProduct"></div>
-</div>
-    <div class="header">
+    <div class="headerContainer">
+        <img clsss="logo" src="./static/logo.png"></img>
+        <div class="userLoginContent">
+            <div id="loginButton"></div>
+            <%--<div id="userMenuButton"></div>--%>
+            <div id="homeButton"></div>
+        </div>
 
     </div>
 
+
     <div class="pContent">
+
         <div class="productGallery">
-            <div data-bind="dxGallery:{dataSource: dSource}" <%--id="gallery"--%>></div>
+            <div id="gallery" data-bind="dxGallery: { dataSource: t }"></div>
         </div>
+
         <div class="oneProductContainer">
             <div id="productDesc"></div>
         </div>
     </div>
 
-
-    <div class="ownerContainer">
+    <div class="buttonOfferContainer">
         <div id="transactionButton"></div>
         <div id="addFavButton"></div>
-        <hr id="hr3">
+    </div>
+
+
+    <div class="ownerContainer">
         <img id='imgOwner'>
         <div class="ownerDesc"></div>
     </div>
@@ -66,6 +75,14 @@
     <div id="noProposalOfferToast"></div>
     <div id="addFavErrorToast"></div>
     <div id="transactionExistToast"></div>
+
+    <div id="loginPopup">
+        <div id="loginText"></div>
+        <div id="loginForm"></div>
+        <div id="loginButtonForm"></div>
+        <div id="registrationHomeText"></div>
+        <a href="./registration" id="registrationLink"></a>
+    </div>
 
 </body>
 </html>

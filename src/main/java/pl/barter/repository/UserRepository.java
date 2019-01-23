@@ -17,7 +17,8 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     List<User> findAll();
 
-    List<User> findByLogin(String login);
+    User findByLoginEquals(String login);
+    List<User>findByLogin(String login);
 
     @Query(value="select * from users  where (rating >= 4.8) order by random() limit 5", nativeQuery = true )
     List<User> findByBestRating1();

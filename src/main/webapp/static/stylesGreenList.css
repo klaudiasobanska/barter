@@ -1,0 +1,148 @@
+.allBackground{
+    background-color: #f3f4ee;
+}
+
+.allContent{
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.headerContainer{
+    height: 10%;
+    width: 100%;
+    background-color: #388E3C;
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.searchContent{
+    display: inline-block;
+    width: 100%;
+    margin: 0 2% 0 2%;
+    height: 45%;
+}
+
+.headerContainer> img{
+    margin-left: 10%;
+    height: 68%;
+
+}
+
+#searchBarL{
+    display: inline-block;
+    width: 40%;
+    height: 100%;
+}
+
+#searchCategoryL{
+    display: inline-block;
+    height: 100%;
+}
+
+#searchCityL{
+    display: inline-block;
+    height: 100%;
+}
+
+#searchButtonL{
+    font-family: "Open Sans";
+    font-size: large;
+    font-weight: bold;
+    color: white;
+    background-color: #388E3C;
+    border-color: white;
+    height: 100%;
+    float:right;
+    margin-right: 0;
+    margin-top: 0;
+    display: inline-block;
+    width: 15%;
+    transition: .3s ease-out;
+}
+
+#searchButtonL:hover{
+    background-color: #2e7632;
+    border-color: #2e7632;
+}
+
+
+.userLoginContent{
+    float: right;
+    margin: 0 10% 0 2%;
+    display: inline-block;
+    width: 30%;
+    height: 45%;
+}
+
+#loginButton{
+    font-family: "Open Sans";
+    font-size: large;
+    font-weight: bold;
+    color: white;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    transition: .3s ease-out;
+    display: inline-block;
+
+}
+
+#loginButton  .dx-icon{
+    display: inline-block;
+    color: white;
+    font-size: 25px;
+    padding-right: 30px;
+}
+
+#loginButton:hover{
+    background-color: #2e7632;
+    border-color: #2e7632;
+}
+
+#homeButton{
+    display: inline-block;
+    height: 100%;
+    width: 70px;
+    align-items: center;
+    justify-content: center;
+    transition: .3s ease-out;
+}
+#homeButton  .dx-icon{
+    float: left;
+    margin-top: 10%;
+    margin-left: 25%;
+    font-size: 25px;
+    color: white;
+}
+#homeButton:hover{
+    background-color: #2e7632;
+    border-color: #2e7632;
+}
+
+/*list search page*/
+.listContainer{
+    margin: 2% 15% 1% 15%;
+    background-color: white;
+    box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
+    padding: 1% 2% 1% 2%;
+
+}
+
+
+
+.ownerOfferProductContainer{
+    background-color: white;
+    box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
+    float: right;
+    margin-top: 1%;
+    margin-right: 9%;
+    width: 35%;
+    height: 60%;
+    margin-bottom: 5%;
+}
+
+#ownerOfferListProduct{
+    margin: 8% 2% 2% 2%;
+    height: 75%;
+}

@@ -62,11 +62,19 @@ public class UserController extends AbstractController {
 
 
     @GetMapping("/users/find/{id}")
-    public User getUserById(@PathVariable(value = "id") Long id) {
+    public UserDto getUserById(@PathVariable(value = "id") Long id) {
         User user = usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
 
-        return user;
+        String imageStringList = "";
+        if(user.getImage()!=null){
+            imageStringList = ("data:"+user.getImageType()+";base64,"+Base64Utils.encodeToString(user.getImage())) ;
+        }
+
+        UserDto userDto = userHelperService.mapToDto(user);
+        userDto.setImageString(imageStringList);
+
+        return userDto;
     }
 
     @PutMapping("/users/{id}")
@@ -105,7 +113,15 @@ public class UserController extends AbstractController {
     public UserDto getCurrentUser() {
         if (session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
-            return userHelperService.mapToDto(user);
+            String imageStringList = "";
+            if(user.getImage()!=null){
+                 imageStringList = ("data:"+user.getImageType()+";base64,"+Base64Utils.encodeToString(user.getImage())) ;
+            }
+
+            UserDto userDto = userHelperService.mapToDto(user);
+            userDto.setImageString(imageStringList);
+
+            return userDto;
         } else {
             return new UserDto();
         }

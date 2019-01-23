@@ -16,30 +16,40 @@
 
     <script src="https://cdn3.devexpress.com/jslib/18.2.3/js/dx.all.js"></script>
     <script src="/static/lists.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css" />
+    <script src="/static/home.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/stylesGreenList.css" />
+    <link rel="stylesheet" type="text/css" href="/static/stylesLogin.css" />
+    <link rel="stylesheet" type="text/css" href="/static/stylesProductCard.css" />
 
 </head>
 <body class="dx-viewport allBackground allContent" >
 
-
-    <div class="userLoginContent">
-        <div id="loginButton"></div>
-        <div id="userMenuButton"></div>
-        <div id="homeButton"></div>
-    </div>
-
-    <div id="headerContainer">
+    <div class="headerContainer">
+        <img clsss="logo" src="./static/logo.png"></img>
         <div class="searchContent">
-            <div id="searchBar"></div>
-            <div id="searchButton"></div>
-            <div id="searchCategory"></div>
-            <div id="searchCity"></div>
-
+            <div id="searchBarL"></div>
+            <div id="searchCategoryL"></div>
+            <div id="searchCityL"></div>
+            <div id="searchButtonL"></div>
         </div>
+        <div class="userLoginContent">
+            <div id="loginButton"></div>
+            <%--<div id="userMenuButton"></div>--%>
+            <div id="homeButton"></div>
+        </div>
+
     </div>
 
     <div class="listContainer">
         <div id="productList"></div>
+    </div>
+
+    <div id="loginPopup">
+        <div id="loginText"></div>
+        <div id="loginForm"></div>
+        <div id="loginButtonForm"></div>
+        <div id="registrationHomeText"></div>
+        <a href="./registration" id="registrationLink"></a>
     </div>
 
 </body>

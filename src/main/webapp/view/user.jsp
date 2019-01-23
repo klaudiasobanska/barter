@@ -14,16 +14,24 @@
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/18.2.3/css/dx.common.css" />
     <link rel="dx-theme" data-theme="generic.light" href="https://cdn3.devexpress.com/jslib/18.2.3/css/dx.light.css" />
 
-    <script src="https://cdn3.devexpress.com/jslib/18.2.3/js/dx.all.js"></script>
+    <script src="/static/dx.all.js"></script>
     <script src="/static/user.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css" />
+    <script src="/static/newTransaction.js"></script>
+    <script src="/static/sentTransaction.js"></script>
+    <script src="/static/activeNewTransaction.js"></script>
+    <script src="/static/activeSentTransaction.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/stylesUser.css" />
+
 
 </head>
 <body class="dx-viewport allBackground allContent" >
 
-    <div class="headerUser">
-        <div id="logoutButton"></div>
-        <div id="homeButtonUserContent"></div>
+    <div class="headerContainer">
+    <img id="logo" src="./static/logo.png"></img>
+        <div class="userLoginContent">
+            <div id="logoutButton"></div>
+        <div id="homeButton"></div>
+        </div>
     </div>
 
     <%--<div id="drawerMenuUserButton"></div>
@@ -101,26 +109,21 @@
                 </div>
                 <div id="rOfferForm"></div>
                 <div id="rOfferGrid"></div>
-                <div class="addAnotherOfferButton"></div>
-                <div class="anotherOfferPopup">
-                    <div class="anotherOfferContainer">
-                        <div class="anotherOfferList"></div>
+                <div id="addAnotherNewButton"></div>
+                <div id="anotherNewPopup">
+                    <div id="anotherNewContainer">
+                        <div id="anotherNewList"></div>
                     </div>
-                    <div class="acceptAnotherButton"></div>
-                    <div class="cancelAnotherButton"></div>
+                    <div id="acceptAnotherNewButton"></div>
+                    <div id="cancelAnotherNewButton"></div>
                 </div>
                 <div class="offerButtonContainer">
                     <div id="sendResponseNewTransactionButton"></div>
-                    <div class="acceptTransactionButton"></div>
-                    <div class="rejectTransactionButton"></div>
+                    <div id="acceptNewTransactionButton"></div>
+                    <div id="rejectNewTransactionButton"></div>
                     <%--<div id="cancelROfferButton"></div>--%>
                 </div>
-                <div class="lastDeletedToast"></div>
-                <div class="acceptOfferToast"></div>
-                <div class="deleteOfferToast"></div>
-                <div class="acceptSendOfferToast"></div>
-                <div class="acceptAllSendOfferToast"></div>
-                <div class="acceptEndOfferToast"></div>
+
             </div>
         </div>
 
@@ -150,25 +153,19 @@
                 </div>
                 <div id="aTransactionForm"></div>
                 <div id="aOfferGrid"></div>
-                <div class="addAnotherOfferButton"></div>
-                <div class="anotherOfferPopup">
-                    <div class="anotherOfferContainer">
-                        <div class="anotherOfferList"></div>
+                <div id="addActiveAnotherOfferButton"></div>
+                <div id="anotherActiveOfferPopup">
+                    <div id="anotherActiveOfferContainer">
+                        <div id="anotherActiveOfferList"></div>
                     </div>
-                    <div class="acceptAnotherButton"></div>
-                    <div class="cancelAnotherButton"></div>
+                    <div id="acceptActiveAnotherButton"></div>
+                    <div id="cancelActiveAnotherButton"></div>
                 </div>
                 <div class="offerButtonContainer">
                     <div id="sendResponseActiveTransactionButton"></div>
-                    <div class="acceptTransactionButton"></div>
-                    <div class="rejectTransactionButton"></div>
+                    <div id="acceptActiveTransactionButton"></div>
+                    <div id="rejectActiveTransactionButton"></div>
                 </div>
-                <div class="lastDeletedToast"></div>
-                <div class="acceptOfferToast"></div>
-                <div class="deleteOfferToast"></div>
-                <div class="acceptSendOfferToast"></div>
-                <div class="acceptAllSendOfferToast"></div>
-                <div class="acceptEndOfferToast"></div>
             </div>
         </div>
 
@@ -205,6 +202,12 @@
             </div>
         </div>
 
+        <div class="lastDeletedToast"></div>
+        <div class="acceptOfferToast"></div>
+        <div class="deleteOfferToast"></div>
+        <div class="acceptSendOfferToast"></div>
+        <div class="acceptAllSendOfferToast"></div>
+        <div class="acceptEndOfferToast"></div>
 
 
         <div id="noSelectedToast"></div>

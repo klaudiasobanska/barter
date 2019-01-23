@@ -120,6 +120,7 @@ public class TransactionController extends AbstractController{
                                                      @RequestBody TransactionState newState){
 
         List<TransactionState> transactionState = (List<TransactionState>) session.getAttribute("transactions");
+
         List<TransactionState> transactionStateDeleted = new ArrayList<>();
 
         for(TransactionState t: transactionState){

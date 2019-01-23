@@ -1,0 +1,374 @@
+.allBackground{
+    background-color: #f3f4ee;
+}
+
+.allContent{
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.headerContainer{
+    height: 10%;
+    width: 100%;
+    background-color: #388E3C;
+    display: flex;
+    align-items: center;
+    position: relative;
+   /* justify-content: center*/
+}
+
+.headerContainer> img{
+    position: absolute;
+    left: 22%;
+    height: 68%;
+}
+
+.userLoginContent{
+    position: absolute;
+    right: 22%;
+    display: inline-block;
+    height: 45%;
+
+}
+
+#loginButton{
+    font-family: "Open Sans";
+    font-size: large;
+    font-weight: bold;
+    color: white;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    transition: .3s ease-out;
+    display: inline-block;
+
+}
+
+#loginButton  .dx-icon{
+    display: inline-block;
+    color: white;
+    font-size: 25px;
+    padding-right: 30px;
+}
+
+#loginButton:hover{
+    background-color: #2e7632;
+    border-color: #2e7632;
+}
+
+#homeButton{
+    display: inline-block;
+    height: 100%;
+    width: 70px;
+    align-items: center;
+    justify-content: center;
+    transition: .3s ease-out;
+}
+#homeButton  .dx-icon{
+    float: left;
+    margin-top: 10%;
+    margin-left: 25%;
+    font-size: 25px;
+    color: white;
+}
+#homeButton:hover{
+    background-color: #2e7632;
+    border-color: #2e7632;
+}
+
+
+.pContent{
+    margin: 2% 0 2% 22%;
+    width: 35%;
+    background-color: white;
+    box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
+    /*padding: 2% 2% 2% 2%;*/
+    display: inline-block;
+    float: left;
+}
+
+.productGallery{
+    height: 550px;
+    /*box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);*/
+    background-position: center;
+    background-size: cover;
+    display: block;
+    overflow: hidden;
+}
+
+#gallery .dx-gallery-item-image {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+#productDesc{
+    height: 100%;
+    width: 100%;
+    display: inline-block;
+}
+
+#productName{
+    font-family: "Open Sans";
+    font-size: xx-large;
+    font-weight: bold;
+    margin: 2% 3% 2% 3%;
+    float: left;
+    width: 95%;
+
+}
+
+#productCategory {
+    font-family: "Open Sans";
+    float: left;
+    display: inline-block;
+    font-size: medium;
+}
+
+#categoryText{
+    font-family: "Open Sans";
+    padding-right: 1%;
+    float: left;
+    margin-left: 3%;
+    font-size: medium;
+    display: inline-block;
+}
+
+
+#productCity {
+    font-family: "Open Sans";
+    float: left;
+    display: inline-block;
+    font-size: medium;
+}
+
+#cityText{
+    font-family: "Open Sans";
+    padding-right: 1%;
+    float: left;
+    margin-left: 5%;
+    font-size: medium;
+    display: inline-block;
+}
+
+#productDate {
+    font-family: "Open Sans";
+    float: left;
+    font-size: medium;
+    display: inline-block;
+}
+
+#creationDateText{
+    font-family: "Open Sans";
+    padding-right: 1%;
+    margin-left: 6%;
+    float: left;
+    font-size: medium;
+    display: inline-block;
+
+}
+
+#productDescription{
+    font-family: "Open Sans";
+    color: #393e46;
+    font-size: medium;
+    margin: 3% 3% 5% 3%;
+    width: 95%;
+
+}
+
+.product > hr{
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#hr1{
+    margin: 16% 3% 0 3%;
+    border: 0;
+    height: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+
+}
+
+.buttonOfferContainer{
+    float: right;
+    width: 19%;
+    margin-top: 2%;
+    margin-right: 22%;
+    margin-bottom: 2%;
+
+}
+
+#transactionButton{
+    margin-top:0;
+    background: #388E3C;
+    font-family: "Open Sans";
+    font-size: large;
+    font-weight: bold;
+    color: white;
+    border-color: #388E3C;
+    transition: .3s ease-out ;
+    height: 50px;
+    width: 100%;
+
+
+}
+
+#transactionButton:hover {
+    background-color: #2e7632;
+    border-color: #2e7632;
+
+}
+
+#transactionButton  .dx-icon{
+    float: left;
+    color: white;
+    margin-top: 3%;
+    margin-left: 0;
+    font-size: 30px;
+
+}
+
+#addFavButton{
+    font-family: "Open Sans";
+    font-size: large;
+    font-weight: bold;
+    border-color: #388E3C;
+    transition: .3s ease-out ;
+    height: 50px;
+    width: 100%;
+    margin-top: 1%;
+
+}
+
+#addFavButton:hover {
+    background: #388E3C;
+    color: white;
+}
+
+#addFavButton  .dx-icon{
+    float: left;
+    color: #388E3C;
+    margin-top: 3%;
+    font-size: 30px;
+    transition: .3s ease-out
+}
+
+#addFavButton:hover  .dx-icon{
+    color: white;
+}
+
+
+div.ownerContainer{
+    float: right;
+    margin: 0 22% 2% 2%;
+    width: 19%;
+    background-color: white;
+    box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
+    display: inline-block;
+    text-align: center;
+
+}
+
+#imgOwner{
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    display: block;
+    margin-top:5%;
+    box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ownerInfo{
+    font-family: "Open Sans";
+    padding: 0 1% 3% 1%;
+    width: 95%;
+    margin: 1% auto 3% auto;
+}
+
+#textOwnerContainer > #ownerLogin{
+    font-size: xx-large;
+    font-weight: bold;
+
+}
+
+#ownerAddressText,#ownerPhoneText,#ownerEmail,#ownerPhone{
+    font-size: large;
+    padding-top: 3%;
+
+}
+
+.ownerOfferProductContainer{
+    margin: 0 22% 2% 22%;
+    background-color: white;
+    box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
+    width: 56%;
+    float: left;
+    display: inline-block;
+
+}
+
+
+#ownerLoginText{
+    background-image: linear-gradient(to right, #163918, #1e4d20, #266228, #2f7830, #388e38);
+    height: 50px;
+    position: relative;
+    font-family: "Open Sans";
+    width: 100%;
+}
+
+#anotherOfferListText{
+    color: white;
+    font-size: large;
+    margin-left: 2%;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+#ownerOfferListProduct{
+    margin-top: 2%;
+}
+
+#clientOfferGrid{
+    margin-top: 2%;
+}
+
+#sendTranButton{
+    font-family: "Open Sans";
+    position: absolute;
+    bottom: 5%;
+    right: 1%;
+    width: 100px;
+    border-color: #388E3C;
+    font-size: medium;
+    font-weight: bold;
+    transition: .3s ease-out ;
+}
+
+#sendTranButton:hover{
+    background-color: #bee5bf;
+}
+
+#cancelTranButton {
+    font-family: "Open Sans";
+    position: absolute;
+    bottom: 5%;
+    right: 15%;
+    width: 100px;
+    font-size: medium;
+    font-weight: bold;
+    border-color: #ff7b6a;
+    transition: .3s ease-out ;
+
+}
+
+#cancelTranButton:hover{
+    background-color: #ffbfb2;
+}
+
+

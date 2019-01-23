@@ -1,0 +1,295 @@
+
+.allBackground{
+    background-color: #f3f4ee;
+}
+
+.allContent{
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.headerContainer{
+    height: 10%;
+    width: 100%;
+    background-color: #388E3C;
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.searchContent{
+    display: inline-block;
+    width: 100%;
+    margin: 0 2% 0 2%;
+    height: 45%;
+}
+
+.headerContainer> img{
+    margin-left: 15%;
+    height: 68%;
+
+}
+
+#searchBar {
+    display: inline-block;
+    width: 58%;
+    height: 100%;
+}
+
+#searchBarL{
+    display: inline-block;
+    width: 40%;
+    height: 100%;
+}
+
+#searchCategory{
+    display: inline-block;
+    height: 100%;
+}
+
+#searchCity{
+    display: inline-block;
+    height: 100%;
+}
+
+#searchButton{
+    font-family: "Open Sans";
+    font-size: large;
+    font-weight: bold;
+    color: white;
+    background-color: #388E3C;
+    border-color: white;
+    height: 100%;
+    float:right;
+    margin-right: 0;
+    margin-top: 0;
+    display: inline-block;
+    width: 15%;
+    transition: .3s ease-out;
+}
+
+#searchButton:hover{
+    background-color: #2e7632;
+    border-color: #2e7632;
+}
+
+
+.userLoginContent{
+    float: right;
+    margin: 0 20% 0 0;
+    display: inline-block;
+
+}
+
+#loginButton{
+    font-family: "Open Sans";
+    font-size: large;
+    font-weight: bold;
+    color: white;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .3s ease-out;
+
+}
+
+#loginButton  .dx-icon{
+    display: inline-block;
+    color: white;
+    font-size: 25px;
+    padding-right: 30px;
+}
+
+#loginButton:hover{
+    background-color: #2e7632;
+    border-color: #2e7632;
+}
+
+.categoryContainer{
+    margin: 3% 20% 5% 20%;
+    background-color: white;
+    box-shadow: 0 1px 4px 0 rgba(57,62,70,.2);
+
+}
+
+#categoryTab{
+    font-size: large;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category{
+    display: inline-block;
+}
+.category > #name{
+    display: inline-block;
+    align-items: center;
+}
+
+.category > img{
+    display: inline-block;
+    vertical-align: middle;
+    padding-right: 10%;
+
+}
+
+.dx-list .dx-list-item {
+    width: 25%;
+    float: left;
+    border: 0px;
+    font-family: "Open Sans";
+}
+
+
+/*oferty home latest*/
+
+.latestContent{
+    box-shadow: 0 1px 4px 0 rgba(57,62,70,.2);
+    margin: 0 20% 0 20%;
+    background-color: white;
+}
+
+#latestTextContent{
+    background-image: linear-gradient(to right, #163918, #1e4d20, #266228, #2f7830, #388e38);
+    height: 50px;
+   /* margin: 0 20% 0 20%;*/
+    position: relative;
+
+}
+
+#latestText{
+    font-family: "Open Sans";
+    display: inline-block;
+    color: white;
+    font-size: large;
+    margin-left: 2%;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+#latestButton{
+    font-family: "Open Sans";
+    display: inline-block;
+    right: 0;
+    color: white;
+    font-size: large;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    height: 100%;
+}
+
+#latestButton:hover{
+    background-color: #2e7632;
+    border-color: #2e7632;
+}
+
+#latestProductView{
+    margin-top: 2%;
+}
+
+
+/*oferty home random*/
+
+.randomContent{
+    box-shadow: 0 1px 4px 0 rgba(57,62,70,.2);
+    margin: 5% 20% 5% 20%;
+    background-color: white;
+
+}
+
+#randomTextContent{
+    background-image: linear-gradient(to right, #163918, #1e4d20, #266228, #2f7830, #388e38);
+    height: 50px;
+    position: relative;
+
+}
+
+#randomText{
+    font-family: "Open Sans";
+    display: inline-block;
+    color: white;
+    font-size: large;
+    margin-left: 2%;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+#randomButton{
+    font-family: "Open Sans";
+    display: inline-block;
+    right: 0;
+    color: white;
+    font-size: large;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    height: 100%;
+}
+
+#randomButton:hover{
+    background-color: #2e7632;
+    border-color: #2e7632;
+}
+
+#randomProductView{
+    margin-top: 2%;
+}
+
+
+
+/*registration page*/
+
+.registrationContainer{
+    margin: 5% 35% 0 35%;
+    padding-top: 1%;
+    background-color: white;
+    box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
+    height: 60%;
+
+}
+
+#registrationContent{
+    text-align: center;
+}
+
+
+
+#registrationText{
+    font-family: "Open Sans";
+    font-size: x-large;
+    font-weight: bold;
+    margin: 4% 5% 5% 5%;
+    width: 90%;
+}
+
+#registrationForm{
+    font-family: "Open Sans";
+    margin: 10% 10% 0 10%;
+}
+
+#registrationButtonForm{
+    font-family: "Open Sans";
+    margin: 5% 10% 0 10%;
+    width: 80%;
+    background-color: #388E3C;
+    font-size: medium;
+    color: white;
+    border-color: #388E3C;
+    font-weight: bold;
+    transition: .3s ease-out;
+}
+
+#registrationButtonForm:hover{
+    background-color: #2e7632;
+    border-color: #2e7632;
+}
+

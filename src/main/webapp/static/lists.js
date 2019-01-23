@@ -23,15 +23,17 @@ $.get('./filters/current', function (data) {
 $(function () {
 
 
-    $("#loginButton").dxButton({
+    /*$("#loginButton").dxButton({
         text:"Zaloguj się",
+        stylingMode: "text",
+        icon: 'user',
         onClick: function () {
             showLoginPopup();
-            /*$("#loginPopup").show();
+            /!*$("#loginPopup").show();
             $("#loginPopup").dxPopup("show");
-            loginForm();*/
+            loginForm();*!/
         }
-    });
+    });*/
 
     $("#homeButton").dxButton({
         icon:"home",
@@ -50,7 +52,7 @@ $(function () {
         }
     });
 
-    $("#searchBar").dxTextBox({
+    $("#searchBarL").dxTextBox({
         showClearButton: true,
         mode: "search",
         value: param,
@@ -59,7 +61,7 @@ $(function () {
         }
     }).dxTextBox("instance");
 
-    $("#searchCategory").dxSelectBox({
+    $("#searchCategoryL").dxSelectBox({
         showClearButton: true,
         dataSource: "./categories/all",
         placeholder: "Kategoria",
@@ -89,9 +91,9 @@ $(function () {
         lData = voivoId
     }
 
-    console.log(lData)
 
-    $("#searchCity").dxDropDownBox({
+
+    $("#searchCityL").dxDropDownBox({
         value: lData,
         valueExpr: "id",
         displayExpr: "name",
@@ -135,8 +137,8 @@ $(function () {
     });
 
 
-    $("#searchButton").dxButton({
-        text: "Wyszukaj",
+    $("#searchButtonL").dxButton({
+        text: "Szukaj",
         onClick: function () {
             refresh();
         }
@@ -208,11 +210,11 @@ function getProductFilter() {
     var productData = new DevExpress.data.DataSource({
 
 
-        load: function (loadOptions) {
+        load: function () {
 
             var params = {
-                param: $("#searchBar").dxTextBox('instance').option('value'),
-                categoryId: $("#searchCategory").dxSelectBox('instance').option('value'),
+                param: $("#searchBarL").dxTextBox('instance').option('value'),
+                categoryId: $("#searchCategoryL").dxSelectBox('instance').option('value'),
                 cityId: cityId,
                 voivoId: voivoId,
             };
@@ -224,15 +226,12 @@ function getProductFilter() {
                     categoryId: params.categoryId ? params.categoryId : -1,
                     cityId: params.cityId ? params.cityId : -1,
                     voivoId: params.voivoId ? params.voivoId: -1,
-                    page: loadOptions.skip / loadOptions.take,
-                    size: loadOptions.take
+                    /*page: loadOptions.skip / loadOptions.take,
+                    size: loadOptions.take*/
                 }
             ).done(function (result) {
-                d.resolve(result.content, {
-                    totalCount: result.totalElements
+                d.resolve(result);
 
-
-                });
             });
             return d.promise();
         }
@@ -245,7 +244,22 @@ function getProductFilter() {
 
 function showList(data) {
 
-    $("#productList").dxList({
+    $("#productList").dxTileView({
+        dataSource: data,
+        direction: "vertical",
+        height: 750,
+        baseItemHeight: 320,
+        baseItemWidth: 300,
+        itemMargin: 10,
+        showScrollbar:true,
+        itemTemplate: function (itemData, itemIndex, itemElement){
+            var temp = cardTemplate(itemData);
+            itemElement.append(temp);
+        }
+
+    }).dxTileView("instance");
+
+    /*$("#productList").dxList({
         dataSource: data,
         height: "100%",
         nextButtonText: "Więcej",
@@ -275,26 +289,19 @@ function showList(data) {
             location.href = './product?productId='+data.itemData.id;
         }
     }).dxList("instance");
-
+*/
 }
 
 function refresh() {
 
 
-    if($("#searchCity").dxDropDownBox('instance').option('value')===null){
+    if($("#searchCityL").dxDropDownBox('instance').option('value')===null){
         cityId = null;
         voivoId = null;
     }
 
-    var ds = $("#productList").dxList("getDataSource");
+    var ds = $("#productList").dxTileView("getDataSource");
     ds.reload();
-
-
-
-
-
-
-
 
 
 }
