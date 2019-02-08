@@ -10,9 +10,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script>window.jQuery || document.write(decodeURIComponent('%3Cscript src="js/jquery.min.js"%3E%3C/script%3E'))</script>
 
-    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/18.2.3/css/dx.spa.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/18.2.3/css/dx.common.css" />
-    <link rel="dx-theme" data-theme="generic.light" href="https://cdn3.devexpress.com/jslib/18.2.3/css/dx.light.css" />
+    <link rel="stylesheet" type="text/css" href="/static/dx.spa.css" />
+    <link rel="stylesheet" type="text/css" href="/static/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="/static/generic.light.custom.css" />
 
     <script src="/static/dx.all.js"></script>
     <script src="/static/user.js"></script>
@@ -27,10 +27,12 @@
 <body class="dx-viewport allBackground allContent" >
 
     <div class="headerContainer">
-    <img id="logo" src="./static/logo.png"></img>
+    <img id="logo" src="./static/logo.png">
         <div class="userLoginContent">
             <div id="logoutButton"></div>
-        <div id="homeButton"></div>
+            <div id="drawerButton"></div>
+
+       <%-- <div id="homeButton"></div>--%>
         </div>
     </div>
 
@@ -38,10 +40,14 @@
     <div id="drawerMenuUser"></div>--%>
 
 
+    <div class="userDrawerContainer">
 
-    <div class="userMenuContainer">
-        <div id="userMenuList"></div>
-    </div>
+        <div id="userDrawer">
+
+            <div class="userMenuContainer">
+                <div id="userMenuList"></div>
+            </div>
+
     <div class="userInformationContainer">
         <div id="userDataContent">
             <div id="headerUserDataText"></div>
@@ -173,6 +179,9 @@
         <div id="userSentActiveTransactionContent">
             <div id="headerUserSentActiveText"></div>
             <div id="userSentActiveTransactionList"></div>
+            <div id="popoverNoActiveSentShow">
+                <p>Ta oferta jest już nieaktywna i nie może być brana pod uwagę w tej transakcji. Usuń ją z proponowanych</p>
+            </div>
             <div id="activeSentTransactionPopup">
                 <div id="aSentActiveTransactionForm"></div>
                 <div id="aSentActiveOfferGrid"></div>
@@ -217,6 +226,8 @@
         <div id="restoreUserProductToast"></div>
         <div id="updateUserDataToast"></div>
         <div id="noProposalOfferToast"></div>
+    </div>
+        </div>
     </div>
 
 

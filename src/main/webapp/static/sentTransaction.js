@@ -5,13 +5,28 @@ function sendOfferSettings(){
 
     $("#sendOfferPopup").dxPopup({
         title:"Propozycja transakcji",
-        height: 500,
-        width: 900,
+        maxWidth:800,
         shadingColor: "#32323280",
         onHiding: function () {
             $("#userSendOfferList").dxList("instance").option("selectedItems", []);
         }
     }).dxPopup("instance");
+
+    if (matchMedia) {
+        var ms = window.matchMedia("(max-width: 768px)");
+        ms.addListener(mediaSmallChange);
+        mediaSmallChange(ms);
+    }
+
+
+    function mediaSmallChange(ms) {
+        if (ms.matches) {
+            $("#sendOfferPopup").dxPopup("instance").option("height",600);
+        }else{
+            $("#sendOfferPopup").dxPopup("instance").option("height",500);
+
+        }
+    }
 
     showUserSendOfferList();
 
@@ -24,7 +39,7 @@ function showUserSendOfferList() {
             dataSource: data,
             height: "100%",
             selectionMode: "sinle",
-            scrollingEnabled: false,
+            scrollingEnabled: true,
             noDataText: "Brak nowo wysłanych propozycji wymiany",
             itemTemplate: function(e) {
                 var result = $("<div>").addClass("offer");
@@ -151,10 +166,13 @@ function  showSendProposedOffers(transactionId) {
         selection: {
             mode: "single"
         },
+        paging:{
+            pageSize: 4
+        },
         showBorders: true,
         hoverStateEnabled: true,
         scrolling: {
-            "showScrollbar": "never"
+            "showScrollbar": "onHover"
         },
         columns: [{
             caption: "Nazwa oferty",
@@ -184,5 +202,21 @@ function  showSendProposedOffers(transactionId) {
             }
         }]
     });
+
+    if (matchMedia) {
+        var ms = window.matchMedia("(max-width: 768px)");
+        ms.addListener(mediaSmallChangeGrid);
+        mediaSmallChangeGrid(ms);
+    }
+
+
+    function mediaSmallChangeGrid(ms) {
+        if (ms.matches) {
+            $("#sOfferGrid").dxDataGrid("instance").option("page.pageSize",2);
+        }else{
+            $("#sOfferGrid").dxDataGrid("instance").option("page.pageSize",4);
+
+        }
+    }
 
 }

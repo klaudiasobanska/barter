@@ -7,10 +7,28 @@ function receiveOfferSettings() {
     $("#ReceiveOfferPopup").dxPopup({
         title:"Propozycja transakcji",
         shadingColor: "#32323280",
+        maxWidth:1200,
         onHiding: function () {
             $("#userReceiveOfferList").dxList("instance").option("selectedItems", []);
         }
     }).dxPopup("instance");
+
+    if (matchMedia) {
+        var ms = window.matchMedia("(max-width: 768px)");
+        ms.addListener(mediaSmallChange);
+        mediaSmallChange(ms);
+    }
+
+    function mediaSmallChange(ms){
+        if(ms.matches){
+            $("#ReceiveOfferPopup").dxPopup("instance").option("height",820);
+        }else{
+            $("#ReceiveOfferPopup").dxPopup("instance").option("height",700);
+        }
+    }
+
+
+
 
     showUserReceiveOfferList();
 
@@ -23,7 +41,7 @@ function showUserReceiveOfferList() {
             dataSource: data,
             height: "100%",
             selectionMode: "sinle",
-            scrollingEnabled: false,
+            scrollingEnabled: true,
             noDataText: "Brak nowych propozycji wymiany",
             itemTemplate: function(e) {
                 var result = $("<div>").addClass("offer");
@@ -49,6 +67,8 @@ function showReceiveOfferPopup(transaction) {
 
 
     $("#ReceiveOfferPopup").dxPopup("show");
+
+    $("#anotherNewPopup").hide();
 
     sendAnswerForm(transaction);
 
@@ -132,9 +152,11 @@ function sendAnswerForm(transaction) {
             $("#anotherNewPopup").dxPopup({
                 title: "Pozostałe oferty użytkownika " + transaction.clientLogin,
                 shadingColor: "#32323280",
-                height: 650,
-                width: 800
+                maxWidth:800
+                /*height: 650,
+                width: 800*/
             }).dxPopup("show");
+
 
 
             $.ajax({
@@ -401,7 +423,7 @@ function showProposedOffers(transactionId) {
         showBorders: true,
         hoverStateEnabled: true,
         scrolling: {
-            "showScrollbar": "never"
+            showScrollbar: "onHover"
         },
         columns: [{
             caption: "Nazwa oferty",
@@ -421,14 +443,13 @@ function showProposedOffers(transactionId) {
             cellTemplate: function (container, options) {
                 $('<a id="showLink"/>').addClass('dx-link')
                     .text("Pokaż ofertę")
-                    .on('dxhoverstart', function () {
+                    .on('dxhoverstart', function (e) {
                         if(options.data.offerActive === false) {
-                            $("#popoverActiveOfferShow").show();
                             $("#popoverActiveOfferShow").dxPopover({
-                                target: "#showLink",
+                                target: e.target,
                                 showEvent: 'dxhoverstart',
                                 hideEvent: 'dxhoverend'
-                            }).dxPopover("instance");
+                            }).dxPopover("show");
                         }
                     })
                     .on('dxclick', function () {
@@ -444,14 +465,13 @@ function showProposedOffers(transactionId) {
             cellTemplate: function (container, options) {
                 $('<a id="acceptLink"/>').addClass('dx-link')
                     .text("Akceptuj")
-                    .on('dxhoverstart', function () {
+                    .on('dxhoverstart', function (e) {
                         if(options.data.offerActive === false) {
-                            $("#popoverActiveOffer").show();
                             $("#popoverActiveOffer").dxPopover({
-                                target: "#acceptLink",
+                                target: e.targer,
                                 showEvent: 'dxhoverstart',
                                 hideEvent: 'dxhoverend'
-                            }).dxPopover("instance");
+                            }).dxPopover("show");
                         }
                     })
                     .on('dxclick', function () {

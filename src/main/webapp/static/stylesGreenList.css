@@ -52,12 +52,12 @@
     color: white;
     background-color: #388E3C;
     border-color: white;
-    height: 100%;
+    /*height: 100%;*/
     float:right;
     margin-right: 0;
     margin-top: 0;
     display: inline-block;
-    width: 15%;
+    /*width: 15%;*/
     transition: .3s ease-out;
 }
 
@@ -69,9 +69,8 @@
 
 .userLoginContent{
     float: right;
-    margin: 0 10% 0 2%;
+    margin: 0 15% 0 2%;
     display: inline-block;
-    width: 30%;
     height: 45%;
 }
 
@@ -145,4 +144,290 @@
 #ownerOfferListProduct{
     margin: 8% 2% 2% 2%;
     height: 75%;
+}
+
+
+@media (max-width: 380px) and (max-height: 700px) {
+
+    /*.headerContainer> img{
+        display: inline-block;
+        margin-left: 5%;
+        height: 20%;
+        width: 20%;
+        margin-top: 2%;
+        background-color: #05A2FC;
+
+    }
+
+    .searchContent{
+        margin: 2% 5% 2% 5%;
+        height: 70%;
+        float: left;
+        width: 90%;
+    }
+
+    #searchBarL {
+        display: inline-block;
+        width: 100%;
+        height: 22%;
+    }
+
+    #searchCategoryL{
+        display: inline-block;
+        height: 22%;
+        width: 100%;
+        margin-top: 1%;
+    }
+
+    #searchCityL{
+        display: inline-block;
+        height: 22%;
+        width: 100%;
+        margin-top: 1%;
+    }
+
+    #searchButtonL{
+        height: 22%;
+        width: 45%;
+        margin-top: 1%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        float: none;
+    }
+
+    .userLoginContent{
+        display: inline-block;
+        margin: -80% 5% 0 0;
+        height: 10%;
+        float: right;
+    }
+
+    #loginButton  .dx-icon{
+        padding-right: 25px;
+    }*/
+
+
+}
+
+@media (min-width: 381px) and (max-width: 768px){
+
+    .headerContainer{
+        min-height: 20%;
+        display: flex;
+        align-items: normal;
+        justify-content: normal;
+    }
+
+    .headerContainer> img{
+        margin-left: 5%;
+        height: 50%;
+        margin-top: 2%;
+
+    }
+
+    .searchContent{
+        margin: 2% 2% 2% 2%;
+        height: 85%;
+    }
+
+    #searchBarL {
+        display: inline-block;
+        width: 100%;
+        height: 30%;
+    }
+
+    #searchCategoryL{
+        display: inline-block;
+        height: 30%;
+        width: 49%;
+        margin-top: 1%;
+    }
+
+    #searchCityL{
+        display: inline-block;
+        height: 30%;
+        width: 49%;
+        float: right;
+        margin-top: 1%;
+    }
+
+    #searchButtonL{
+        margin-top: 1%;
+        height: 30%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        float: none;
+        width: 55%;
+
+    }
+
+    .userLoginContent{
+        margin: 2% 5% 0 0;
+        height: 30%;
+    }
+
+    #loginButton  .dx-icon{
+        padding-right: 25px;
+    }
+
+
+    .listContainer {
+        margin: 2% 5% 1% 5%;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px){
+
+    .headerContainer> img{
+        margin-left: 5%;
+
+    }
+    .userLoginContent{
+        margin: 0 5% 0 0;
+    }
+
+    #loginButton  .dx-icon{
+        padding-right: 25px;
+    }
+
+    .searchContent{
+        display: flex;
+        flex-flow: row;
+
+    }
+
+    #searchButtonL{
+        max-width: 30%;
+        min-width: 18%;
+    }
+
+    #searchBarL {
+        flex-grow : 1;
+        margin-right: 1%;
+    }
+
+    #searchCityL{
+        max-width: 30%;
+        margin-right: 1%;
+    }
+
+    #searchCategoryL{
+        max-width: 30%;
+        margin-right: 1%;
+    }
+
+    .listContainer {
+        margin: 2% 5% 1% 5%;
+    }
+
+}
+
+@media (min-width: 993px) and (max-width: 1200px){
+
+    .headerContainer> img{
+        margin-left: 5%;
+
+    }
+    .userLoginContent{
+        margin: 0 5% 0 0;
+    }
+
+    .searchContent{
+        margin-right: 5%;
+        display: flex;
+        flex-flow: row;
+
+    }
+
+    #searchBarL {
+        flex-grow : 1;
+        margin-right: 1%;
+    }
+
+    #searchCityL{
+        max-width: 30%;
+        margin-right: 1%;
+    }
+
+    #searchCategoryL{
+        max-width: 30%;
+        margin-right: 1%;
+    }
+
+    #searchButtonL{
+        max-width: 30%;
+        min-width: 17%;
+    }
+
+    .listContainer {
+        margin: 2% 5% 1% 5%;
+    }
+}
+
+@media (min-width: 1201px) and (max-width: 1500px){
+
+
+    /*.userLoginContent{
+        margin: 0 5% 0 0;
+    }*/
+
+    .searchContent{
+        margin-right: 3%;
+        display: flex;
+        flex-flow: row;
+
+    }
+
+    #searchBarL {
+        flex-grow : 1;
+        margin-right: 1%;
+    }
+
+    #searchCityL{
+        max-width: 30%;
+        margin-right: 1%;
+    }
+
+    #searchCategoryL{
+        max-width: 30%;
+        margin-right: 1%;
+    }
+
+    #searchButtonL{
+        min-width: 20%;
+        max-width: 30%;
+    }
+}
+
+@media (min-width: 1501px){
+
+
+    .searchContent{
+        display: flex;
+        flex-flow: row;
+
+    }
+
+    #searchBarL {
+        flex-grow : 1;
+        margin-right: 1%;
+    }
+
+    #searchCityL{
+        max-width: 30%;
+        margin-right: 1%;
+    }
+
+    #searchCategoryL{
+        max-width: 30%;
+        margin-right: 1%;
+    }
+
+    #searchButtonL{
+        min-width: 15%;
+        max-width: 30%;
+    }
+
 }

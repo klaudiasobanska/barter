@@ -276,12 +276,12 @@ public class TransactionController extends AbstractController{
         List<Transaction> transactionListWait = new ArrayList<>();
 
         for (Transaction t: transactionList){
-            if(16 == t.getOwnerId()){
+            if(15 == t.getOwnerId()){
                 if(t.getTransactionStateMaxStep().get(0).getSideFlag()== 1){
                     transactionListWait.add(t);
                 }
             }
-            if(16==t.getClientId()){
+            if(15==t.getClientId()){
                 if(t.getTransactionStateMaxStep().get(0).getSideFlag() == 0){
                     transactionListWait.add(t);
                 }

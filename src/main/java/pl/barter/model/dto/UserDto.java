@@ -3,8 +3,11 @@ package pl.barter.model.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
+import pl.barter.model.Product;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -37,5 +40,6 @@ public class UserDto {
     private byte[] img;
     private String imageType;
     private String imageString;
+    private Set<Product> fav;
 
 }

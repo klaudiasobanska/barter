@@ -55,7 +55,39 @@
     border-color: #2e7632;
 }
 
-#homeButton{
+#drawerButton{
+    display: inline-block;
+    height: 100%;
+    width: 40px;
+    align-items: center;
+    justify-content: center;
+    transition: .3s ease-out;
+    color: white;
+}
+
+#drawerButton  .dx-icon{
+    color: white;
+}
+
+#drawerButton:hover{
+    background-color: #2e7632;
+    border-color: #2e7632;
+}
+
+.panel-list .dx-list-group-header{
+    color: #fff;
+    border-top: 1px solid rgba(221, 221, 221, .2);
+    padding-left: 5%;
+}
+
+.panel-list .dx-list-item {
+    padding-left: 5%;
+    color: #fff;
+    border-top: 1px solid rgba(221, 221, 221, .2);
+}
+
+
+/*#homeButton{
     display: inline-block;
     height: 100%;
     width: 70px;
@@ -73,9 +105,11 @@
 #homeButton:hover{
     background-color: #2e7632;
     border-color: #2e7632;
-}
+}*/
 
 /*content*/
+
+
 
 .userMenuContainer{
     font-family: "Open Sans";
@@ -89,12 +123,13 @@
 
 .userInformationContainer{
     font-family: "Open Sans";
-    float: right;
+    /*float: right;*/
     display: inline-block;
     margin: 2% 25% 3% 0;
     width: 34%;
     box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
     background-color: white;
+
 }
 
 #userMenuList{
@@ -102,6 +137,38 @@
     width: 95%;
     margin: 3% 3% 3% 3%;
     font-size: large;
+
+}
+
+/*
+#userMenuList .dx-list-item{
+
+    display: inline-block;
+}
+*/
+
+.cList{
+    display: inline-block;
+    align-items: center;
+    float: right;
+    width: 10%;
+
+}
+
+#menuListText{
+    display: inline-block;
+    align-items: center;
+    float: left;
+}
+
+#newC, #activeC{
+    background-color: #388E3C;
+    border-radius: 50%;
+    color: white;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    font-family: "Open Sans";
 }
 
 #userDataContent,#userPasswordContent {
@@ -137,7 +204,6 @@
     box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
     margin: 7% 10% 3% 0;
     display: inline-block;
-    float: right;
 }
 
 #userImgUploaderContainer{
@@ -275,7 +341,7 @@
 
 }
 
-#cancelAddButton:hover, .cancelAnotherButton:hover{
+#cancelAddButton:hover, #cancelAnotherNewButton:hover, #cancelActiveAnotherButton:hover{
     background-color: #ffbfb2;
 }
 
@@ -338,20 +404,21 @@
 
 
 
-.addAnotherOfferButton, #addAnotherNewButton{
+#addAnotherNewButton, #addActiveAnotherOfferButton{
     transition: .3s ease-out ;
     width: 300px;
     font-size: large;
     height: 40px;
     border-color: #388E3C;
+    margin-left: 0;
 }
 
-.addAnotherOfferButton:hover, .acceptAnotherButton:hover, #addAnotherNewButton:hover{
+#acceptAnotherNewButton:hover, #addAnotherNewButton:hover, #addActiveAnotherOfferButton:hover, #acceptActiveAnotherButton:hover{
     background-color: #bee5bf;
     border-color: #bee5bf
 }
 
-.addAnotherOfferButton:focus, #addAnotherNewButton:focus{
+ #addAnotherNewButton:focus, #addActiveAnotherOfferButton:focus{
     background-color: #bee5bf;
 }
 
@@ -380,7 +447,7 @@
     display: inline-block;
 }
 
-.acceptAnotherButton{
+#acceptAnotherNewButton, #acceptActiveAnotherButton{
     width: 150px;
     height: 40px;
     position: absolute;
@@ -393,7 +460,7 @@
 
 }
 
-.cancelAnotherButton{
+#cancelAnotherNewButton, #cancelActiveAnotherButton{
     position: absolute;
     bottom: 5%;
     right: 21%;
@@ -428,10 +495,10 @@
 }
 
 
-.rejectTransactionButton, #cancelSendOfferButton, #rejectNewTransactionButton{
+ #cancelSendOfferButton, #rejectNewTransactionButton, #rejectActiveTransactionButton{
     position: absolute;
     bottom: 5%;
-    right: 1%;
+    right: 5%;
     width: 200px;
     height: 40px;
     font-size: medium;
@@ -440,7 +507,7 @@
     transition: .3s ease-out ;
 }
 
-.acceptTransactionButton, #acceptNewTransactionButton{
+#acceptNewTransactionButton, #acceptActiveTransactionButton{
     width: 200px;
     height: 40px;
     position: absolute;
@@ -466,12 +533,12 @@
 }
 
 
-.rejectTransactionButton:hover, #cancelSendOfferButton:hover, #rejectNewTransactionButton:hover{
+ #cancelSendOfferButton:hover, #rejectNewTransactionButton:hover, #rejectActiveTransactionButton:hover{
     background-color: #ffbfb2;
 
 }
 
-.acceptTransactionButton:hover, #acceptNewTransactionButton:hover{
+ #acceptNewTransactionButton:hover, #acceptActiveTransactionButton:hover{
     background-color: #bee5bf;
 
 }
@@ -489,7 +556,435 @@
     display: inline-block;
 }
 
+.userOfferListContainer, .userFavListContainer, #anotherActiveOfferList, #anotherNewList, #userDeletedOfferList{
+    float:left;
+    clear: left;
+    margin-bottom: 5%;
+}
 
+.userOffersButtonMenu, .userFavButtonMenu, .userDeletedOffersButtonMenu{
+    width: 100%;
+    margin-top: 1%;
+    margin-bottom: 5%;
+    float:left;
+}
+
+
+
+@media (min-width: 381px) and (max-width: 768px){
+
+
+    .headerContainer> img{
+        left: 5%;
+    }
+
+    .userLoginContent{
+        right: 5%;
+    }
+
+    #logoutButton  .dx-icon{
+        padding-right: 25px;
+    }
+
+    .userDrawerContainer{
+        font-family: "Open Sans";
+        margin: 0 0 0 0;
+        float: left;
+        display: table;
+        width: 100%;
+
+    }
+
+
+    .userInformationContainer{
+        margin: 3% 5% 10% 5%;
+        float: none;
+        display: block;
+        width: auto;
+
+
+    }
+
+    #userDataContent{
+        display: inline-block;
+    }
+
+    #userPasswordContent, #userOffersContent, #userFavContent, #userReceivedContent,
+    #userSendTransactionContent, #userActiveTransactionContent, #userSentActiveTransactionContent, #userEndTransactionContent,
+    #userDeleteContent{
+        display: inline-block;
+        width: 90%;
+    }
+
+    .panel-list {
+        min-height: 970px;
+    }
+
+    #imgUser{
+        width: 150px;
+        height: 150px;
+        float: none;
+        display: table;
+        margin: 5% auto;
+        margin-bottom: 0;
+
+    }
+
+    #userImgUploaderContainer{
+        margin: 0 0 2% 0;
+        width: 70%;
+
+    }
+    #userDataForm {
+       text-align: left;
+    }
+
+    .myClass {
+        width: 130px;
+    }
+
+    .offersUser, .offerFav, .offerAnotherList{
+        display: block;
+        align-items: normal;
+
+    }
+
+    #addOfferButton, #editOfferButton{
+        margin-bottom: 1%;
+    }
+
+    .offersUser> #name{
+        font-size: x-large;
+        margin-left: 2%;
+        float: left;
+        width: 60%;
+        text-align: left;
+    }
+
+    .offerFav> #name{
+        font-size: x-large;
+        margin-left: 2%;
+        float: left;
+        width: 60%;
+        text-align: left;
+    }
+
+    .offerAnotherList > #name{
+        font-size: x-large;
+        margin-left: 2%;
+        float: left;
+        width: 60%;
+        text-align: left;
+    }
+
+    .offersDelete> #name{
+        font-size: x-large;
+        margin-left: 2%;
+        float: left;
+        width: 60%;
+        text-align: left;
+    }
+
+    .offersUser > #offerUserButtonContainer{
+        position: static;
+        margin-left: 2%;
+        margin-top: 2%;
+        float: left;
+    }
+
+    .offerFav >  #offerUserButtonContainer{
+        position: static;
+        margin-left: 2%;
+        margin-top: 2%;
+        float: left;
+    }
+
+    .offerAnotherList > #AnotherOfferDetailsButtonContainer{
+        position: static;
+        margin-left: 2%;
+        margin-top: 2%;
+        float: left;
+
+    }
+
+
+    #showOfferButton{
+        float: left;
+    }
+
+    #cancelAddButton{
+        right: 110px;
+    }
+
+    #addAnotherNewButton, #addActiveAnotherOfferButton{
+        width: 200px;
+        margin-left: 0;
+        margin-bottom: 10%;
+    }
+
+    #acceptAnotherNewButton, #acceptActiveAnotherButton{
+        width: 120px;
+    }
+
+
+    #cancelAnotherNewButton, #cancelActiveAnotherButton{
+        width: 120px;
+        right: 130px;
+    }
+
+
+
+    #acceptNewTransactionButton, #acceptActiveTransactionButton{
+        bottom: 8%;
+        right: 5%;
+    }
+
+    #sendResponseNewTransactionButton, #sendResponseActiveTransactionButton{
+        bottom: 14%;
+        right: 5%;
+     }
+
+    #rejectNewTransactionButton, #rejectActiveTransactionButton{
+        bottom: 2%;
+        right: 5%;
+    }
+
+    #cancelSendOfferButton{
+        right: 3% ;
+    }
+
+}
+
+@media (min-width: 769px) and (max-width: 1200px){
+    .headerContainer> img{
+        left: 5%;
+    }
+
+    .userLoginContent{
+        right: 5%;
+    }
+
+    .userMenuContainer{
+        margin-left:5% ;
+        width: 30%;
+        margin-bottom: 10%;
+        height: 700px;
+    }
+
+    .userInformationContainer{
+        width: 59%;
+        margin-right: 5%;
+        margin-bottom: 10%;
+        height: 700px;
+    }
+
+    #userImgUploaderContainer{
+        max-width: 45%;
+    }
+
+    #imgUser{
+        margin-right: 2%;
+    }
+
+    .offersUser, .offerFav, .offerAnotherList{
+        display: block;
+        align-items: normal;
+
+    }
+
+    #addOfferButton, #editOfferButton{
+        margin-bottom: 1%;
+    }
+
+    .offersUser> #name{
+        font-size: x-large;
+        margin-left: 2%;
+        float: left;
+        width: 60%;
+        text-align: left;
+    }
+
+    .offerFav> #name{
+        font-size: x-large;
+        margin-left: 2%;
+        float: left;
+        width: 60%;
+        text-align: left;
+    }
+
+    .offerAnotherList > #name{
+        font-size: x-large;
+        margin-left: 2%;
+        float: left;
+        width: 60%;
+        text-align: left;
+    }
+
+    .offersDelete> #name{
+        font-size: x-large;
+        margin-left: 2%;
+        float: left;
+        width: 60%;
+        text-align: left;
+    }
+
+    .offersUser > #offerUserButtonContainer{
+        position: static;
+        margin-left: 2%;
+        margin-top: 2%;
+        float: left;
+    }
+
+    .offerFav >  #offerUserButtonContainer{
+        position: static;
+        margin-left: 2%;
+        margin-top: 2%;
+        float: left;
+    }
+
+    .offerAnotherList > #AnotherOfferDetailsButtonContainer{
+        position: static;
+        margin-left: 2%;
+        margin-top: 2%;
+        float: left;
+
+    }
+
+    #cancelAddButton{
+        right: 110px;
+    }
+
+    #addAnotherNewButton, #addActiveAnotherOfferButton{
+        width: 200px;
+        margin-left: 0;
+        margin-bottom: 10%;
+    }
+
+    #acceptAnotherNewButton, #acceptActiveAnotherButton{
+        width: 120px;
+    }
+
+
+    #cancelAnotherNewButton, #cancelActiveAnotherButton{
+        width: 120px;
+        right: 130px;
+    }
+
+    #acceptNewTransactionButton, #acceptActiveTransactionButton{
+        right: 211px;
+    }
+
+    #sendResponseNewTransactionButton, #sendResponseActiveTransactionButton{
+        right: 413px;
+    }
+
+    #rejectNewTransactionButton, #rejectActiveTransactionButton{
+        right: 1%;
+    }
+
+    .userDeletedOfferListContainer{
+        height: 510px;
+    }
+    #cancelSendOfferButton{
+        right: 3% ;
+    }
+}
+
+@media (min-width: 1201px) and (max-width: 1600px){
+
+    .headerContainer> img{
+        left: 15%;
+    }
+
+    .userLoginContent{
+        right: 15%;
+    }
+
+    .userMenuContainer{
+        margin-left:15% ;
+        width: 20%;
+        margin-bottom: 10%;
+        height: 700px;
+    }
+
+    .userInformationContainer{
+        width: 49%;
+        margin-right: 15%;
+        margin-bottom: 10%;
+        height: 700px;
+    }
+
+    #imgUser{
+        margin-top: 4%;
+    }
+    #userImgUploaderContainer{
+        max-width: 40%;
+    }
+
+    #addAnotherNewButton, #addActiveAnotherOfferButton{
+        width: 200px;
+        margin-left: 0;
+        margin-bottom: 10%;
+    }
+
+
+
+    #cancelAnotherNewButton, #cancelActiveAnotherButton{
+        right: 170px;
+    }
+
+    #acceptNewTransactionButton, #acceptActiveTransactionButton{
+        right: 226px;
+    }
+
+    #sendResponseNewTransactionButton, #sendResponseActiveTransactionButton{
+        right: 430px;
+    }
+
+    #rejectNewTransactionButton, #rejectActiveTransactionButton{
+        right: 2%;
+    }
+
+    .userDeletedOfferListContainer{
+        height: 510px;
+    }
+
+    #cancelSendOfferButton{
+        right: 2% ;
+    }
+
+}
+
+@media (min-width: 1601px){
+
+    #userImgUploaderContainer{
+        max-width: 40%;
+    }
+
+    .userMenuContainer{
+        height: 700px;
+    }
+
+    .userInformationContainer{
+        height: 700px;
+    }
+
+    #acceptNewTransactionButton, #acceptActiveTransactionButton{
+        right: 230px;
+    }
+
+    #sendResponseNewTransactionButton, #sendResponseActiveTransactionButton{
+        right: 435px;
+    }
+
+    #rejectNewTransactionButton, #rejectActiveTransactionButton{
+        right: 2%;
+    }
+
+    .userDeletedOfferListContainer{
+        height: 510px;
+    }
+}
 
 
 /*-------------------------*/

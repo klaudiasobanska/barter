@@ -1,17 +1,24 @@
 var cityId, voivoId, cityTreeId;
 $(function () {
 
-
-
-    $("#searchBar").dxTextBox({
-        showClearButton: true,
-        mode: "search",
-        onEnterKey: function (){
-            searchButton();
+    $("#loginButton").dxButton({
+        icon: 'user',
+        stylingMode: "text",
+        onClick: function () {
+            showLoginPopup();
         }
     });
 
-    $("#categoryTab").dxList({
+    $("#categoryTabSelect").dxSelectBox({
+        showClearButton: true,
+        dataSource: "./categories/all",
+        placeholder: "Kategoria",
+        displayExpr: 'name',
+        valueExpr: 'id',
+        visible: false
+    });
+
+    $("#categoryTabList").dxList({
         dataSource: "./categories/all",
         displayExpr: 'name',
         valueExpr: 'id',
@@ -28,8 +35,69 @@ $(function () {
             location.href = "./lists?param=" + "&categoryId="+( e.itemData.id? e.itemData.id:-1) + "&cityId="+(cityId?cityId:-1) +
                 "&voivoId="+(voivoId?voivoId:-1) + "&latest=" +false + "&random="+false;
 
+        },
+        visible: false
+    });
+
+    $("#loginPopup").dxPopup({
+        height:450,
+        width: 400,
+        shadingColor: "#32323280"
+    });
+
+
+
+    if (matchMedia) {
+        var ms = window.matchMedia("(max-width: 768px)");
+        ms.addListener(mediaSmallChange);
+        mediaSmallChange(ms);
+        var mm = window.matchMedia("(min-width: 769px) and (max-width: 992px)");
+        mm.addListener(mediaMediumChange);
+        mediaMediumChange(mm);
+        var ml = window.matchMedia("(min-width: 992px) and (max-width: 1200px)");
+        ml.addListener(mediaLargeChange);
+        mediaLargeChange(ml);
+    }
+
+
+    function mediaSmallChange(ms){
+        if(ms.matches){
+            $("#loginButton").dxButton("instance").option("text","");
+            $("#categoryTabSelect").dxSelectBox("instance").option("visible",true);
+            $("#categoryTabList").dxList("instance").option("visible",false);
+            $("#loginPopup").dxPopup("instance").option("closeOnOutsideClick",true);
+            $("#loginPopup").dxPopup("instance").option("height",400);
+            $("#loginPopup").dxPopup("instance").option("width",320);
+
+        }else {
+            $("#loginButton").dxButton("instance").option("text", "Zaloguj się");
+            $("#categoryTabSelect").dxSelectBox("instance").option("visible",false);
+            $("#categoryTabList").dxList("instance").option("visible",true);
+        }
+    }
+
+    function mediaMediumChange(mm){
+        if(mm.matches){
+            $("#loginButton").dxButton("instance").option("text","");
+        }
+    }
+
+    function mediaLargeChange(ml){
+        if(ml.matches){
+            $("#loginButton").dxButton("instance").option("text","Zaloguj się");
+        }
+    }
+
+
+    $("#searchBar").dxTextBox({
+        showClearButton: true,
+        mode: "search",
+        onEnterKey: function (){
+            searchButton();
         }
     });
+
+
 
     $("#searchButton").dxButton({
         text: "Szukaj",
@@ -132,11 +200,7 @@ $(function () {
     }).dxTileView("instance");
 
 
-    $("#loginPopup").dxPopup({
-        height:450,
-        width: 400,
-        shadingColor: "#32323280"
-    });
+
 
 
     // $("#loginPopup").hide();
@@ -152,17 +216,9 @@ $(function () {
 
     });
 
-    $("#loginButton").dxButton({
-        text:"Zaloguj się",
-        icon: 'user',
-        stylingMode: "text",
-        onClick: function () {
-            showLoginPopup();
-            /*$("#loginPopup").show();
-            $("#loginPopup").dxPopup("show");
-            loginForm();*/
-        }
-    });
+
+
+
 
     $("#userMenuButton").dxButton({
         text:"Mój Profil",
@@ -181,148 +237,13 @@ $(function () {
 
 });
 
-
-
-function showLoginPopup() {
-
-    $("#loginPopup").dxPopup("show");
-
-    loginForm();
-
-}
-
-
-function loginForm() {
-
-    $("#loginText").html("");
-    $("#loginText").append("Zaloguj się");
-
-    $("#registrationHomeText").html("");
-    $("#registrationHomeText").append("Nie masz konta?");
-
-    $("#registrationLink").html("");
-    $("#registrationLink").append("Zarejestruj się");
-
-    var data = {
-        login: "",
-        password: ""
-    };
-
-    $("#loginForm").dxForm({
-        formData: data,
-        items: [{
-            dataField: "login",
-            label: {
-                location: "top",
-                alignment: "left",
-                text: "Login lub email"
-            }
-        }, {
-            dataField: "password",
-            editorOptions: {
-                mode: 'password'
-            },
-            label: {
-                location: "top",
-                size: "20px",
-                alignment: "left",
-                text: "Hasło"
-            }
-        }]
-    });
-
-    $("#loginButtonForm").dxButton({
-        text: "Zaloguj",
-        type: "normal",
-        onClick: function (e) {
-            var loginForm = $("#loginForm").dxForm('instance');
-            var logForm = {
-                login: loginForm.getEditor('login').option('value'),
-                password: loginForm.getEditor('password').option('value')
-            };
-
-            $.post('./login', logForm, function (result) {
-            }).done(function () {
-                location.href = './home';
-                $("#loginPopup").dxPopup("hide");
-            })
-        }
-    });
-}
-
-
-
-
-function cardTemplate(itemData) {
-
-    var result = $("<div>").addClass("productContent");
-
-    $.get("./image/offer?offerId="+itemData.id, function (t){
-        if (t[0] != undefined) {
-
-            $('<img  id="homeImg ' + itemData.id + '" onclick="productCardClick(' + itemData.id +')" >').attr("src", t[0]).appendTo(result);
-
-        }
-
-    });
-    var temp = '<div class="productName ' + itemData.id + '" onclick="productCardClick(' + itemData.id + ')">' + itemData.name + '</div>'+
-        '<div class="overlay ' + itemData.id + '" onclick="productCardClick(' + itemData.id +')">'+'<img id="iconSearch" src="./static/icon/search.png">'+'</div>';
-
-
-    result.append(temp);
-
-    return result;
-
-
-}
-
-function showBestUsers() {
-
-    var bestUserData = new DevExpress.data.DataSource({
-
-        load: function () {
-
-            var d = $.Deferred();
-            $.getJSON('/users/rating',{
-
-                }
-            ).done(function (result) {
-                d.resolve(result);
-            });
-
-            return d.promise();
-        }
-    });
-
-    bestUserData.load().done(function (result) {
-        $(".userContainer").empty();
-        $.each(result, function (index, user) {
-            var temp =
-                '<div id="userCards'+ user.id +'" class = "userCards" onclick="userCardClick('+user.id + ')"> ' +
-                '<div id="img"></div>' +
-                '<div class="userLogin">' + user.login + '</div>' +
-                '<div class="userRating">' + user.rating + '</div>' +
-                '</div>' ;
-
-
-            $(".userContainer").append(temp);
-        });
-    })
-
-}
-
-
-function productCardClick(productId) {
-    location.href = './product?productId='+productId;
-}
-
-
 function searchButton() {
 
     var param = $("#searchBar").dxTextBox('instance').option('value');
+    var categoryId = $("#categoryTabSelect").dxSelectBox("instance").option('value');
 
 
-    location.href = "./lists?param="+param + "&categoryId="+(-1) + "&cityId="+(cityId?cityId:-1) +
+    location.href = "./lists?param="+param + "&categoryId="+(categoryId?categoryId:-1) + "&cityId="+(cityId?cityId:-1) +
         "&voivoId="+(voivoId?voivoId:-1) + "&latest=" +false + "&random="+false;
 
 }

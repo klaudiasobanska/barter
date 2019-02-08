@@ -6,6 +6,7 @@
 .allContent{
     -moz-user-select: none;
     user-select: none;
+
 }
 
 .headerContainer{
@@ -25,14 +26,14 @@
 }
 
 .headerContainer> img{
-    margin-left: 15%;
+    margin-left: 14%;
     height: 68%;
 
 }
 
 #searchBar {
     display: inline-block;
-    width: 58%;
+   /* width: 59.5%;*/
     height: 100%;
 }
 
@@ -293,3 +294,303 @@
     border-color: #2e7632;
 }
 
+
+
+@media (max-width: 380px) and (max-height: 700px) {
+
+    .headerContainer{
+        height: 320px;
+        display: block;
+        align-items: normal;
+        justify-content: normal;
+    }
+
+    .headerContainer> img{
+        display: inline-block;
+        margin-left: 5%;
+        height: 20%;
+        width: 20%;
+        margin-top: 2%;
+
+    }
+
+    .searchContent{
+        margin: 2% 5% 2% 5%;
+        height: 70%;
+        float: left;
+        width: 90%;
+    }
+
+    #searchBar {
+        display: inline-block;
+        width: 100%;
+        height: 22%;
+    }
+
+    #categoryTabSelect{
+        display: inline-block;
+        height: 22%;
+        width: 100%;
+        margin-top: 1%;
+    }
+
+    #searchCity{
+        display: inline-block;
+        height: 22%;
+        width: 100%;
+        margin-top: 1%;
+    }
+
+    #searchButton{
+        height: 22%;
+        width: 45%;
+        margin-top: 1%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        float: none;
+    }
+
+    .userLoginContent{
+        display: inline-block;
+        margin: -80% 5% 0 0;
+        height: 10%;
+        float: right;
+    }
+
+    #loginButton  .dx-icon{
+        padding-right: 25px;
+    }
+    .latestContent{
+        margin: 0 5% 0 5%;
+    }
+    .randomContent{
+        margin: 5% 5% 0 5%;
+    }
+    .dx-list .dx-list-item {
+        width: 100%;
+        float: none;
+    }
+}
+
+@media (min-width: 381px) and (max-width: 768px){
+
+    .headerContainer{
+        min-height: 20%;
+        display: flex;
+        align-items: normal;
+        justify-content: normal;
+    }
+
+    .headerContainer> img{
+        margin-left: 5%;
+        height: 50%;
+        margin-top: 2%;
+
+    }
+
+    .searchContent{
+        margin: 2% 2% 2% 2%;
+        height: 85%;
+    }
+
+    #searchBar {
+        display: inline-block;
+        width: 100%;
+        height: 30%;
+    }
+
+    #categoryTabSelect{
+        display: inline-block;
+        height: 30%;
+        width: 49%;
+        margin-top: 1%;
+    }
+
+    #searchCity{
+        display: inline-block;
+        height: 30%;
+        width: 49%;
+        float: right;
+        margin-top: 1%;
+    }
+
+    #searchButton{
+        height: 30%;
+        width: 45%;
+        margin-top: 1%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        float: none;
+    }
+
+
+    .userLoginContent{
+        margin: 2% 5% 0 0;
+        height: 30%;
+    }
+
+    #loginButton  .dx-icon{
+        padding-right: 25px;
+    }
+
+    .dx-list .dx-list-item {
+        width: 100%;
+        float: none;
+    }
+
+    .latestContent{
+        margin: 0 5% 0 5%;
+    }
+    .randomContent{
+        margin: 5% 5% 0 5%;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px){
+
+    .headerContainer> img{
+        margin-left: 5%;
+
+    }
+    .userLoginContent{
+        margin: 0 5% 0 0;
+    }
+
+    .searchContent{
+        display: flex;
+        flex-flow: row;
+
+    }
+
+    #searchButton{
+        max-width: 30%;
+        min-width: 18%;
+    }
+
+    #searchBar {
+        flex-grow : 1;
+        margin-right: 1%;
+    }
+
+    #searchCity{
+        max-width: 30%;
+        margin-right: 1%;
+    }
+
+    .latestContent{
+        margin: 0 5% 0 5%;
+    }
+    .randomContent{
+        margin: 5% 5% 0 5%;
+    }
+
+    .categoryContainer {
+        margin: 3% 5% 5% 5%;
+    }
+
+}
+
+@media (min-width: 993px) and (max-width: 1200px){
+
+    .headerContainer> img{
+        margin-left: 5%;
+
+    }
+    .userLoginContent{
+        margin: 0 5% 0 0;
+    }
+
+    .searchContent{
+        margin-right: 5%;
+        display: flex;
+        flex-flow: row;
+
+    }
+
+    #searchBar {
+        flex-grow : 1;
+        margin-right: 1%;
+    }
+
+    #searchCity{
+        max-width: 30%;
+        margin-right: 1%;
+    }
+
+    .latestContent{
+        margin: 0 5% 0 5%;
+    }
+    .randomContent{
+        margin: 5% 5% 0 5%;
+    }
+
+    .categoryContainer {
+        margin: 3% 5% 5% 5%;
+    }
+
+
+    #searchButton{
+        max-width: 30%;
+        min-width: 17%;
+    }
+}
+
+@media (min-width: 1201px) and (max-width: 1500px){
+
+    .headerContainer> img{
+        margin-left: 13%;
+    }
+    .userLoginContent{
+        margin: 0 5% 0 0;
+    }
+
+    .searchContent{
+        margin-right: 3%;
+        display: flex;
+        flex-flow: row;
+
+    }
+
+    #searchBar {
+        flex-grow : 1;
+        margin-right: 1%;
+    }
+
+    #searchCity{
+        max-width: 30%;
+        margin-right: 1%;
+    }
+    #searchButton{
+
+        min-width: 15%;
+        max-width: 30%;
+    }
+}
+
+@media (min-width: 1501px){
+
+
+    .searchContent{
+        display: flex;
+        flex-flow: row;
+
+    }
+
+    #searchBar {
+        flex-grow : 1;
+        margin-right: 1%;
+    }
+
+    #searchCity{
+        min-width: 30%;
+        margin-right: 1%;
+    }
+
+    #searchButton{
+        min-width: 15%;
+        max-width: 30%;
+    }
+
+}

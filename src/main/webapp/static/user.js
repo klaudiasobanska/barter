@@ -28,59 +28,14 @@ function showPage() {
         }
     });
 
-    $("#homeButton").dxButton({
+    /*$("#homeButton").dxButton({
         icon:"home",
         stylingMode: "text",
         onClick: function () {
             location.href = "./home";
         }
-    });
-
-   /* var navigation = [
-        { id: 1, text: "Ustawienia konta", icon: "card" },
-        { id: 2, text: "Ofery", icon: "money" },
-        { id: 3, text: "Propozycje wymiany", icon: "group" },
-        { id: 4, text: "Historia tranzakcji", icon: "product" },
-        { id: 5, text: "Oceny", icon: "chart" }
-    ];
-
-     $("#drawerMenuUser").dxDrawer({
-        openedStateMode: "shrink",
-        opened: true,
-        position: "left",
-        height: 400,
-        revealMode: "slide",
-        template: function () {
-            var $list = $("<div/>").addClass("panel-list");
-
-            $list.dxList({
-                dataSource: navigation,
-                width: 200,
-                onItemClick: function(e){
-                    console.log(e);
-                },
-                elementAttr: {
-                    //class: "dx-theme-accent-as-background-color"
-                }
-            });
-
-            return $list;
-        }
-
-    });
-
-    $("#drawerMenuUserButton").dxToolbar({
-        items: [{
-            widget: 'dxButton',
-            options: {
-                icon: 'menu',
-                onClick: function() {
-                    $("#drawerMenuUser").dxDrawer("instance").toggle();
-                }
-            },
-            location: 'before'
-        }]
     });*/
+
 
     $("#noSelectedToast").dxToast({
         message: "Oferta nie została wybrana",
@@ -164,6 +119,42 @@ function showPage() {
    }];
 
 
+    var drawer = $("#userDrawer").dxDrawer({
+        opened: false,
+        closeOnOutsideClick: true,
+        openedStateMode: "shrink",
+        revealMode: "slide",
+        template: function () {
+            var $list = $("<div>").addClass("panel-list");
+
+            return $list.dxList({
+                dataSource: menuItems,
+                hoverStateEnabled: false,
+                focusStateEnabled: false,
+                activeStateEnabled: false,
+                grouped: true,
+                width: 200,
+                elementAttr: {
+                    class: "dx-theme-accent-as-background-color"
+                },
+                onItemClick: function (data) {
+                    menuContent(data);
+                }
+
+             });
+    }
+    }).dxDrawer("instance");
+
+    $("#drawerButton").dxButton({
+        icon: "menu",
+        stylingMode: "text",
+        onClick: function() {
+            var opened = drawer.option("opened");
+            drawer.toggle(!opened);
+        }
+    }).dxButton("instance");
+
+
 
     $("#userMenuList").dxList({
         dataSource: menuItems,
@@ -185,146 +176,215 @@ function showPage() {
             userDataSettings();
 
         },
-        onItemClick: function(data) {
-            switch (data.itemData.id){
-                case 1:
-                    $("#userDataContent").show();
-                    $("#userPasswordContent").hide();
-                    $("#userOffersContent").hide();
-                    $("#userFavContent").hide();
-                    $("#userDeleteContent").hide();
-                    $("#userSendTransactionContent").hide();
-                    $("#userActiveTransactionContent").hide();
-                    $("#userReceivedContent").hide();
-                    $("#userSentActiveTransactionContent").hide();
-                    $("#userEndTransactionContent").hide();
-                    userDataSettings();
-                    break;
+        onItemClick: function (data) {
+            menuContent(data);
 
-                case 2:
-                    $("#userDataContent").hide();
-                    $("#userOffersContent").hide();
-                    $("#userFavContent").hide();
-                    $("#userDeleteContent").hide();
-                    $("#userReceivedContent").hide();
-                    $("#userSendTransactionContent").hide();
-                    $("#userActiveTransactionContent").hide();
-                    $("#userSentActiveTransactionContent").hide();
-                    $("#userEndTransactionContent").hide();
-                    $("#userPasswordContent").show();
-                    userPasswordSettings();
-                    break;
-                case 3:
-                    $("#userDataContent").hide();
-                    $("#userPasswordContent").hide();
-                    $("#userFavContent").hide();
-                    $("#userDeleteContent").hide();
-                    $("#userReceivedContent").hide();
-                    $("#userSendTransactionContent").hide();
-                    $("#userActiveTransactionContent").hide();
-                    $("#userSentActiveTransactionContent").hide();
-                    $("#userEndTransactionContent").hide();
-                    $("#userOffersContent").show();
+        },
+        groupTemplate: function (groupData, _, groupElement) {
+            groupElement.append(
+                $("<p>").text(groupData.key)
+            )
+        },
+        itemTemplate: function (data, index, element) {
+            element.append(
+                $("<p id='menuListText'>").text(data.text)
+            );
+            var result = $("<div>").addClass("cList");
+            $.get("./transaction/active/wait/proposal?userId=" + currentUserId, function (t) {
+                if (t.length > 0) {
+                    for (var key in data) {
+                        if (data[key] === 9) {
+                            result.append($("<p id='activeC'>").text(t.length))
+                        }
+                    }
+                }
 
-                    userOffersSettings();
-                    break;
-                case 4:
-                    $("#userDataContent").hide();
-                    $("#userPasswordContent").hide();
-                    $("#userOffersContent").hide();
-                    $("#userDeleteContent").hide();
-                    $("#userReceivedContent").hide();
-                    $("#userSendTransactionContent").hide();
-                    $("#userActiveTransactionContent").hide();
-                    $("#userSentActiveTransactionContent").hide();
-                    $("#userEndTransactionContent").hide();
-                    $("#userFavContent").show();
-                    userFavSettings();
-                    break;
-                case 5:
-                    $("#userDataContent").hide();
-                    $("#userPasswordContent").hide();
-                    $("#userOffersContent").hide();
-                    $("#userFavContent").hide();
-                    $("#userDeleteContent").hide();
-                    $("#userSendTransactionContent").hide();
-                    $("#userActiveTransactionContent").hide();
-                    $("#userSentActiveTransactionContent").hide();
-                    $("#userEndTransactionContent").hide();
-                    $("#userReceivedContent").show();
-                    receiveOfferSettings();
-                    
-                    break;
-                case 6:
-                    $("#userDataContent").hide();
-                    $("#userPasswordContent").hide();
-                    $("#userOffersContent").hide();
-                    $("#userFavContent").hide();
-                    $("#userDeleteContent").hide();
-                    $("#userReceivedContent").hide();
-                    $("#userActiveTransactionContent").hide();
-                    $("#userSentActiveTransactionContent").hide();
-                    $("#userEndTransactionContent").hide();
-                    $("#userSendTransactionContent").show();
-                    sendOfferSettings();
-                    break;
-                case 7:
-                    $("#userDataContent").hide();
-                    $("#userPasswordContent").hide();
-                    $("#userOffersContent").hide();
-                    $("#userFavContent").hide();
-                    $("#userDeleteContent").hide();
-                    $("#userReceivedContent").hide();
-                    $("#userSendTransactionContent").hide();
-                    $("#userActiveTransactionContent").hide();
-                    $("#userSentActiveTransactionContent").hide();
-                    $("#userEndTransactionContent").show();
-                    endTransactionSettings();
-                    break;
-                case 8:
-                    $("#userDataContent").hide();
-                    $("#userPasswordContent").hide();
-                    $("#userOffersContent").hide();
-                    $("#userFavContent").hide();
-                    $("#userReceivedContent").hide();
-                    $("#userSendTransactionContent").hide();
-                    $("#userActiveTransactionContent").hide();
-                    $("#userSentActiveTransactionContent").hide();
-                    $("#userEndTransactionContent").hide();
-                    $("#userDeleteContent").show();
-                    deletedOfferSettings();
-                    break;
-                case 9:
-                    $("#userDataContent").hide();
-                    $("#userPasswordContent").hide();
-                    $("#userOffersContent").hide();
-                    $("#userFavContent").hide();
-                    $("#userReceivedContent").hide();
-                    $("#userSendTransactionContent").hide();
-                    $("#userDeleteContent").hide();
-                    $("#userSentActiveTransactionContent").hide();
-                    $("#userEndTransactionContent").hide();
-                    $("#userActiveTransactionContent").show();
-                    activeTransactionSettings();
-                    break;
-                case 10:
-                    $("#userDataContent").hide();
-                    $("#userPasswordContent").hide();
-                    $("#userOffersContent").hide();
-                    $("#userFavContent").hide();
-                    $("#userReceivedContent").hide();
-                    $("#userSendTransactionContent").hide();
-                    $("#userDeleteContent").hide();
-                    $("#userActiveTransactionContent").hide();
-                    $("#userEndTransactionContent").hide();
-                    $("#userSentActiveTransactionContent").show();
-                    activeSentTransactionSettings();
-                    break;
-            }
+            });
+            $.get("./transaction/new/proposal?ownerId=" + currentUserId, function (e) {
+                if (e.length > 0) {
+                    for (var key in data) {
+                        if (data[key] === 5) {
+                            result.append($("<p id='newC'>").text(e.length))
+                        }
+                    }
+                }
+
+            });
+
+            return result
         }
     });
 
+    $("#addOrEditOfferPopup").dxPopup({
+        title:"Dodaj nową ofertę",
+        maxWidth: 800,
+        shadingColor: "#32323280"
+    });
+
+    if (matchMedia) {
+        var ms = window.matchMedia("(max-width: 768px)");
+        ms.addListener(mediaSmallChange);
+        mediaSmallChange(ms);
+    }
+
+
+    function mediaSmallChange(ms){
+        if(ms.matches){
+            $("#logoutButton").dxButton("instance").option("text","");
+            $("#drawerButton").dxButton("instance").option("visible",true);
+            $("#userMenuList").dxList("instance").option("visible",false);
+            $("#userDataForm").dxForm("instance").option("labelLocation","top");
+            $("#addOrEditOfferPopup").dxPopup("instance").option("height",650);
+
+
+        }else {
+            $("#logoutButton").dxButton("instance").option("text", "Wyloguj");
+            $("#userDrawer").dxDrawer("instance").option("opened",false);
+            $("#drawerButton").dxButton("instance").option("visible",false);
+            $("#userMenuList").dxList("instance").option("visible",true);
+            $("#userDataForm").dxForm("instance").option("labelLocation","left");
+        }
+    }
 };
+
+function menuContent(data) {
+    switch (data.itemData.id) {
+        case 1:
+            $("#userDataContent").show();
+            $("#userPasswordContent").hide();
+            $("#userOffersContent").hide();
+            $("#userFavContent").hide();
+            $("#userDeleteContent").hide();
+            $("#userSendTransactionContent").hide();
+            $("#userActiveTransactionContent").hide();
+            $("#userReceivedContent").hide();
+            $("#userSentActiveTransactionContent").hide();
+            $("#userEndTransactionContent").hide();
+            userDataSettings();
+            break;
+
+        case 2:
+            $("#userDataContent").hide();
+            $("#userOffersContent").hide();
+            $("#userFavContent").hide();
+            $("#userDeleteContent").hide();
+            $("#userReceivedContent").hide();
+            $("#userSendTransactionContent").hide();
+            $("#userActiveTransactionContent").hide();
+            $("#userSentActiveTransactionContent").hide();
+            $("#userEndTransactionContent").hide();
+            $("#userPasswordContent").show();
+            userPasswordSettings();
+            break;
+        case 3:
+            $("#userDataContent").hide();
+            $("#userPasswordContent").hide();
+            $("#userFavContent").hide();
+            $("#userDeleteContent").hide();
+            $("#userReceivedContent").hide();
+            $("#userSendTransactionContent").hide();
+            $("#userActiveTransactionContent").hide();
+            $("#userSentActiveTransactionContent").hide();
+            $("#userEndTransactionContent").hide();
+            $("#userOffersContent").show();
+
+            userOffersSettings();
+            break;
+        case 4:
+            $("#userDataContent").hide();
+            $("#userPasswordContent").hide();
+            $("#userOffersContent").hide();
+            $("#userDeleteContent").hide();
+            $("#userReceivedContent").hide();
+            $("#userSendTransactionContent").hide();
+            $("#userActiveTransactionContent").hide();
+            $("#userSentActiveTransactionContent").hide();
+            $("#userEndTransactionContent").hide();
+            $("#userFavContent").show();
+            userFavSettings();
+            break;
+        case 5:
+            $("#userDataContent").hide();
+            $("#userPasswordContent").hide();
+            $("#userOffersContent").hide();
+            $("#userFavContent").hide();
+            $("#userDeleteContent").hide();
+            $("#userSendTransactionContent").hide();
+            $("#userActiveTransactionContent").hide();
+            $("#userSentActiveTransactionContent").hide();
+            $("#userEndTransactionContent").hide();
+            $("#userReceivedContent").show();
+            receiveOfferSettings();
+
+            break;
+        case 6:
+            $("#userDataContent").hide();
+            $("#userPasswordContent").hide();
+            $("#userOffersContent").hide();
+            $("#userFavContent").hide();
+            $("#userDeleteContent").hide();
+            $("#userReceivedContent").hide();
+            $("#userActiveTransactionContent").hide();
+            $("#userSentActiveTransactionContent").hide();
+            $("#userEndTransactionContent").hide();
+            $("#userSendTransactionContent").show();
+            sendOfferSettings();
+            break;
+        case 7:
+            $("#userDataContent").hide();
+            $("#userPasswordContent").hide();
+            $("#userOffersContent").hide();
+            $("#userFavContent").hide();
+            $("#userDeleteContent").hide();
+            $("#userReceivedContent").hide();
+            $("#userSendTransactionContent").hide();
+            $("#userActiveTransactionContent").hide();
+            $("#userSentActiveTransactionContent").hide();
+            $("#userEndTransactionContent").show();
+            endTransactionSettings();
+            break;
+        case 8:
+            $("#userDataContent").hide();
+            $("#userPasswordContent").hide();
+            $("#userOffersContent").hide();
+            $("#userFavContent").hide();
+            $("#userReceivedContent").hide();
+            $("#userSendTransactionContent").hide();
+            $("#userActiveTransactionContent").hide();
+            $("#userSentActiveTransactionContent").hide();
+            $("#userEndTransactionContent").hide();
+            $("#userDeleteContent").show();
+            deletedOfferSettings();
+            break;
+        case 9:
+            $("#userDataContent").hide();
+            $("#userPasswordContent").hide();
+            $("#userOffersContent").hide();
+            $("#userFavContent").hide();
+            $("#userReceivedContent").hide();
+            $("#userSendTransactionContent").hide();
+            $("#userDeleteContent").hide();
+            $("#userSentActiveTransactionContent").hide();
+            $("#userEndTransactionContent").hide();
+            $("#userActiveTransactionContent").show();
+            activeTransactionSettings();
+            break;
+        case 10:
+            $("#userDataContent").hide();
+            $("#userPasswordContent").hide();
+            $("#userOffersContent").hide();
+            $("#userFavContent").hide();
+            $("#userReceivedContent").hide();
+            $("#userSendTransactionContent").hide();
+            $("#userDeleteContent").hide();
+            $("#userActiveTransactionContent").hide();
+            $("#userEndTransactionContent").hide();
+            $("#userSentActiveTransactionContent").show();
+            activeSentTransactionSettings();
+            break;
+    }
+
+}
 
 function userDataSettings() {
 
@@ -348,6 +408,7 @@ function userDataSettings() {
         colCount:2,
         items: [{
             dataField: "forename",
+            /*cssClass: "myClass",*/
             label: {
                 text: "Imię"
             }
@@ -364,6 +425,7 @@ function userDataSettings() {
                 text: "Data urodzenia"
             },
             editorType: "dxDateBox",
+            cssClass: "myClass",
             editorOptions: {
                 displayFormat: "yyyy-MM-dd",
                 disabled: true
@@ -563,10 +625,8 @@ function showOffersList() {
     var offerList = $("#userOfferList").dxList({
         dataSource: data,
         selectionMode: "sinle",
-        height: "100%",
         noDataText: "Brak aktywnych ofert",
         scrollingEnabled: true,
-        selectionMode: "single",
         itemTemplate: function(e) {
 
             var result = $("<div>").addClass("offersUser");
@@ -574,7 +634,6 @@ function showOffersList() {
             $.get("./image/offer?offerId="+e.id, function (t){
                 if (t[0] != undefined) {
                     $("<img>").attr("src", t[0]).appendTo(result);
-                    console.log(result[0]);
                 }
                 $("<div id='name'>").text(e.name).appendTo(result);
                 $("<div id='offerUserButtonContainer'>").append($('<div id="showOfferButton">').dxButton({
@@ -597,12 +656,7 @@ function showOffersList() {
 
 function showAddOrEditOfferPopup(edit) {
 
-    $("#addOrEditOfferPopup").dxPopup({
-        title:"Dodaj nową ofertę",
-        height: 700,
-        width: 800,
-        shadingColor: "#32323280"
-    }).dxPopup("show");
+    $("#addOrEditOfferPopup").dxPopup("show");
 
     addOrEditOffer(edit);
 
@@ -899,9 +953,8 @@ function showDeletedOfferList() {
     $.get('./products/owner?ownerId='+ currentUserId +"&active=" +false, function (data){
         var offerList = $("#userDeletedOfferList").dxList({
             dataSource: data.content,
-            height: "100%",
             selectionMode: "sinle",
-            scrollingEnabled: false,
+            scrollingEnabled: true,
             noDataText: "Brak zarchiwizowanych ofert",
             itemTemplate: function(e) {
 
@@ -1112,13 +1165,30 @@ function endTransactionSettings(){
 
     $("#activeEndTransactionPopup").dxPopup({
         title:"Zakończona transakcja",
-        height: 600,
-        width: 900,
+        /*height: 600,*/
+        /*width: 900,*/
+        maxWidth:900,
         shadingColor: "#32323280",
         onHiding: function () {
             $("#userEndTransactionList").dxList("instance").option("selectedItems", []);
         }
     }).dxPopup("instance");
+
+    if (matchMedia) {
+        var mp = window.matchMedia("(max-width: 768px)");
+        mp.addListener(mediaSmallChangePopup);
+        mediaSmallChangePopup(mp);
+    }
+
+
+    function mediaSmallChangePopup(mp){
+        if(mp.matches){
+            $("#activeEndTransactionPopup").dxPopup("instance").option("height",700);
+
+        }else{
+            $("#activeEndTransactionPopup").dxPopup("instance").option("height",600);
+        }
+    }
 
     showEndTransactionList();
 
@@ -1317,6 +1387,9 @@ function  showEndTransactionOffers(transaction) {
         selection: {
             mode: "single"
         },
+        paging:{
+            pageSize: 5
+        },
         showBorders: true,
         hoverStateEnabled: true,
         scrolling: {
@@ -1358,11 +1431,3 @@ function getDate(dateV) {
 
 }
 
-function refreshOfferGrid(gridName) {
-    var ds = $(gridName).dxDataGrid("getDataSource");
-    console.log(gridName)
-    ds.reload();
-    var dataGridInstance = $(gridName).dxDataGrid("instance");
-    dataGridInstance.clearSelection();
-
-}

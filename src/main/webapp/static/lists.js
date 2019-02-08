@@ -23,25 +23,66 @@ $.get('./filters/current', function (data) {
 $(function () {
 
 
-    /*$("#loginButton").dxButton({
+    $("#loginButton").dxButton({
         text:"Zaloguj się",
         stylingMode: "text",
         icon: 'user',
         onClick: function () {
             showLoginPopup();
-            /!*$("#loginPopup").show();
-            $("#loginPopup").dxPopup("show");
-            loginForm();*!/
         }
-    });*/
+    });
 
-    $("#homeButton").dxButton({
+   /* $("#homeButton").dxButton({
         icon:"home",
         stylingMode: "text",
         onClick: function () {
             location.href = "./home";
         }
+    });*/
+
+    $("#loginPopup").dxPopup({
+        height:450,
+        width: 400,
+        shadingColor: "#32323280"
     });
+
+
+
+    if (matchMedia) {
+        var ms = window.matchMedia("(max-width: 768px)");
+        ms.addListener(mediaSmallChange);
+        mediaSmallChange(ms);
+        var mm = window.matchMedia("(min-width: 769px) and (max-width: 992px)");
+        mm.addListener(mediaMediumChange);
+        mediaMediumChange(mm);
+        var ml = window.matchMedia("(min-width: 992px) and (max-width: 1200px)");
+        ml.addListener(mediaLargeChange);
+        mediaLargeChange(ml);
+    }
+
+    function mediaSmallChange(ms){
+        if(ms.matches){
+            $("#loginButton").dxButton("instance").option("text","");
+            $("#loginPopup").dxPopup("instance").option("closeOnOutsideClick",true);
+            $("#loginPopup").dxPopup("instance").option("height",400);
+            $("#loginPopup").dxPopup("instance").option("width",320);
+
+        }else {
+            $("#loginButton").dxButton("instance").option("text", "Zaloguj się");
+        }
+    }
+
+    function mediaMediumChange(mm) {
+        if (mm.matches) {
+            $("#loginButton").dxButton("instance").option("text", "");
+        }
+    }
+
+    function mediaLargeChange(ml){
+        if(ml.matches){
+            $("#loginButton").dxButton("instance").option("text","Zaloguj się");
+        }
+    }
 
     $("#userMenuButton").dxButton({
         text:"Mój Profil",
@@ -244,6 +285,8 @@ function getProductFilter() {
 
 function showList(data) {
 
+
+
     $("#productList").dxTileView({
         dataSource: data,
         direction: "vertical",
@@ -259,37 +302,7 @@ function showList(data) {
 
     }).dxTileView("instance");
 
-    /*$("#productList").dxList({
-        dataSource: data,
-        height: "100%",
-        nextButtonText: "Więcej",
-        itemTemplate: function(data, index) {
 
-            var result = $("<div>").addClass("product");
-
-            $.get("./image/offer?offerId="+data.id, function (t){
-                if (t[0] != undefined) {
-                    $("<img>").attr("src", t[0]).appendTo(result);
-                    console.log(result[0]);
-                }
-                var temp =
-
-                    '<div id="textContainer">'+
-                    '<div id="name">' + data.name + '</div>' +
-                    '<div id="category">' + data.categoryName + '</div>' +
-                    '<div id="city">' + data.cityName + '</div>' +
-                    '</div>';
-                result.append(temp);
-            });
-
-            return result;
-
-        },
-        onItemClick: function (data) {
-            location.href = './product?productId='+data.itemData.id;
-        }
-    }).dxList("instance");
-*/
 }
 
 function refresh() {
@@ -305,3 +318,4 @@ function refresh() {
 
 
 }
+

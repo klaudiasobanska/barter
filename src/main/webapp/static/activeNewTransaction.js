@@ -6,12 +6,31 @@ function activeTransactionSettings() {
     $("#activeTransactionPopup").dxPopup({
         title:"Aktywna transakcja",
         shadingColor: "#32323280",
+        maxWidth:1200,
         onHiding: function () {
             $("#userActiveTransactionList").dxList("instance").option("selectedItems", []);
         }
     }).dxPopup("instance");
 
+
+
     showUserActiveTransactionList();
+
+    if (matchMedia) {
+        var ms = window.matchMedia("(max-width: 768px)");
+        ms.addListener(mediaSmallChange);
+        mediaSmallChange(ms);
+    }
+
+    function mediaSmallChange(ms){
+        if(ms.matches){
+            $("#activeTransactionPopup").dxPopup("instance").option("height",880);
+        }else{
+            $("#activeTransactionPopup").dxPopup("instance").option("height",700);
+        }
+    }
+
+
 
 }
 
@@ -25,7 +44,7 @@ function showUserActiveTransactionList() {
             dataSource: data,
             height: "100%",
             selectionMode: "sinle",
-            scrollingEnabled: false,
+            scrollingEnabled: true,
             noDataText: "Brak aktywnych transakcji",
             itemTemplate: function(e) {
                 var result = $("<div>").addClass("offer");
@@ -51,6 +70,8 @@ function showActiveTransactionPopup(transaction) {
 
 
     $("#activeTransactionPopup").dxPopup("show");
+
+    $("#anotherActiveOfferPopup").hide();
 
     sendAnswerActiveForm(transaction);
 
@@ -208,8 +229,9 @@ function sendAnswerActiveForm(transaction) {
             $("#anotherActiveOfferPopup").dxPopup({
                 title: "Pozostałe oferty użytkownika " + transaction.clientLogin,
                 shadingColor: "#32323280",
-                height: 650,
-                width: 800
+                maxWidth:800
+                /*height: 650,
+                width: 800*/
             }).dxPopup("show");
 
             $.ajax({
@@ -486,7 +508,10 @@ function showProposedOffersActive(transaction) {
         showBorders: true,
         hoverStateEnabled: true,
         scrolling: {
-            "showScrollbar": "never"
+            "showScrollbar": "onHover"
+        },
+        paging:{
+            pageSize: 5
         },
         columns: [{
             caption: "Nazwa oferty",
@@ -506,14 +531,14 @@ function showProposedOffersActive(transaction) {
             cellTemplate: function (container, options) {
                 $('<a id="showLink"/>').addClass('dx-link')
                     .text("Pokaż ofertę")
-                    .on('dxhoverstart',function () {
+                    .on('dxhoverstart',function (e) {
                         if(options.data.offerActive === false) {
-                            $("#popoverNoActiveTransactionShow").show();
                             $("#popoverNoActiveTransactionShow").dxPopover({
-                                target: "#showLink",
+                                target: e.target,
                                 showEvent: 'dxhoverstart',
                                 hideEvent: 'dxhoverend'
-                            }).dxPopover("instance");
+                            }).dxPopover("show");
+
                         }
                     })
                     .on('dxclick', function () {
@@ -530,15 +555,15 @@ function showProposedOffersActive(transaction) {
             cellTemplate: function (container, options) {
                 $('<a id="acceptLink"/>').addClass('dx-link')
                     .text("Akceptuj")
-                    .on('dxhoverstart',function () {
+                    .on('dxhoverstart',function (e) {
                         if(options.data.offerActive === false) {
-                            $("#popoverNoActiveTransaction").show();
                             $("#popoverNoActiveTransaction").dxPopover({
-                                target: "#acceptLink",
+                                target: e.target,
                                 showEvent: 'dxhoverstart',
                                 hideEvent: 'dxhoverend'
-                            }).dxPopover("instance");
+                            }).dxPopover("show");
                         }
+
                     })
                     .on('dxclick', function () {
                         if(options.data.offerActive === true){
@@ -613,6 +638,20 @@ function showProposedOffersActive(transaction) {
     }else{
         $("#aOfferGrid").dxDataGrid("instance").columnOption(2, "caption", "Akceptacja właściciela");
         $("#aOfferGrid").dxDataGrid("instance").columnOption(3, "caption", "Twoja akceptacja");
+    }
+
+    if (matchMedia) {
+        var ms = window.matchMedia("(max-width: 768px)");
+        ms.addListener(mediaSmallChangeGrid);
+        mediaSmallChangeGrid(ms);
+    }
+
+    function mediaSmallChangeGrid(ms){
+        if(ms.matches){
+            $("#aOfferGrid").dxDataGrid("instance").option("paging.pageSize",1);
+        }else{
+            $("#aOfferGrid").dxDataGrid("instance").option("paging.pageSize",4);
+        }
     }
 
 }

@@ -1,5 +1,5 @@
 var product, productId, ownerName, ownerId;
-var currentUser = 15;
+var currentUser = 16;
 var ownerProduct;
 
 $.get('./products/current', function (data) {
@@ -14,7 +14,7 @@ $.get('./products/current', function (data) {
 });
 
 function getAll() {
-    console.log(product)
+
 
     $("#loginButton").dxButton({
         text:"Zaloguj się",
@@ -22,19 +22,55 @@ function getAll() {
         stylingMode: "text",
         onClick: function () {
             showLoginPopup();
-            /*$("#loginPopup").show();
-            $("#loginPopup").dxPopup("show");
-            loginForm();*/
+
         }
     });
 
-    $("#homeButton").dxButton({
+    $("#loginPopup").dxPopup({
+        height:450,
+        width: 400,
+        shadingColor: "#32323280"
+    });
+
+    $("#tranPopup").dxPopup({
+        title: "Wyślij propozycję oferty",
+        height: 650,
+        width: 800,
+        shadingColor: "#32323280",
+    });
+
+
+
+    if (matchMedia) {
+        var ms = window.matchMedia("(max-width: 768px)");
+        ms.addListener(mediaSmallChange);
+        mediaSmallChange(ms);
+    }
+
+    function mediaSmallChange(ms){
+        if(ms.matches){
+            $("#loginButton").dxButton("instance").option("text","");
+            $("#loginPopup").dxPopup("instance").option("closeOnOutsideClick",true);
+            $("#loginPopup").dxPopup("instance").option("height",400);
+            $("#loginPopup").dxPopup("instance").option("width",320);
+            $("#tranPopup").dxPopup("instance").option("closeOnOutsideClick",true);
+            $("#tranPopup").dxPopup("instance").option("height",650);
+            $("#tranPopup").dxPopup("instance").option("width",320);
+
+        }else {
+            $("#loginButton").dxButton("instance").option("text", "Zaloguj się");
+            $("#tranPopup").dxPopup("instance").option("height",650);
+            $("#tranPopup").dxPopup("instance").option("width",800);
+        }
+    }
+
+   /* $("#homeButton").dxButton({
         icon:"home",
         stylingMode: "text",
         onClick: function () {
             location.href = "./home";
         }
-    });
+    });*/
 
     $("#userMenuButtonProduct").dxButton({
         text:"Mój Profil",
@@ -81,6 +117,8 @@ function getAll() {
             });
         }
     });
+
+
 
     $("#addFavButton").dxButton({
         text: "Dodaj do Ulubionych",
@@ -146,12 +184,13 @@ function info() {
 
     var temp =
         '<div id="productName">'+ product.name  + '</div>' +
+        '<div id="text">'+
         '<p id="categoryText">Kategoria:</p>'+'<div id="productCategory">' + product.categoryName + '</div>' +
         '<p id="cityText">Miasto:</p>'+'<div id="productCity">' + product.cityName + '</div>' +
         '<p id="creationDateText">Dodano:</p>'+'<div id="productDate">' + getDate(product.creationDate) + '</div>' +
-        '<hr id="hr1">'+
-        '<div id="productDescription">' + product.description + '</div>' +
-        '</div>' ;
+        '</div>'+'<div id ="hrr">'+
+        '<hr id="hr1">'+'</div>'+
+        '<div id="productDescription">' + product.description + '</div>';
 
 
     $("#productDesc").append(temp);
@@ -293,12 +332,7 @@ function ownerUserList(){
 
 function transactionButton() {
 
-    $("#tranPopup").dxPopup({
-        title:"Wyślij propozycję oferty",
-        height: 650,
-        width: 800,
-        shadingColor: "#32323280",
-    }).dxPopup("show");
+    $("#tranPopup").dxPopup("show");
 
     showTransactionForm();
 

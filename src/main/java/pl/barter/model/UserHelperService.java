@@ -22,6 +22,7 @@ public class UserHelperService {
         userDto.setId(user.getId());
         userDto.setImg(user.getImage());
         userDto.setImageType(user.getImageType());
+        userDto.setFav(user.getFav());
 
 
         return userDto;

@@ -119,53 +119,34 @@
 }
 
 #productCategory {
-    font-family: "Open Sans";
     float: left;
-    display: inline-block;
-    font-size: medium;
+    padding-right: 5%;
 }
 
 #categoryText{
-    font-family: "Open Sans";
     padding-right: 1%;
     float: left;
-    margin-left: 3%;
-    font-size: medium;
-    display: inline-block;
 }
 
 
 #productCity {
-    font-family: "Open Sans";
     float: left;
-    display: inline-block;
-    font-size: medium;
+    padding-right: 5%;
 }
 
 #cityText{
-    font-family: "Open Sans";
     padding-right: 1%;
     float: left;
-    margin-left: 5%;
-    font-size: medium;
-    display: inline-block;
 }
 
 #productDate {
-    font-family: "Open Sans";
     float: left;
-    font-size: medium;
-    display: inline-block;
+    padding-right: 5%;
 }
 
 #creationDateText{
-    font-family: "Open Sans";
     padding-right: 1%;
-    margin-left: 6%;
     float: left;
-    font-size: medium;
-    display: inline-block;
-
 }
 
 #productDescription{
@@ -174,16 +155,21 @@
     font-size: medium;
     margin: 3% 3% 5% 3%;
     width: 95%;
+    display: inline-block;
 
 }
 
-.product > hr{
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+#text{
+    display: inline-block;
+    width: 95%;
+    margin: 3% 3% 0 3%;
+    font-family: "Open Sans";
+    font-size: medium;
 }
+
 
 #hr1{
-    margin: 16% 3% 0 3%;
+    margin: 1% 3% 0 3%;
     border: 0;
     height: 0;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
@@ -371,4 +357,171 @@ div.ownerContainer{
     background-color: #ffbfb2;
 }
 
+@media (min-width: 381px) and (max-width: 768px){
 
+    .headerContainer> img{
+        left: 10%;
+    }
+
+    .userLoginContent{
+        right: 10%;
+    }
+
+    #loginButton  .dx-icon{
+        padding-right: 25px;
+    }
+
+    .pContent {
+        margin: 2% 10% 2% 10%;
+        width: auto;
+    }
+
+    .buttonOfferContainer{
+        margin: 2% 10% 2% 10%;
+        float: none;
+        width: 80%;
+
+    }
+    #transactionButton{
+        width: auto;
+        padding-right: 5%;
+        display: table;
+        margin: 0 auto;
+        margin-bottom: 1%;
+
+
+    }
+    #transactionButton  .dx-icon{
+        margin-right: 8%;
+    }
+
+    #addFavButton{
+        width: auto;
+        padding-right: 7%;
+        display: table;
+        margin: 0 auto;
+    }
+
+    #addFavButton  .dx-icon{
+        margin-right: 8%;
+
+    }
+
+    div.ownerContainer{
+        width: auto;
+        margin: 2% 10% 2% 10%;
+        float: none;
+        display: table;
+        margin: 0 auto;
+    }
+
+    .ownerOfferProductContainer{
+        margin: 2% 10% 2% 10%;
+        width: 80%;
+
+    }
+
+    #cancelTranButton {
+        right: 35%;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px){
+
+    .headerContainer> img{
+        left: 5%;
+    }
+
+    .userLoginContent{
+        right: 5%;
+    }
+
+    .pContent {
+        margin: 2% 0 2% 5%;
+        width: 52%;
+    }
+
+    .buttonOfferContainer{
+        margin-right: 5%;
+        min-width: 35%;
+    }
+
+
+    div.ownerContainer{
+        width: 35%;
+        margin: 2% 5% 2% 0;
+    }
+
+    .ownerOfferProductContainer{
+        margin: 2% 5% 2% 5%;
+        width: 90%;
+
+    }
+}
+
+@media (min-width: 993px) and (max-width: 1200px){
+
+    .headerContainer> img{
+        left: 5%;
+    }
+
+    .userLoginContent{
+        right: 5%;
+    }
+
+    .pContent {
+        margin: 2% 0 2% 5%;
+        width: 57%;
+    }
+
+    .buttonOfferContainer{
+        margin-right: 5%;
+        min-width: 30%;
+    }
+
+
+    div.ownerContainer{
+        width: 30%;
+        margin: 2% 5% 2% 0;
+    }
+
+    .ownerOfferProductContainer{
+        margin: 2% 5% 2% 5%;
+        width: 90%;
+
+    }
+
+}
+
+@media (min-width: 1201px) and (max-width: 1500px){
+
+    .headerContainer> img{
+        left: 10%;
+    }
+
+    .userLoginContent{
+        right: 10%;
+    }
+
+    .pContent {
+        margin: 2% 0 2% 10%;
+        width: 55%;
+    }
+
+    .buttonOfferContainer{
+        margin-right: 10%;
+        min-width: 23%;
+    }
+
+
+    div.ownerContainer{
+        width: 23%;
+        margin: 2% 10% 2% 0;
+    }
+
+    .ownerOfferProductContainer{
+        margin: 2% 10% 2% 10%;
+        width: 80%;
+
+    }
+}
