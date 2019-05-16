@@ -1,7 +1,12 @@
 $(function () {
 
-    $("#registrationErrorToast").dxToast({
-        message: "Login zajęty",
+    $("#registrationErrorLoginToast").dxToast({
+        message: "Login jest już zajęty",
+        type: "error",
+        displayTime: 3000
+    });
+    $("#registrationErrorEmailToast").dxToast({
+        message: "Adres email już istnieje",
         type: "error",
         displayTime: 3000
     });
@@ -10,11 +15,9 @@ $(function () {
     $("#registrationText").append("Rejestracja");
 
 
-
-
     var data = {
         email:"",
-        login: "",
+        username: "",
         password: "",
         confirm:"",
         birthDate:""
@@ -37,7 +40,7 @@ $(function () {
                 message: "Niepoprawny adres email"
             }]
         },{
-            dataField: "login",
+            dataField: "username",
             label: {
                 location: "top",
                 size: "20px",
@@ -111,36 +114,68 @@ $(function () {
         text: "Zarejestruj się",
         type: "normal",
         onClick: function () {
+            data = {
+                email:"",
+                username: "",
+                password: "",
+                confirm:"",
+                birthDate:""
+            };
+
+            var dataLogin = {
+                username: "",
+                password: ""
+            };
+
             var registrationForm = $("#registrationForm").dxForm('instance');
 
-
             data.email = registrationForm.getEditor('email').option('value');
-            data.login = registrationForm.getEditor('login').option('value');
+            data.username = registrationForm.getEditor('username').option('value');
+            dataLogin.username = registrationForm.getEditor('username').option('value');
             data.password = registrationForm.getEditor('password').option('value');
+            dataLogin.password = registrationForm.getEditor('password').option('value');
             data.birthDate = registrationForm.getEditor('birthDate').option('value');
             delete data.confirm;
 
-
             data = JSON.stringify(data);
+            dataLogin = JSON.stringify(dataLogin);
 
             var ret = registrationForm.validate();
 
             if (ret.isValid) {
                 if (registrationForm.getEditor('password').option('value') === registrationForm.getEditor('confirm').option('value')) {
                     $.ajax({
-                        url: './users/add',
+                        url: './api/auth/signup',
                         type: 'post',
                         dataType: 'json',
                         contentType: 'application/json',
+                        data: data,
                         success: function (result) {
-                            if (result.errorMsg) {
-                                $("#registrationErrorToast").dxToast("show");
+                            if (result.errorMsg === "login") {
+                                $("#registrationErrorLoginToast").dxToast("show");
 
-                            } else {
+                            }else if(result.errorMsg === "email"){
+                                $("#registrationErrorEmailToast").dxToast("show");
+                            }
+                            else {
+                                $.ajax({
+                                    url: './api/auth/signin',
+                                    type: 'post',
+                                    dataType: 'json',
+                                    contentType: 'application/json; charset=utf-8',
+                                    data: dataLogin,
+                                    success: function (data) {
+                                        $.cookie('token', data.accessToken);
+                                        $.ajaxSetup({
+                                            headers: {
+                                                'Authorization': "Bearer " + $.cookie('token')
+                                            }
+                                        });
+                                    }
+                                });
                                 location.href ="./home";
                             }
-                        },
-                        data: data
+                        }
                     });
                 }
             }

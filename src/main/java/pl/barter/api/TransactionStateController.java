@@ -13,6 +13,7 @@ import pl.barter.repository.TransactionStateRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.OptionalInt;
 
 @RestController
@@ -86,7 +87,7 @@ public class TransactionStateController extends AbstractController {
     }
 
     @PostMapping("/transaction/save/offer/another")
-    public ResponseEntity<Boolean> saveOfferInSession(@RequestBody TransactionState newState){
+    public Map<String, Object> saveOfferInSession(@RequestBody TransactionState newState){
 
         newState.setDelete(false);
 
@@ -95,7 +96,7 @@ public class TransactionStateController extends AbstractController {
 
         session.setAttribute("transactions", transactionState);
 
-        return ResponseEntity.ok(true);
+        return simpleOkResult();
     }
 
     @PostMapping("/seller/accept/offer")
@@ -114,13 +115,13 @@ public class TransactionStateController extends AbstractController {
 
 
     @PostMapping("/send/message")
-    public ResponseEntity<Boolean> sendMessage(@RequestBody TransactionState newState) {
+    public Map<String, Object> sendMessage(@RequestBody TransactionState newState) {
 
         newState.setId(transactionStateRepository.getNextSeriesId());
 
         transactionStateRepository.save(newState);
 
-        return ResponseEntity.ok(true);
+        return simpleOkResult();
     }
 
 

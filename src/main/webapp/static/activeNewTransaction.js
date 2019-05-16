@@ -11,7 +11,7 @@ function activeTransactionSettings() {
             $("#userActiveTransactionList").dxList("instance").option("selectedItems", []);
         }
     }).dxPopup("instance");
-
+    $("#userMenuList").dxList('instance');
 
 
     showUserActiveTransactionList();
@@ -24,9 +24,11 @@ function activeTransactionSettings() {
 
     function mediaSmallChange(ms){
         if(ms.matches){
-            $("#activeTransactionPopup").dxPopup("instance").option("height",880);
+            $("#activeTransactionPopup").dxPopup("instance").option("minHeight",550);
+            $("#activeTransactionPopup").dxPopup("instance").option("closeOnOutsideClick",true);
         }else{
             $("#activeTransactionPopup").dxPopup("instance").option("height",700);
+
         }
     }
 
@@ -37,7 +39,7 @@ function activeTransactionSettings() {
 function showUserActiveTransactionList() {
 
 
-    $.get('./transaction/active/wait/proposal?userId='+ currentUserId, function (data){
+    $.get('./transaction/active/wait/proposal?userId='+ user.id, function (data){
 
 
         var activeTransactionList = $("#userActiveTransactionList").dxList({
@@ -69,7 +71,41 @@ function showUserActiveTransactionList() {
 function showActiveTransactionPopup(transaction) {
 
 
-    $("#activeTransactionPopup").dxPopup("show");
+    $("#activeTransactionPopup").dxPopup({
+        contentTemplate: function(container) {
+            var scrollView = $("<div id='scrollView'></div>");
+            var content = $("<div id='popoverNoActiveTransaction'>"+
+                "<p>Ta oferta jest już nieaktywna i nie może być brana pod uwagę w tej transakcji. Usuń ją z proponowanych</p>"+
+            "</div>"+
+           "<div id='popoverNoActiveTransactionShow'>"+
+                "<p>Ta oferta jest już nieaktywna i nie może być brana pod uwagę w tej transakcji. Usuń ją z proponowanych</p>"+
+            "</div>"+
+            "<div id='aTransactionForm'></div>"+
+                "<div id='aOfferGrid'></div>"+
+                "<div id='addActiveAnotherOfferButton'></div>"+
+                "<div id='anotherActiveOfferPopup'>"+
+                "<div id='anotherActiveOfferContainer'>"+
+                "<div id='anotherActiveOfferList'></div>"+
+                "</div>"+
+                "<div id='acceptActiveAnotherButton'></div>"+
+                "<div id='cancelActiveAnotherButton'></div>"+
+                "</div>"+
+                "<div class='offerButtonContainer'>"+
+                "<div id='sendResponseActiveTransactionButton'></div>"+
+                "<div id='acceptActiveTransactionButton'></div>"+
+                "<div id='rejectActiveTransactionButton'></div>"+
+                "</div>");
+            scrollView.append(content);
+            scrollView.dxScrollView({
+                //height: '50%',
+                width: '100%'
+
+            });
+
+            container.append(scrollView);
+            return container;
+        }
+    }).dxPopup("show");
 
     $("#anotherActiveOfferPopup").hide();
 
@@ -85,10 +121,10 @@ function sendAnswerActiveForm(transaction) {
 
     var transactionData, userSide;
 
-    if (currentUserId === transaction.clientId) {
+    if (user.id === transaction.clientId) {
         userSide = "client"
     }
-    if(currentUserId === transaction.ownerId){
+    if(user.id === transaction.ownerId){
         userSide = "owner"
     }
 
@@ -230,12 +266,10 @@ function sendAnswerActiveForm(transaction) {
                 title: "Pozostałe oferty użytkownika " + transaction.clientLogin,
                 shadingColor: "#32323280",
                 maxWidth:800
-                /*height: 650,
-                width: 800*/
             }).dxPopup("show");
 
             $.ajax({
-                url: './products/owner/another?ownerId='+transaction.clientId,
+                url: './auth/products/owner/another?ownerId='+transaction.clientId,
                 type: 'get',
                 dataType: 'json',
                 contentType: 'application/json; charset=utf-8',
@@ -269,7 +303,6 @@ function sendAnswerActiveForm(transaction) {
                 }
             });
 
-            //addAnotherOfferFunction(transaction, userSide);
 
             $("#acceptActiveAnotherButton").dxButton({
                 text: "Akceptuj",
@@ -304,7 +337,6 @@ function sendAnswerActiveForm(transaction) {
                     $.each(anotherOfferList,function(index, data){
 
                         offerJson.offerId = data.id;
-                        offerJson = JSON.stringify(offerJson);
 
                         $.ajax({
                             url: './transaction/save/offer/another',
@@ -315,9 +347,8 @@ function sendAnswerActiveForm(transaction) {
                                 refreshOfferGrid("#aOfferGrid");
                                 $("#anotherActiveOfferPopup").dxPopup("hide");
                             },
-                            data: offerJson
+                            data: JSON.stringify(offerJson)
                         });
-                       // addAnotherOfferToTransactionStateFunction(offerJson, "#aOfferGrid");
                     });
 
 
@@ -344,12 +375,12 @@ function sendAnswerActiveForm(transaction) {
                 //$("#userActiveTransactionList").dxList('instance').repaint();
                 $("#activeTransactionPopup").dxPopup("hide");
                 showUserActiveTransactionList();
+                $("#userMenuList").dxList('instance').repaint();
 
             })
         }
     });
 
-    //rejectButton("#userActiveTransactionList","#activeTransactionPopup");
 
 
     $("#acceptActiveTransactionButton").dxButton({
@@ -374,10 +405,11 @@ function sendAnswerActiveForm(transaction) {
                         data.date = dateFormat(new Date);
                         data.messageOwner = $("#aTransactionForm").dxForm("instance").getEditor('messageOwner').option('value');
                         data.messageClient = $("#aTransactionForm").dxForm("instance").getEditor('messageClient').option('value');
+                        var id = data.transactionId;
                         data = JSON.stringify(data);
 
                         $.ajax({
-                            url: "./transaction/success/end?id=" + data.transactionId+"&userSide="+userSide,
+                            url: "./transaction/success/end?id=" +id +"&userSide="+userSide,
                             type: 'post',
                             dataType: 'json',
                             contentType: 'application/json; charset=utf-8',
@@ -388,6 +420,7 @@ function sendAnswerActiveForm(transaction) {
                                     //$(list).dxList('instance').repaint();
                                     $("#activeTransactionPopup").dxPopup("hide");
                                     showUserActiveTransactionList();
+                                    $("#userMenuList").dxList('instance').repaint();
                                 }
                             },
                             data:data
@@ -400,8 +433,6 @@ function sendAnswerActiveForm(transaction) {
 
         }
     });
-
-    //acceptButton("#aOfferGrid","#userActiveTransactionList","#activeTransactionPopup",userSide);
 
 
     $("#sendResponseActiveTransactionButton").dxButton({
@@ -451,6 +482,7 @@ function sendAnswerActiveForm(transaction) {
                                // $("#userActiveTransactionList").dxList('instance').repaint();
                                 $("#activeTransactionPopup").dxPopup("hide");
                                 showUserActiveTransactionList();
+                                $("#userMenuList").dxList('instance').repaint();
 
                             },
                             data: data
@@ -473,10 +505,10 @@ function showProposedOffersActive(transaction) {
 
     var userSide;
 
-    if (currentUserId === transaction.clientId) {
+    if (user.id === transaction.clientId) {
         userSide = "client"
     }
-    if(currentUserId === transaction.ownerId){
+    if(user.id === transaction.ownerId){
         userSide = "owner"
     }
 
@@ -511,7 +543,10 @@ function showProposedOffersActive(transaction) {
             "showScrollbar": "onHover"
         },
         paging:{
-            pageSize: 5
+            pageSize: 2
+        },
+        pager:{
+            visible: true
         },
         columns: [{
             caption: "Nazwa oferty",
@@ -633,10 +668,10 @@ function showProposedOffersActive(transaction) {
 
     if (userSide === "client") {
         $("#aOfferGrid").dxDataGrid("instance").columnOption(2, "caption", "Twoja akceptacja");
-        $("#aOfferGrid").dxDataGrid("instance").columnOption(3, "caption", "Akceptacja właściciela");
+        $("#aOfferGrid").dxDataGrid("instance").columnOption(3, "caption", "Akceptacja kontrahenta");
 
     }else{
-        $("#aOfferGrid").dxDataGrid("instance").columnOption(2, "caption", "Akceptacja właściciela");
+        $("#aOfferGrid").dxDataGrid("instance").columnOption(2, "caption", "Akceptacja kontrahenta");
         $("#aOfferGrid").dxDataGrid("instance").columnOption(3, "caption", "Twoja akceptacja");
     }
 
@@ -650,7 +685,7 @@ function showProposedOffersActive(transaction) {
         if(ms.matches){
             $("#aOfferGrid").dxDataGrid("instance").option("paging.pageSize",1);
         }else{
-            $("#aOfferGrid").dxDataGrid("instance").option("paging.pageSize",4);
+            $("#aOfferGrid").dxDataGrid("instance").option("paging.pageSize",2);
         }
     }
 

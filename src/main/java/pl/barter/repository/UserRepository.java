@@ -17,8 +17,16 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     List<User> findAll();
 
-    User findByLoginEquals(String login);
-    List<User>findByLogin(String login);
+
+   User findByUsernameOrEmail(String username, String email);
+
+    @Query(value = "SELECT nextval('users_id_seq')", nativeQuery =
+            true)
+    Long getNextSeriesId();
+
+    Boolean existsByUsername(String username);
+
+    Boolean existsByEmail(String email);
 
     @Query(value="select * from users  where (rating >= 4.8) order by random() limit 5", nativeQuery = true )
     List<User> findByBestRating1();

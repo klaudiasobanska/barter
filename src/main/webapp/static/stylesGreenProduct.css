@@ -5,6 +5,7 @@
 .allContent{
     -moz-user-select: none;
     user-select: none;
+    font-family: "Open Sans", Arial, sans-serif;
 }
 
 .headerContainer{
@@ -14,7 +15,6 @@
     display: flex;
     align-items: center;
     position: relative;
-   /* justify-content: center*/
 }
 
 .headerContainer> img{
@@ -32,11 +32,9 @@
 }
 
 #loginButton{
-    font-family: "Open Sans";
     font-size: large;
     font-weight: bold;
     color: white;
-    height: 100%;
     align-items: center;
     justify-content: center;
     transition: .3s ease-out;
@@ -54,6 +52,18 @@
 #loginButton:hover{
     background-color: #2e7632;
     border-color: #2e7632;
+}
+#userButton, #logoutButton{
+    display: block;
+    margin-bottom: 5%;
+    border-color: #388E3C;
+    font-size: medium;
+    transition: .3s ease-out ;
+    font-weight: bold;
+}
+
+#userButton:hover, #logoutButton:hover{
+    background-color: #bee5bf;
 }
 
 #homeButton{
@@ -82,14 +92,11 @@
     width: 35%;
     background-color: white;
     box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);
-    /*padding: 2% 2% 2% 2%;*/
     display: inline-block;
     float: left;
 }
 
 .productGallery{
-    height: 550px;
-    /*box-shadow: 0 15px 50px 5px rgba(57,62,70,.2);*/
     background-position: center;
     background-size: cover;
     display: block;
@@ -109,7 +116,6 @@
 }
 
 #productName{
-    font-family: "Open Sans";
     font-size: xx-large;
     font-weight: bold;
     margin: 2% 3% 2% 3%;
@@ -150,7 +156,6 @@
 }
 
 #productDescription{
-    font-family: "Open Sans";
     color: #393e46;
     font-size: medium;
     margin: 3% 3% 5% 3%;
@@ -163,7 +168,6 @@
     display: inline-block;
     width: 95%;
     margin: 3% 3% 0 3%;
-    font-family: "Open Sans";
     font-size: medium;
 }
 
@@ -189,7 +193,6 @@
 #transactionButton{
     margin-top:0;
     background: #388E3C;
-    font-family: "Open Sans";
     font-size: large;
     font-weight: bold;
     color: white;
@@ -217,7 +220,6 @@
 }
 
 #addFavButton{
-    font-family: "Open Sans";
     font-size: large;
     font-weight: bold;
     border-color: #388E3C;
@@ -233,6 +235,11 @@
     color: white;
 }
 
+#addFavButton:focus{
+    background-color: #bee5bf;
+    color: black;
+}
+
 #addFavButton  .dx-icon{
     float: left;
     color: #388E3C;
@@ -245,6 +252,9 @@
     color: white;
 }
 
+#addFavButton:focus  .dx-icon{
+    color: #388E3C;
+}
 
 div.ownerContainer{
     float: right;
@@ -269,7 +279,6 @@ div.ownerContainer{
 }
 
 .ownerInfo{
-    font-family: "Open Sans";
     padding: 0 1% 3% 1%;
     width: 95%;
     margin: 1% auto 3% auto;
@@ -302,7 +311,6 @@ div.ownerContainer{
     background-image: linear-gradient(to right, #163918, #1e4d20, #266228, #2f7830, #388e38);
     height: 50px;
     position: relative;
-    font-family: "Open Sans";
     width: 100%;
 }
 
@@ -322,10 +330,10 @@ div.ownerContainer{
 
 #clientOfferGrid{
     margin-top: 2%;
+    margin-bottom: 2%;
 }
 
 #sendTranButton{
-    font-family: "Open Sans";
     position: absolute;
     bottom: 5%;
     right: 1%;
@@ -341,7 +349,6 @@ div.ownerContainer{
 }
 
 #cancelTranButton {
-    font-family: "Open Sans";
     position: absolute;
     bottom: 5%;
     right: 15%;
@@ -355,6 +362,75 @@ div.ownerContainer{
 
 #cancelTranButton:hover{
     background-color: #ffbfb2;
+}
+
+@media (max-width: 380px) and (max-height: 700px) {
+    .headerContainer> img{
+        left: 10%;
+    }
+
+    .userLoginContent{
+        right: 10%;
+    }
+
+    #loginButton  .dx-icon{
+        padding-right: 25px;
+    }
+
+    .pContent {
+        margin: 2% 5% 2% 5%;
+        width: auto;
+    }
+
+    .buttonOfferContainer{
+        margin: 2% 10% 2% 10%;
+        float: none;
+        width: 80%;
+
+    }
+    #transactionButton{
+        width: 250px;
+        padding-right: 5%;
+        display: table;
+        margin: 0 auto;
+        margin-bottom: 1%;
+
+
+    }
+    #transactionButton  .dx-icon{
+        margin-right: 8%;
+    }
+
+    #addFavButton{
+        width: 250px;
+        padding-right: 7%;
+        display: table;
+        margin: 0 auto;
+    }
+
+    #addFavButton  .dx-icon{
+        margin-right: 8%;
+
+    }
+
+    div.ownerContainer{
+        width: auto;
+        margin: 2% 5% 2% 5%;
+        float: none;
+        display: inline-block;
+        width: 90%;
+
+    }
+
+    .ownerOfferProductContainer{
+        margin: 2% 5% 2% 5%;
+        width: 90%;
+
+    }
+
+    #cancelTranButton {
+        right: 35%;
+    }
 }
 
 @media (min-width: 381px) and (max-width: 768px){
@@ -374,6 +450,10 @@ div.ownerContainer{
     .pContent {
         margin: 2% 10% 2% 10%;
         width: auto;
+    }
+
+    .productGallery {
+        height: 10px;
     }
 
     .buttonOfferContainer{
@@ -441,6 +521,10 @@ div.ownerContainer{
         width: 52%;
     }
 
+    .productGallery {
+        height: 550px;
+    }
+
     .buttonOfferContainer{
         margin-right: 5%;
         min-width: 35%;
@@ -472,6 +556,10 @@ div.ownerContainer{
     .pContent {
         margin: 2% 0 2% 5%;
         width: 57%;
+    }
+
+    .productGallery {
+        height: 550px;
     }
 
     .buttonOfferContainer{
@@ -506,6 +594,10 @@ div.ownerContainer{
     .pContent {
         margin: 2% 0 2% 10%;
         width: 55%;
+    }
+
+    .productGallery {
+        height: 550px;
     }
 
     .buttonOfferContainer{

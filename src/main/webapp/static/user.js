@@ -1,21 +1,22 @@
-var currentUser;
-var currentUserId;
+var user;
+$(function () {
+    $.get("./users/current", function (data) {
+        user = data;
+        showPage();
 
-$.get('./users/find/15', function (data) {
+    });
 
-    if (data.id == null) {
-        location.href = './login'
-    }
-    else {
-        currentUser = data;
-        currentUserId = data.id;
-    }
+    $("#imgUserContainer").hide();
+    $("#popoverActiveOffer").hide();
+    $("#popoverActiveOfferShow").hide();
+    $("#popoverNoActiveTransaction").hide();
+    $("#popoverNoActiveTransactionShow").hide();
+    $("#popoverNoActiveSentShow").hide();
 
-    showPage();
+
 });
 
 function showPage() {
-
 
 
     $("#logoutButton").dxButton({
@@ -24,17 +25,13 @@ function showPage() {
         icon: 'user',
         stylingMode: "text",
         onClick: function () {
+            $.post('./logout',function () {
+                $.removeCookie('token');
+                location.href = './home'
+            });
 
         }
-    });
-
-    /*$("#homeButton").dxButton({
-        icon:"home",
-        stylingMode: "text",
-        onClick: function () {
-            location.href = "./home";
-        }
-    });*/
+    }).dxButton("instance");
 
 
     $("#noSelectedToast").dxToast({
@@ -72,6 +69,14 @@ function showPage() {
         type: "success",
         displayTime: 2000
     });
+    $("#badOldPasswordToast").dxToast({
+        message: "Obecne hasło jest niezgodne",
+        type: "error",
+        displayTime: 2000
+    });
+
+
+
 
 
    var menuItems=[{
@@ -111,7 +116,7 @@ function showPage() {
        key: "Historia",
        items: [{
            id: 7,
-           text: "Zakończone tranzakcje"
+           text: "Zakończone transakcje"
        },{
            id: 8,
            text: "Oferty zarchiwizowane"
@@ -190,7 +195,7 @@ function showPage() {
                 $("<p id='menuListText'>").text(data.text)
             );
             var result = $("<div>").addClass("cList");
-            $.get("./transaction/active/wait/proposal?userId=" + currentUserId, function (t) {
+            $.get("./transaction/active/wait/proposal?userId=" + user.id, function (t) {
                 if (t.length > 0) {
                     for (var key in data) {
                         if (data[key] === 9) {
@@ -200,7 +205,7 @@ function showPage() {
                 }
 
             });
-            $.get("./transaction/new/proposal?ownerId=" + currentUserId, function (e) {
+            $.get("./transaction/new/proposal?ownerId=" + user.id, function (e) {
                 if (e.length > 0) {
                     for (var key in data) {
                         if (data[key] === 5) {
@@ -216,9 +221,11 @@ function showPage() {
     });
 
     $("#addOrEditOfferPopup").dxPopup({
-        title:"Dodaj nową ofertę",
+       // title:"Dodaj nową ofertę",
         maxWidth: 800,
-        shadingColor: "#32323280"
+        shadingColor: "#32323280",
+        showCloseButton: false,
+        closeOnBackButton: false
     });
 
     if (matchMedia) {
@@ -227,14 +234,14 @@ function showPage() {
         mediaSmallChange(ms);
     }
 
-
     function mediaSmallChange(ms){
         if(ms.matches){
             $("#logoutButton").dxButton("instance").option("text","");
             $("#drawerButton").dxButton("instance").option("visible",true);
             $("#userMenuList").dxList("instance").option("visible",false);
             $("#userDataForm").dxForm("instance").option("labelLocation","top");
-            $("#addOrEditOfferPopup").dxPopup("instance").option("height",650);
+            $("#addOrEditOfferPopup").dxPopup("instance").option("minHeight",550);
+            $("#addOrEditOfferPopup").dxPopup("instance").option("closeOnOutsideClick",true);
 
 
         }else {
@@ -245,7 +252,10 @@ function showPage() {
             $("#userDataForm").dxForm("instance").option("labelLocation","left");
         }
     }
-};
+
+}
+
+
 
 function menuContent(data) {
     switch (data.itemData.id) {
@@ -390,6 +400,7 @@ function userDataSettings() {
 
     $("#headerUserDataText").html("");
     $("#headerUserDataText").append("Dane osobowe");
+    $("#imgUserContainer").show();
 
 
 
@@ -404,11 +415,29 @@ function userDataSettings() {
     };
 
     var temp =  $("#userDataForm").dxForm({
-        formData: currentUser,
+        formData: user,
         colCount:2,
         items: [{
+            dataField: "login",
+            colSpan:2,
+            label: {
+                text: "Login"
+            },
+            editorOptions: {
+                disabled: true
+            }
+        },{
+            dataField: "email",
+            colSpan:2,
+            label: {
+                text: "Adres Email"
+            },
+            validationRules: [{
+                type: "required",
+                message: "Pole wymagne"
+            }]
+        },{
             dataField: "forename",
-            /*cssClass: "myClass",*/
             label: {
                 text: "Imię"
             }
@@ -432,21 +461,6 @@ function userDataSettings() {
             }
 
         },{
-            dataField: "login",
-            colSpan:2,
-            label: {
-                text: "Login"
-            },
-            editorOptions: {
-                disabled: true
-            }
-        },{
-            dataField: "email",
-            colSpan:2,
-            label: {
-                text: "Adres Email"
-            }
-        },{
             dataField: "address",
             label: {
                 text: "Adres zamieszkania"
@@ -468,8 +482,9 @@ function userDataSettings() {
     });
     $(".userDataContent").append(temp);
 
-    $('#imgUser').attr('src', currentUser.imageString);
 
+
+    $('#imgUser').attr('src', user.imageString);
 
     $("#userImgUploader").dxFileUploader({
         name: "file",
@@ -477,7 +492,7 @@ function userDataSettings() {
         labelText: "",
         accept: "image/*",
         uploadMode: "useButtons",
-        uploadUrl:"./image/upload?id="+currentUserId,
+        uploadUrl:"./image/upload?id="+ user.id,
         maxFileSize: 5000000,
         invalidMaxFileSizeMessage: "Plik zbyt duży",
         readyToUploadMessage:"Gotowy do zapisu",
@@ -493,7 +508,7 @@ function userDataSettings() {
                 };
                 reader.readAsDataURL(e.value[0]);
             }else{
-                $('#imgUser').attr('src', currentUser.imageString);
+                $('#imgUser').attr('src', user.imageString);
             }
         }
     });
@@ -513,32 +528,26 @@ function userDataSettings() {
             newUserData.city = f.getEditor('city').option('value');
             newUserData.zipCode = f.getEditor('zipCode').option('value');
 
-            //newUserData = JSON.stringify(newUserData);
-            console.log(newUserData);
+            newUserData = JSON.stringify(newUserData);
+            var ret = f.validate();
 
-            $.post("./users/edit?id="+currentUserId+"&forename="+newUserData.forename + "&surname="+newUserData.surname+
-                "&email="+newUserData.email+"&address="+newUserData.address+"&city="+newUserData.city+"&zipCode="+newUserData.zipCode,
-                function (data) {
-                    $("#userDataForm").dxForm('instance').repaint();
-                    $("#updateUserDataToast").dxToast("show");
-            });
-            /*$.ajax({
-                url: './users/'+currentUserId,
-                type: 'put',
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (result) {
-                    if (result.errorMsg) {
-                        console.log("error")
-                    } else {
-                        $("#userDataForm").dxForm('instance').repaint();
+            if (ret.isValid) {
+                $.ajax({
+                    url: './users/update',
+                    type: 'put',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    data: newUserData,
+                    success: function (result) {
+                        if (result.errorMsg) {
+                            console.log("error")
+                        } else {
+                            $("#userDataForm").dxForm('instance').repaint();
+                            $("#updateUserDataToast").dxToast("show");
+                        }
                     }
-                },
-                data: newUserData
-            });*/
-
-
-
+                });
+            }
         }
     })
 }
@@ -550,6 +559,7 @@ function userPasswordSettings() {
     $("#headerUserPasswordText").append("Zmiana hasła");
 
     var editPassword = {
+        oldPassword:"",
         password: "",
         confirm: ""
     };
@@ -558,6 +568,18 @@ function userPasswordSettings() {
         formData: editPassword,
         readOnly: false,
         items: [{
+            dataField: "oldPassword",
+            editorOptions: {
+                mode: 'password'
+            },
+            label: {
+                text: "Obecne hasło"
+            },
+            validationRules: [{
+                type: "required",
+                message: "Pole wymagne"
+            }]
+        },{
             dataField: "password",
             editorOptions: {
                 mode: 'password'
@@ -567,8 +589,8 @@ function userPasswordSettings() {
             },
             validationRules: [{
                 type: "required",
-                message: "Hasło jest wymagane"
-            }],
+                message: "Pole wymagne"
+            }]
         }, {
             dataField: "confirm",
             label: {
@@ -588,7 +610,7 @@ function userPasswordSettings() {
                 message: "Wprowadzone hasła nie są zgodne"
             }, {
                 type: "required",
-                message: "Potwierdzenie hasła jest wymagane"
+                message: "Pole wymagne"
             }]
         }]
     });
@@ -600,39 +622,59 @@ function userPasswordSettings() {
 
             var f = $("#userPasswordForm").dxForm('instance');
 
-            var editProfilePassword = f.getEditor('password').option('value');
+            var oldPassword = f.getEditor('oldPassword').option('value');
+            var newPassword = f.getEditor('password').option('value');
             var confirmPassword = f.getEditor('confirm').option('value');
+
+            var passwordForm = {
+                oldPassword: oldPassword,
+                newPassword: newPassword
+            };
+
+            passwordForm = JSON.stringify(passwordForm);
 
             var ret = f.validate();
 
             if (ret.isValid) {
-                if (editProfilePassword === confirmPassword) {
+                if (newPassword === confirmPassword) {
 
-                   /* $.post("./users/edit/password?id=" + user
-                        + "&password=" + editProfilePassword,
-                        function (data) {})*/
-                   console.log("jeej")
+                    $.ajax({
+                        url: './users/update/password',
+                        type: 'put',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: passwordForm,
+                        success: function (result) {
+                            if (result.errorMsg === "old") {
+                                $("#badOldPasswordToast").dxToast("show");
+                            } else {
+                                $.post('/logout',function () {
+                                    $.removeCookie('token');
+                                    location.href = './home'
+                                });
+                            }
+                        }
+                    });
+
                 }
             }
         }
     })
-
 }
 
 function showOffersList() {
 
-    $.get('./products/owner/list?ownerId='+ currentUserId +"&active=" +true, function (data){
+    $.get('./auth/products/owner/list?ownerId='+ user.id +"&active=" +true, function (data){
     var offerList = $("#userOfferList").dxList({
         dataSource: data,
-        selectionMode: "sinle",
+        selectionMode: "single",
         noDataText: "Brak aktywnych ofert",
-        scrollingEnabled: true,
         itemTemplate: function(e) {
 
             var result = $("<div>").addClass("offersUser");
 
             $.get("./image/offer?offerId="+e.id, function (t){
-                if (t[0] != undefined) {
+                if (t[0] !== undefined) {
                     $("<img>").attr("src", t[0]).appendTo(result);
                 }
                 $("<div id='name'>").text(e.name).appendTo(result);
@@ -640,7 +682,7 @@ function showOffersList() {
                     text: "Pokaż ofertę",
                     onClick: function () {
                         offerLinkClick(e.id);
-                        /!* e.jQueryEvent.stopPropagation();*!/
+                        /* e.jQueryEvent.stopPropagation();*/
                     }
                 })).appendTo(result);
             });
@@ -656,6 +698,13 @@ function showOffersList() {
 
 function showAddOrEditOfferPopup(edit) {
 
+    if (edit){
+        $("#addOrEditOfferPopup").dxPopup("instance").option("title", "Edytuj ofertę");
+    }else{
+        $("#addOrEditOfferPopup").dxPopup("instance").option("title", "Dodaj nową ofertę");
+    }
+
+
     $("#addOrEditOfferPopup").dxPopup("show");
 
     addOrEditOffer(edit);
@@ -664,7 +713,6 @@ function showAddOrEditOfferPopup(edit) {
 
 function addOrEditOffer(edit) {
 
-
     var dataList = $("#userOfferList").dxList("instance");
 
     var newOffer = {
@@ -672,16 +720,16 @@ function addOrEditOffer(edit) {
         categoryId: "",
         cityId: "",
         description: "",
-        ownerId: currentUserId,
+        ownerId: user.id,
         creationDate: "",
-        active:true,
-
+        active:true
     };
 
 
     if (edit == true) {
         newOffer.name = dataList.option("selectedItems")[0].name;
         newOffer.categoryId = dataList.option("selectedItems")[0].categoryId;
+        newOffer.cityId = dataList.option("selectedItems")[0].cityId;
         newOffer.description = dataList.option("selectedItems")[0].description;
 
     } else $("#addOfferForm").val("");
@@ -694,7 +742,14 @@ function addOrEditOffer(edit) {
             dataField:"name",
             label: {
                 text: "Nazwa oferty"
-            }
+            },
+            validationRules: [{
+                type: "required",
+                message: "Pole wymagne"
+            },{
+                type: 'stringLength', max: 20,
+                message: 'Maksymalna liczba znaków: 20'
+            }]
         },{
             dataField: "categoryId",
             editorType: "dxSelectBox",
@@ -707,7 +762,11 @@ function addOrEditOffer(edit) {
                 valueExpr: 'id',
                 searchEnabled: true,
                 placeholder: "Wybierz kategorię"
-            }
+            },
+            validationRules: [{
+                type: "required",
+                message: "Pole wymagne"
+            }]
         },{
             dataField: "cityId",
             editorType: "dxSelectBox",
@@ -720,7 +779,11 @@ function addOrEditOffer(edit) {
                 valueExpr: 'id',
                 searchEnabled: true,
                 placeholder: "Wybierz miejscowość"
-            }
+            },
+            validationRules: [{
+                type: "required",
+                message: "Pole wymagne"
+            }]
         },{
             dataField: "description",
             editorType: "dxTextArea",
@@ -736,7 +799,7 @@ function addOrEditOffer(edit) {
 
     $("#productImgUploader").dxFileUploader({
         selectButtonText: "Wybierz zdjęcia",
-        uploadUrl:"/products/image/upload",
+        uploadUrl:"./auth/products/image/upload",
         name: "file",
         accept: "image/*",
         multiple: true,
@@ -764,7 +827,6 @@ function addOrEditOffer(edit) {
             var newCreationDate = getDate(new Date());
 
 
-
             newOffer.name = newName;
             newOffer.categoryId = newCategory;
             newOffer.cityId = newCity;
@@ -773,34 +835,44 @@ function addOrEditOffer(edit) {
 
 
             newOffer = JSON.stringify(newOffer);
-            console.log(newOffer);
+            var ret = f.validate();
 
-            if(edit === true){
-                $.post("/products/update?id="+$("#userOfferList").dxList("instance").option("selectedItems")[0].id+"&name="+newName+
-                "&categoryId="+newCategory+"&description="+newDesc, function (result) {
-                    $("#addOrEditOfferPopup").dxPopup("hide");
-                    showOffersList();
-                    $("#productImgUploader").dxFileUploader("instance").reset();
-                })
-            }else {
-
-
-                $.ajax({
-                    url: './products/add',
-                    type: 'post',
-                    dataType: 'json',
-                    contentType: 'application/json',
-                    success: function (result) {
-                        if (result.errorMsg) {
-                            console.log("error")
-                        } else {
-                            $("#addOrEditOfferPopup").dxPopup("hide");
-                            showOffersList();
-                            $("#productImgUploader").dxFileUploader("instance").reset();
+            if (ret.isValid) {
+                if (edit === true) {
+                    $.ajax({
+                        url: './auth/products/' + $("#userOfferList").dxList("instance").option("selectedItems")[0].id,
+                        type: 'put',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: newOffer,
+                        success: function (result) {
+                            if (result.errorMsg) {
+                                console.log("error")
+                            } else {
+                                $("#addOrEditOfferPopup").dxPopup("hide");
+                                showOffersList();
+                                $("#productImgUploader").dxFileUploader("instance").reset();
+                            }
                         }
-                    },
-                    data: newOffer
-                });
+                    })
+                } else {
+                    $.ajax({
+                        url: './auth/products/add',
+                        type: 'post',
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        success: function (result) {
+                            if (result.errorMsg) {
+                                console.log("error")
+                            } else {
+                                $("#addOrEditOfferPopup").dxPopup("hide");
+                                showOffersList();
+                                $("#productImgUploader").dxFileUploader("instance").reset();
+                            }
+                        },
+                        data: newOffer
+                    });
+                }
             }
         }
     });
@@ -841,7 +913,7 @@ function userOffersSettings() {
         onClick: function () {
             if ($("#userOfferList").dxList("instance").option("selectedItems").length > 0){
                 $.get("./clear/session/img", function () {
-                    showAddOrEditOfferPopup(false);
+                    showAddOrEditOfferPopup(true);
                 });
             }
             else{
@@ -856,7 +928,7 @@ function userOffersSettings() {
         onClick: function () {
             if ($("#userOfferList").dxList("instance").option("selectedItems").length > 0) {
                 var id = $("#userOfferList").dxList("instance").option("selectedItems")[0].id;
-                $.post("./products/active?id=" + id+"&active="+false, function (result) {
+                $.post("./auth/products/active?id=" + id+"&active="+false, function () {
                     $("#archiveUserProductToast").dxToast("show");
                     showOffersList();
                 })
@@ -871,35 +943,31 @@ function userOffersSettings() {
 }
 
 function showFavList() {
-
-
     var favList = $("#userFavList").dxList({
-        dataSource: currentUser.fav,
+        dataSource: user.fav,
         height: "100%",
-        selectionMode: "sinle",
-        scrollingEnabled: false,
         selectionMode: "single",
         noDataText: "Brak ulubionych ofert",
         itemTemplate: function(e) {
 
-            var result = $("<div>").addClass("offerFav");
+                var result = $("<div>").addClass("offerFav");
 
-            $.get("./image/offer?offerId="+e.id, function (t){
-                if (t[0] != undefined) {
-                    $("<img>").attr("src", t[0]).appendTo(result);
-                    console.log(result[0]);
-                }
-                $("<div id='name'>").text(e.name).appendTo(result);
-                $("<div id='offerUserButtonContainer'>").append($('<div id="showOfferButton">').dxButton({
-                    text:"Pokaż ofertę",
-                    onClick:function () {
-                        offerLinkClick(e.id);
-                        e.jQueryEvent.stopPropagation();
+                $.get("./image/offer?offerId=" + e.id, function (t) {
+                    if (t[0] !== undefined) {
+                        $("<img>").attr("src", t[0]).appendTo(result);
                     }
-                })).appendTo(result);
-            });
+                    $("<div id='name'>").text(e.name).appendTo(result);
+                    $("<div id='offerUserButtonContainer'>").append($('<div id="showOfferButton">').dxButton({
+                        text: "Pokaż ofertę",
+                        onClick: function () {
+                            offerLinkClick(e.id);
+                            e.jQueryEvent.stopPropagation();
+                        }
+                    })).appendTo(result);
+                });
 
-            return result;
+                return result;
+
         }
     }).dxList("instance");
     $("#userFavContent").append(favList);
@@ -915,10 +983,10 @@ function deleteFavButton() {
         onClick: function () {
             if ($("#userFavList").dxList("instance").option("selectedItems").length > 0) {
                 var id = $("#userFavList").dxList("instance").option("selectedItems")[0].id;
-                $.post("./users/delete/fav?productId=" + id +"&userId="+currentUserId, function (result) {
+                $.post("./users/delete/fav?productId=" + id +"&userId="+user.id, function (result) {
                     $("#deleteFavToast").dxToast("show");
-                    $("#userFavList").dxList('instance').option("dataSource",currentUser.fav);
-                    $('#userFavList').dxList('instance').repaint();
+                    $("#userFavList").dxList('instance').option("dataSource",result.fav);
+
                 })
             } else {
                 $("#noSelectedToast").dxToast("show");
@@ -940,20 +1008,12 @@ function userFavSettings() {
 }
 
 
-
-function refreshFavList() {
-
-    var ds = $("#userFavList").dxList("instance");
-    ds.repaint();
-
-}
-
 function showDeletedOfferList() {
 
-    $.get('./products/owner?ownerId='+ currentUserId +"&active=" +false, function (data){
+    $.get('./auth/products/deleting?ownerId='+ user.id , function (data){
         var offerList = $("#userDeletedOfferList").dxList({
-            dataSource: data.content,
-            selectionMode: "sinle",
+            dataSource: data,
+            selectionMode: "single",
             scrollingEnabled: true,
             noDataText: "Brak zarchiwizowanych ofert",
             itemTemplate: function(e) {
@@ -961,7 +1021,7 @@ function showDeletedOfferList() {
                 var result = $("<div>").addClass("offerDelete");
 
                 $.get("./image/offer?offerId="+e.id, function (t){
-                    if (t[0] != undefined) {
+                    if (t[0] !== undefined) {
                         $("<img>").attr("src", t[0]).appendTo(result);
                     }
                     $("<div id='name'>").text(e.name).appendTo(result);
@@ -988,7 +1048,7 @@ function deletedOfferSettings() {
         onClick: function () {
             if ($("#userDeletedOfferList").dxList("instance").option("selectedItems").length > 0) {
                 var id = $("#userDeletedOfferList").dxList("instance").option("selectedItems")[0].id;
-                $.post("./products/active?id=" + id +"&active="+true, function () {
+                $.post("./auth/products/active?id=" + id +"&active="+true, function () {
                     $("#restoreUserProductToast").dxToast("show");
                     showDeletedOfferList();
                 })
@@ -1005,7 +1065,7 @@ function deletedOfferSettings() {
         onClick: function () {
             if ($("#userDeletedOfferList").dxList("instance").option("selectedItems").length > 0) {
                 var id = $("#userDeletedOfferList").dxList("instance").option("selectedItems")[0].id;
-                $.post("./products/delete?id=" + id, function () {
+                $.post("./auth/products/delete?id=" + id, function () {
                     $("#deleteUserProductToast").dxToast("show");
                     showDeletedOfferList();
                 })
@@ -1020,110 +1080,19 @@ function deletedOfferSettings() {
 
 }
 
-/*----- TRANSACTION FUNCTIONS*/
-
-
-/*
-function addAnotherOfferToTransactionStateFunction(json, gridName){
-
-    json = JSON.stringify(json);
-
-    $.ajax({
-        url: './transaction/save/offer/another',
-        type: 'post',
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        success: function () {
-            refreshOfferGrid(gridName);
-            $(".anotherOfferPopup").dxPopup("hide");
-        },
-        data: json
-    });
-}
-
-function rejectButton(list,popup) {
-
-    $(".rejectTransactionButton").dxButton({
-        text:"Odrzuć ofertę",
-        onClick:function () {
-            $.post("./transaction/reject?id="+transaction.id,function () {
-
-                $(list).dxList('instance').repaint();
-                $(popup).dxPopup("hide");
-            })
-        }
-    })
-}
-
-function acceptButton(grid,list,popup,userSide){
-
-
-
-    $(".acceptTransactionButton").dxButton({
-        text:"Zaakceptuj i zakończ",
-        onClick: function () {
-            var gridOfferData = $(grid).dxDataGrid("instance").option("dataSource").items();
-
-            if(gridOfferData.length !=0) {
-                var notAccept = [];
-
-                $.each(gridOfferData, function (indexInArray, data) {
-                    if (data.sellerAccept === false || data.buyerAccept === false) {
-                        notAccept.push(indexInArray)
-                    }
-                });
-
-                $.each(gridOfferData, function (indexInArray, data) {
-                    if (notAccept.length > 0) {
-                        $(".acceptEndOfferToast").dxToast("show");
-                    }
-                    else {
-                        data.date = dateFormat(new Date);
-                        data.messageOwner = $("#aTransactionForm").dxForm("instance").getEditor('messageOwner').option('value');
-                        data.messageClient = $("#aTransactionForm").dxForm("instance").getEditor('messageClient').option('value');
-                        data = JSON.stringify(data);
-
-                        $.ajax({
-                            url: "./transaction/success/end?id=" + data.transactionId+"&userSide="+userSide,
-                            type: 'post',
-                            dataType: 'json',
-                            contentType: 'application/json; charset=utf-8',
-                            success: function (result) {
-                                if (result.errorMsg) {
-                                    $(".lastDeletedToast").dxToast("show");
-                                }else {
-                                    $(list).dxList('instance').repaint();
-                                    $(popup).dxPopup("hide");
-                                }
-                            },
-                            data:data
-                        });
-
-                    }
-
-
-                });
-            }else{
-                $(".noProposalOfferToast").dxToast("show");
-            }
-
-        }
-    });
-}*/
-
 
 function transactionToast() {
 
     $(".acceptOfferToast").dxToast({
         message: "Oferta została zaakceptowana",
         type: "success",
-        displayTime: 2000
+        displayTime: 1000
     });
 
     $(".deleteOfferToast").dxToast({
         message: "Oferta została usunięta",
         type: "success",
-        displayTime: 2000
+        displayTime: 1000
     });
 
     $(".acceptSendOfferToast").dxToast({
@@ -1165,12 +1134,24 @@ function endTransactionSettings(){
 
     $("#activeEndTransactionPopup").dxPopup({
         title:"Zakończona transakcja",
-        /*height: 600,*/
-        /*width: 900,*/
         maxWidth:900,
         shadingColor: "#32323280",
         onHiding: function () {
             $("#userEndTransactionList").dxList("instance").option("selectedItems", []);
+        },
+        contentTemplate: function(container) {
+            var scrollView = $("<div id='scrollView'></div>");
+            var content = $( "<div id='aEndTransactionForm'></div>"+
+                "<div id='aEndTransactionOfferGrid'></div>");
+            scrollView.append(content);
+            scrollView.dxScrollView({
+                height: '100%',
+                width: '100%'
+
+            });
+
+            container.append(scrollView);
+            return container;
         }
     }).dxPopup("instance");
 
@@ -1183,10 +1164,11 @@ function endTransactionSettings(){
 
     function mediaSmallChangePopup(mp){
         if(mp.matches){
-            $("#activeEndTransactionPopup").dxPopup("instance").option("height",700);
+            $("#activeEndTransactionPopup").dxPopup("instance").option("minHeight",550);
+            $("#activeEndTransactionPopup").dxPopup("instance").option("closeOnOutsideClick",true);
 
         }else{
-            $("#activeEndTransactionPopup").dxPopup("instance").option("height",600);
+            $("#activeEndTransactionPopup").dxPopup("instance").option("height",590);
         }
     }
 
@@ -1196,15 +1178,14 @@ function endTransactionSettings(){
 
 function showEndTransactionList() {
 
-    $.get('./transaction/end/list?userId='+ currentUserId, function (data){
+    $.get('./transaction/end/list?userId='+ user.id, function (data){
         var endTransactionList = $("#userEndTransactionList").dxList({
             dataSource: data,
             height: "100%",
-            selectionMode: "sinle",
+            selectionMode: "single",
             scrollingEnabled: false,
             noDataText: "Brak zakończonych transakcji",
             itemTemplate: function(e) {
-                console.log(e)
                 var result = $("<div>").addClass("offer");
                 $("<p id='offerText'>").text("Zakończona transakcja:    ").appendTo(result);
                 $("<div id='transactionName'>").text(e.offerName).appendTo(result);
@@ -1235,10 +1216,10 @@ function showEndTransactionForm(transaction) {
 
     var transactionData, userSide;
 
-    if (currentUserId === transaction.clientId) {
+    if (user.id === transaction.clientId) {
         userSide = "client"
     }
-    if (currentUserId === transaction.ownerId) {
+    if (user.id === transaction.ownerId) {
         userSide = "owner"
     }
 
@@ -1388,7 +1369,10 @@ function  showEndTransactionOffers(transaction) {
             mode: "single"
         },
         paging:{
-            pageSize: 5
+            pageSize: 2
+        },
+        pager:{
+          visible: true
         },
         showBorders: true,
         hoverStateEnabled: true,
@@ -1423,7 +1407,7 @@ function dateFormat(d) {
 
 function getDate(dateV) {
     var cDate = dateV;
-    if (cDate!=null){
+    if (cDate!==null){
         return cDate = dateFormat(cDate);
     }else{
         return cDate = "";
@@ -1431,3 +1415,6 @@ function getDate(dateV) {
 
 }
 
+function goHome() {
+    return location.href = "./home"
+}

@@ -64,6 +64,7 @@ public class Product implements Serializable {
             },
             mappedBy = "fav")
     @JsonBackReference
+    //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class , property = "id")
     private Set<User> users = new HashSet<>();
 
 

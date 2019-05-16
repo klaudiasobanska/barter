@@ -13,6 +13,8 @@ import pl.barter.repository.ProductRepository;
 import pl.barter.repository.TransactionRepository;
 import pl.barter.repository.TransactionStateRepository;
 import pl.barter.repository.UserRepository;
+import pl.barter.security.CurrentUser;
+import pl.barter.security.UserPrincipal;
 import pl.barter.service.TransactionStateService;
 
 import javax.mail.MessagingException;
@@ -125,18 +127,18 @@ public class TransactionController extends AbstractController{
 
         for(TransactionState t: transactionState){
             if(userSide.equals("owner")) {
-                if (t.getDelete() == true && t.getSellerAccept() == false && t.getBuyerAccept()==true) {
+                if (t.getDelete() == true && t.getSellerAccept() == false && t.getBuyerAccept()==true && t.getOfferActive()==true) {
                     transactionStateDeleted.add(t);
                 }
             }
             if(userSide.equals("client")){
-                if (t.getDelete() == true && t.getBuyerAccept() == false && t.getSellerAccept()==true) {
+                if (t.getDelete() == true && t.getBuyerAccept() == false && t.getSellerAccept()==true && t.getOfferActive()==true) {
                     transactionStateDeleted.add(t);
                 }
             }
         }
 
-        if(transactionStateDeleted.size() > 0){
+        if(transactionStateDeleted.size() > 0 ){
             return simpleErrorResult("Usunięto ofertę");
         }else {
 
@@ -164,9 +166,9 @@ public class TransactionController extends AbstractController{
                     "<p>Uprzejmnie informujemy, że transakcja między użytkownikami: " + "<b>" + userOwner.getLogin() + "</b>" + " oraz " + "<b>" + userClient.getLogin() + "</b>" +
                     " została zakończona pomyślnie. </p>" +
                     "<p> Oferta " + "<b>" + offerOwner.getName() + "</b>" + " została wymieniona na ofertę/oferty: " + "<b>" + offersClientToString + "</b>" + ".</p>" +
-                    "<p>Oferty zostały zarchiwizowane</p>"
+                    "<p>Oferty zostały zarchiwizowane</p>"+
+                    "<p>Przypominamy, że wymiany naelży dokonać w sposób ustalony między użytkownikami.</p>"
                     + "<p>Pozdrawiamy</p>";
-            ;
 
 
             try {
@@ -174,6 +176,7 @@ public class TransactionController extends AbstractController{
             } catch (MessagingException e) {
                 e.printStackTrace();
             }
+
 
 
             newState.setId(transactionStateRepository.getNextSeriesId());
@@ -264,9 +267,8 @@ public class TransactionController extends AbstractController{
 
     @GetMapping("/transaction/active/wait/proposal")
     public List<Transaction> getTransactionActive(@RequestParam("userId") Long userId,
+                                                  @CurrentUser UserPrincipal currentUser,
                                                   Pageable pageable){
-
-        /*Pobranie z sesji użytkownika i jego id*/
 
         List<Transaction> transactionList = transactionRepository.findActiveProposal(userId, pageable);
 
@@ -276,12 +278,12 @@ public class TransactionController extends AbstractController{
         List<Transaction> transactionListWait = new ArrayList<>();
 
         for (Transaction t: transactionList){
-            if(15 == t.getOwnerId()){
+            if(currentUser.getId() == t.getOwnerId()){
                 if(t.getTransactionStateMaxStep().get(0).getSideFlag()== 1){
                     transactionListWait.add(t);
                 }
             }
-            if(15==t.getClientId()){
+            if(currentUser.getId()==t.getClientId()){
                 if(t.getTransactionStateMaxStep().get(0).getSideFlag() == 0){
                     transactionListWait.add(t);
                 }
@@ -296,9 +298,9 @@ public class TransactionController extends AbstractController{
 
     @GetMapping("/transaction/active/sent/proposal")
     public List<Transaction> getSentTransactionActive(@RequestParam("userId") Long userId,
+                                                      @CurrentUser UserPrincipal currentUser,
                                                   Pageable pageable){
 
-        /*Pobranie z sesji użytkownika i jego id*/
 
         List<Transaction> transactionList = transactionRepository.findActiveProposal(userId, pageable);
 
@@ -308,12 +310,12 @@ public class TransactionController extends AbstractController{
         List<Transaction> transactionListSent = new ArrayList<>();
 
         for (Transaction t: transactionList){
-            if(16 == t.getOwnerId()){
+            if(currentUser.getId() == t.getOwnerId()){
                 if(t.getTransactionStateMaxStep().get(0).getSideFlag()== 0){
                     transactionListSent.add(t);
                 }
             }
-            if(16==t.getClientId()){
+            if(currentUser.getId()==t.getClientId()){
                 if(t.getTransactionStateMaxStep().get(0).getSideFlag() == 1){
                     transactionListSent.add(t);
                 }

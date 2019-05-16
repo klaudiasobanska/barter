@@ -6,39 +6,82 @@ var latest;
 var random;
 var cityName;
 
-$.get('./filters/current', function (data) {
+$(function () {
+    $.get('./filters/current', function (data) {
 
         param = data.param;
         categoryId = data.categoryId;
         cityId = data.cityId;
-        voivoId=data.voivoId;
+        voivoId = data.voivoId;
         latest = data.latest;
         random = data.random;
         cityName = data.cityName;
 
- });
 
+        $.get("./users/current",function (data) {
+            user = data;
 
+            if(user !== null && user.id === undefined){
+                login()
+            }
+            if (user.id !== undefined ){
+                userLoginName(user);
+                list();
 
-$(function () {
+                $("#loginMenu").dxTooltip({
+                    target: "#loginButton",
+                    showEvent: "dxclick",
+                    contentTemplate: function (contentElement) {
+                        contentElement.append(
+                            $("<div />").attr("id", "userButton").dxButton({
+                                text:"Profil",
+                                onClick: function () {
+                                    location.href = "./user"
+                                }
+                            }),
+                            $("<div />").attr("id", "logoutButton").dxButton({
+                                text:"Wyloguj",
+                                onClick: function () {
+                                    $.post('./logout',function () {
+                                        $.removeCookie('token');
+                                        location.reload();
+                                    });
+                                }
+                            })
+                        )
+                    }
+                });
+            }
 
+        }).fail(function(){
+            login();
+        });
+
+    });
+
+});
+
+function login() {
+    list();
 
     $("#loginButton").dxButton({
-        text:"Zaloguj się",
-        stylingMode: "text",
-        icon: 'user',
+        text: "Zaloguj się",
         onClick: function () {
             showLoginPopup();
         }
+    }).dxButton("instance");
+
+    userLoginText();
+}
+
+function list() {
+
+
+    $("#loginButton").dxButton({
+        stylingMode: "text",
+        icon: 'user'
     });
 
-   /* $("#homeButton").dxButton({
-        icon:"home",
-        stylingMode: "text",
-        onClick: function () {
-            location.href = "./home";
-        }
-    });*/
 
     $("#loginPopup").dxPopup({
         height:450,
@@ -55,9 +98,6 @@ $(function () {
         var mm = window.matchMedia("(min-width: 769px) and (max-width: 992px)");
         mm.addListener(mediaMediumChange);
         mediaMediumChange(mm);
-        var ml = window.matchMedia("(min-width: 992px) and (max-width: 1200px)");
-        ml.addListener(mediaLargeChange);
-        mediaLargeChange(ml);
     }
 
     function mediaSmallChange(ms){
@@ -67,8 +107,6 @@ $(function () {
             $("#loginPopup").dxPopup("instance").option("height",400);
             $("#loginPopup").dxPopup("instance").option("width",320);
 
-        }else {
-            $("#loginButton").dxButton("instance").option("text", "Zaloguj się");
         }
     }
 
@@ -78,11 +116,6 @@ $(function () {
         }
     }
 
-    function mediaLargeChange(ml){
-        if(ml.matches){
-            $("#loginButton").dxButton("instance").option("text","Zaloguj się");
-        }
-    }
 
     $("#userMenuButton").dxButton({
         text:"Mój Profil",
@@ -123,16 +156,14 @@ $(function () {
 
     var lData;
 
-    if(cityId!=-1){
+    if(cityId!==-1){
         lData = cityId
     }if((cityId === -1)&&(voivoId === -1)){
         lData = ""
     }
-    if(voivoId != -1 ){
+    if(voivoId !== -1 ){
         lData = voivoId
     }
-
-
 
     $("#searchCityL").dxDropDownBox({
         value: lData,
@@ -198,9 +229,10 @@ $(function () {
     showList(getProductFilter());
    }
 
+};
 
 
-});
+
 
 function getProductLatest() {
 
@@ -250,7 +282,6 @@ function getProductFilter() {
 
     var productData = new DevExpress.data.DataSource({
 
-
         load: function () {
 
             var params = {
@@ -266,9 +297,7 @@ function getProductFilter() {
                     param: params.param ? params.param : "",
                     categoryId: params.categoryId ? params.categoryId : -1,
                     cityId: params.cityId ? params.cityId : -1,
-                    voivoId: params.voivoId ? params.voivoId: -1,
-                    /*page: loadOptions.skip / loadOptions.take,
-                    size: loadOptions.take*/
+                    voivoId: params.voivoId ? params.voivoId: -1
                 }
             ).done(function (result) {
                 d.resolve(result);
@@ -295,6 +324,7 @@ function showList(data) {
         baseItemWidth: 300,
         itemMargin: 10,
         showScrollbar:true,
+        noDataText:"Brak ofert",
         itemTemplate: function (itemData, itemIndex, itemElement){
             var temp = cardTemplate(itemData);
             itemElement.append(temp);

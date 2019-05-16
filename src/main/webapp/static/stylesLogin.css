@@ -5,7 +5,7 @@
 }
 
 #loginText{
-    font-family: "Open Sans";
+    font-family: "Open Sans", Arial, sans-serif;
     font-size: x-large;
     font-weight: bold;
     margin: 5% 5% 5% 5%;
@@ -14,13 +14,13 @@
 }
 
 #loginForm{
-    font-family: "Open Sans";
+    font-family: "Open Sans", Arial, sans-serif;
     margin: 10% 5% 0 5%;
 
 }
 
 #loginButtonForm{
-    font-family: "Open Sans";
+    font-family: "Open Sans", Arial, sans-serif;
     margin: 5% 5% 0 5%;
     width: 90%;
     background-color: #388E3C;
@@ -37,14 +37,14 @@
 }
 
 #registrationHomeText{
-    font-family: "Open Sans";
+    font-family: "Open Sans", Arial, sans-serif;
     margin-top: 15%;
     display: inline-block;
     font-size: medium;
 }
 
 #registrationLink{
-    font-family: "Open Sans";
+    font-family: "Open Sans", Arial, sans-serif;
     color: #388E3C;
     margin-top: 15%;
     display: inline-block;

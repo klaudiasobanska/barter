@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 
 @Entity
@@ -67,6 +68,7 @@ public class TransactionState {
     private Boolean delete=false;
 
     @Transient
-    private Boolean OfferActive;
+    private Boolean offerActive;
+
 
 }

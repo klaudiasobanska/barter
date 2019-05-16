@@ -1,29 +1,86 @@
-var product, productId, ownerName, ownerId;
-var currentUser = 16;
+var product, productId, ownerName, ownerId, user;
 var ownerProduct;
+$(function () {
+    $.get('./products/current', function (data) {
 
-$.get('./products/current', function (data) {
+        product = data;
+        productId = data.id;
+        ownerId = data.ownerId;
 
-    product = data;
-    productId = data.id;
-    ownerId = data.ownerId;
-    console.log(product);
-    getAll();
 
+
+        $.get("./users/current", function (dataUser) {
+            user = dataUser;
+
+            if(user !== null && user.id === undefined){
+                login()
+            }
+            if (user.id !== undefined ){
+                getAll();
+                userLoginName(user);
+
+                $("#loginMenu").dxTooltip({
+                    target: "#loginButton",
+                    showEvent: "dxclick",
+                    contentTemplate: function (contentElement) {
+                        contentElement.append(
+                            $("<div />").attr("id", "userButton").dxButton({
+                                text: "Profil",
+                                onClick: function () {
+                                    location.href = "./user"
+                                }
+                            }),
+                            $("<div />").attr("id", "logoutButton").dxButton({
+                                text: "Wyloguj",
+                                onClick: function () {
+                                    $.post('./logout', function () {
+                                        $.removeCookie('token');
+                                        location.reload();
+                                    });
+                                }
+                            })
+                        )
+                    }
+                });
+            }
+
+        }).fail(function () {
+
+            $("#loginButton").dxButton({
+                text: "Zaloguj się",
+                onClick: function () {
+                    showLoginPopup();
+                }
+            }).dxButton("instance");
+
+            userLoginText();
+            getAll();
+
+        });
+
+    });
 
 });
+
+function login() {
+    getAll();
+
+    $("#loginButton").dxButton({
+        text: "Zaloguj się",
+        onClick: function () {
+            showLoginPopup();
+        }
+    }).dxButton("instance");
+
+    userLoginText();
+}
 
 function getAll() {
 
 
     $("#loginButton").dxButton({
-        text:"Zaloguj się",
         icon: 'user',
-        stylingMode: "text",
-        onClick: function () {
-            showLoginPopup();
-
-        }
+        stylingMode: "text"
     });
 
     $("#loginPopup").dxPopup({
@@ -36,7 +93,7 @@ function getAll() {
         title: "Wyślij propozycję oferty",
         height: 650,
         width: 800,
-        shadingColor: "#32323280",
+        shadingColor: "#32323280"
     });
 
 
@@ -58,19 +115,11 @@ function getAll() {
             $("#tranPopup").dxPopup("instance").option("width",320);
 
         }else {
-            $("#loginButton").dxButton("instance").option("text", "Zaloguj się");
             $("#tranPopup").dxPopup("instance").option("height",650);
             $("#tranPopup").dxPopup("instance").option("width",800);
         }
     }
 
-   /* $("#homeButton").dxButton({
-        icon:"home",
-        stylingMode: "text",
-        onClick: function () {
-            location.href = "./home";
-        }
-    });*/
 
     $("#userMenuButtonProduct").dxButton({
         text:"Mój Profil",
@@ -99,22 +148,43 @@ function getAll() {
         displayTime: 2000
     });
 
+    $("#notLoginToast").dxToast({
+        message: "Zaloguj się aby kontynuować",
+        type: "error",
+        displayTime: 2000
+    });
+    $("#ownerProductToast").dxToast({
+        message: "Jesteś właścicielem tej oferty",
+        type: "error",
+        displayTime: 2000
+    });
+
     showGallery();
 
     info();
     getOwnerData();
 
+
+
     $("#transactionButton").dxButton({
         text: "Rozpocznij transakcję",
         icon: "email",
         onClick: function () {
-            $.get("./transaction/exist?userId="+currentUser+"&offerId="+productId, function (t) {
-                if(t.errorMsg === "exist"){
-                    $("#transactionExistToast").dxToast("show");
+            if(user.id !== undefined) {
+                if(user.id !== ownerId) {
+                    $.get("./transaction/exist?userId=" + user.id + "&offerId=" + productId, function (t) {
+                        if (t.errorMsg === "exist") {
+                            $("#transactionExistToast").dxToast("show");
+                        } else {
+                            transactionButton();
+                        }
+                    });
                 }else{
-                    transactionButton();
+                    $("#ownerProductToast").dxToast("show");
                 }
-            });
+            }else{
+                $("#notLoginToast").dxToast("show");
+            }
         }
     });
 
@@ -124,13 +194,20 @@ function getAll() {
         text: "Dodaj do Ulubionych",
         icon: "favorites",
         onClick: function () {
-            $.post("./users/add/fav?userId="+currentUser+"&productId="+productId, function (t) {
-                if(t.errorMsg === "inFav"){
-                    $("#addFavErrorToast").dxToast("show");
-                }else{
-                    $("#addFavToast").dxToast("show");
-                }
-            });
+            if(user.id !== undefined) {
+                $.post("./users/add/fav?userId=" + product.ownerId + "&productId=" + productId, function (t) {
+                    if (t.errorMsg === "inFav") {
+                        $("#addFavErrorToast").dxToast("show");
+                    } else if (t.errorMsg === "owner"){
+                        $("#ownerProductToast").dxToast("show");
+                    }
+                    else {
+                        $("#addFavToast").dxToast("show");
+                    }
+                });
+            } else{
+                $("#notLoginToast").dxToast("show");
+            }
         }
     });
 
@@ -138,7 +215,7 @@ function getAll() {
     ownerUserList();
 
 
-};
+}
 
 function showGallery() {
 
@@ -168,7 +245,7 @@ function dateFormat(d) {
 
 function getDate(dateV) {
     var cDate = dateV;
-    if (cDate!=null){
+    if (cDate!==null){
         return cDate = dateFormat(cDate);
     }else{
         return cDate = "";
@@ -225,7 +302,6 @@ function showOwnerData(){
 
     getOwnerData().load().done(function (result) {
 
-
         var ownerId = result[0].id;
 
         ownerName = result[0].login;
@@ -239,12 +315,11 @@ function showOwnerData(){
 
 
         $(".ownerDesc").empty();
-        $("#ownerLoginText").empty();
 
         var resultHTML = $(".ownerDesc");
 
         $.get("./image/user?userId="+ ownerId, function (t) {
-            if (t[0] != undefined) {
+            if (t[0] !== undefined) {
                 $("#imgOwner").attr("src", t[0]);
             }
             var temp =
@@ -296,6 +371,7 @@ function ownerUserList(){
             baseItemWidth: 300,
             itemMargin: 10,
             showScrollbar: true,
+            noDataText: "Brak innych ofert",
             itemTemplate: function (itemData, itemIndex, itemElement) {
                 var temp = cardTemplate(itemData);
                 itemElement.append(temp);
@@ -303,28 +379,6 @@ function ownerUserList(){
 
         }).dxTileView("instance");
     })
-
-           /* $("#ownerOfferListProduct").dxList({
-                dataSource: ownerListData,
-                scrollingEnabled: true,
-                noDataText: "Użytkownik nie ma aktywnych ofert",
-                itemTemplate: function (e) {
-                    var resultHTML = $("<div>").addClass("offerAnotherList");
-                    $.get("./image/offer?offerId=" + e.id, function (t) {
-                        $("<img>").attr("src", t[0]).appendTo(resultHTML);
-                        $("<div id='name'>").text(e.name).appendTo(resultHTML);
-                        $("<div id='AnotherOfferDetailsButtonContainer'>").append($('<div id="showAnotherOfferDetailsButton">').dxButton({
-                            text: "Pokaż ofertę",
-                            onClick: function () {
-                                offerLinkClick(e.id);
-                                e.jQueryEvent.stopPropagation();
-                            }
-                        })).appendTo(resultHTML);
-                    });
-                    return resultHTML;
-                }
-            })
-    });*/
 
 
 }
@@ -395,8 +449,7 @@ function showTransactionForm() {
         focusStateEnabled: false,
         onClick: function () {
             var dataGrid = $("#clientOfferGrid").dxDataGrid("instance");
-
-            if(dataGrid.option("dataSource").items().length===0){
+            if(dataGrid.getSelectedRowsData().length===0){
                 $("#noProposalOfferToast").dxToast("show");
             }else{
 
@@ -404,7 +457,7 @@ function showTransactionForm() {
 
                 var saveData = {
                     ownerId: ownerId,
-                    clientId: currentUser,
+                    clientId: user.id,
                     offerId: productId,
                     messageClient: f.getEditor('messageClient').option('value'),
                     status: 1,
@@ -457,8 +510,8 @@ function getListOfferOwner() {
         load: function (loadOptions) {
 
             var d = $.Deferred();
-            $.getJSON('./products/owner', {
-                    ownerId: currentUser,
+            $.getJSON('./auth/products/owner', {
+                    ownerId: user.id,
                     active: true,
                     page: loadOptions.skip / loadOptions.take,
                     size: loadOptions.take
@@ -492,7 +545,7 @@ function showClientOffer(){
             "showScrollbar": "never"
         },
         paging: {
-            pageSize: 4
+            pageSize: 3
         },
         columns: [{
             caption: "Nazwa oferty",

@@ -1,7 +1,7 @@
 
 function sendOfferSettings(){
     $("#headerUserSendText").html("");
-    $("#headerUserSendText").append("Wysłane propozycje wymiany");
+    $("#headerUserSendText").append("Wysłane propozycje transakcji");
 
     $("#sendOfferPopup").dxPopup({
         title:"Propozycja transakcji",
@@ -21,7 +21,8 @@ function sendOfferSettings(){
 
     function mediaSmallChange(ms) {
         if (ms.matches) {
-            $("#sendOfferPopup").dxPopup("instance").option("height",600);
+            $("#sendOfferPopup").dxPopup("instance").option("minHeight",550);
+            $("#sendOfferPopup").dxPopup("instance").option("closeOnOutsideClick",true);
         }else{
             $("#sendOfferPopup").dxPopup("instance").option("height",500);
 
@@ -34,7 +35,7 @@ function sendOfferSettings(){
 
 function showUserSendOfferList() {
 
-    $.get('./transaction/send/proposal?userId='+ currentUserId, function (data){
+    $.get('./transaction/send/proposal?userId='+ user.id, function (data){
         var receiveOfferList = $("#userSendOfferList").dxList({
             dataSource: data,
             height: "100%",
@@ -62,8 +63,26 @@ function showUserSendOfferList() {
 
 function showSendOfferPopup(sendTransaction) {
 
+    $("#sendOfferPopup").dxPopup({
+        contentTemplate: function(container) {
+            var scrollView = $("<div id='scrollViewSent'></div>");
+            var content = $("<div id='sOfferForm'></div>"+
+                "<div id='sOfferGrid'></div>"+
+                "<div class='offerButtonContainer'>"+
+                "<div id='cancelSendOfferButton'></div>"+
+                "</div>");
 
-    $("#sendOfferPopup").dxPopup("show");
+            scrollView.append(content);
+            scrollView.dxScrollView({
+                height: '100%',
+                width: '100%'
+
+            });
+
+            container.append(scrollView);
+            return container;
+        }
+    }).dxPopup("show");
 
     showSendTransactionForm(sendTransaction);
 
@@ -83,6 +102,9 @@ function showSendTransactionForm(transactionData) {
         formData: transaction,
         colCount:3,
         labelLocation: "top",
+        pager:{
+            visible: true
+        },
         items:[{
             dataField:"ownerName",
             label: {
@@ -167,7 +189,10 @@ function  showSendProposedOffers(transactionId) {
             mode: "single"
         },
         paging:{
-            pageSize: 4
+            pageSize: 2
+        },
+        pager:{
+            visible: true
         },
         showBorders: true,
         hoverStateEnabled: true,
@@ -184,7 +209,7 @@ function  showSendProposedOffers(transactionId) {
             caption: "Twoja akceptacja",
             dataField: "buyerAcceptStatus"
         },{
-            caption: "Akceptacja właściciela",
+            caption: "Akceptacja kontrahenta",
             dataField: "sellerAcceptStatus"
         },{
             caption:"",
@@ -214,7 +239,7 @@ function  showSendProposedOffers(transactionId) {
         if (ms.matches) {
             $("#sOfferGrid").dxDataGrid("instance").option("page.pageSize",2);
         }else{
-            $("#sOfferGrid").dxDataGrid("instance").option("page.pageSize",4);
+            $("#sOfferGrid").dxDataGrid("instance").option("page.pageSize",2);
 
         }
     }

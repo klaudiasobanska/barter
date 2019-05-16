@@ -8,8 +8,8 @@ import pl.barter.api.AbstractController;
 public class LoginController extends AbstractController {
 
 
-        @RequestMapping("/login")
+       /* @RequestMapping("/login")
         public String login() {
             return "login";
-        }
+        }*/
 }

@@ -1,13 +1,74 @@
-var cityId, voivoId, cityTreeId;
+var cityId, voivoId, cityTreeId, user;
 $(function () {
 
+    $.get("./users/current", function (data) {
+        user = data;
+
+        if(user !== null && user.id === undefined){
+            login()
+        }
+        if (user.id !== undefined ){
+            home();
+            userLoginName(user);
+
+            $("#loginMenu").dxTooltip({
+                target: "#loginButton",
+                showEvent: "dxclick",
+                contentTemplate: function (contentElement) {
+                    contentElement.append(
+                        $("<div />").attr("id", "userButton").dxButton({
+                            text: "Profil",
+                            onClick: function () {
+                                location.href = "./user"
+                            }
+                        }),
+                        $("<div />").attr("id", "logoutButton").dxButton({
+                            text: "Wyloguj",
+                            onClick: function () {
+                                $.post('./logout', function () {
+                                    $.removeCookie('token');
+                                    location.reload();
+                                });
+
+                            }
+                        })
+                    )
+                }
+            });
+        }
+
+
+    }).fail(function () {
+
+        login();
+
+    });
+});
+
+function login() {
+    home();
+
     $("#loginButton").dxButton({
-        icon: 'user',
-        stylingMode: "text",
+        text: "Zaloguj się",
         onClick: function () {
             showLoginPopup();
         }
-    });
+    }).dxButton("instance");
+
+    userLoginText();
+}
+
+function home() {
+
+
+
+    $("#loginButton").dxButton({
+        icon: 'user',
+        stylingMode: "text"
+    }).dxButton("instance");
+
+
+
 
     $("#categoryTabSelect").dxSelectBox({
         showClearButton: true,
@@ -46,7 +107,6 @@ $(function () {
     });
 
 
-
     if (matchMedia) {
         var ms = window.matchMedia("(max-width: 768px)");
         ms.addListener(mediaSmallChange);
@@ -70,7 +130,6 @@ $(function () {
             $("#loginPopup").dxPopup("instance").option("width",320);
 
         }else {
-            $("#loginButton").dxButton("instance").option("text", "Zaloguj się");
             $("#categoryTabSelect").dxSelectBox("instance").option("visible",false);
             $("#categoryTabList").dxList("instance").option("visible",true);
         }
@@ -84,7 +143,6 @@ $(function () {
 
     function mediaLargeChange(ml){
         if(ml.matches){
-            $("#loginButton").dxButton("instance").option("text","Zaloguj się");
         }
     }
 
@@ -132,7 +190,7 @@ $(function () {
                     voivoId = null;
                     cityId = null;
                     cityTreeId = null;
-                    if(d.node.items != 0){
+                    if(d.node.items.length !== 0){
                         voivoId = d.node.itemData.id;
                     }else {
                         cityId = d.node.itemData.id;
@@ -148,8 +206,6 @@ $(function () {
 
         }
     });
-
-
 
 
 
@@ -216,10 +272,6 @@ $(function () {
 
     });
 
-
-
-
-
     $("#userMenuButton").dxButton({
         text:"Mój Profil",
         icon: 'user',
@@ -229,19 +281,12 @@ $(function () {
         }
     });
 
-
-    //showBestUsers();
-
-
-
-
-});
+};
 
 function searchButton() {
 
     var param = $("#searchBar").dxTextBox('instance').option('value');
     var categoryId = $("#categoryTabSelect").dxSelectBox("instance").option('value');
-
 
     location.href = "./lists?param="+param + "&categoryId="+(categoryId?categoryId:-1) + "&cityId="+(cityId?cityId:-1) +
         "&voivoId="+(voivoId?voivoId:-1) + "&latest=" +false + "&random="+false;

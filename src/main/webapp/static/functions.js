@@ -1,3 +1,4 @@
+var user;
 function cardTemplate(itemData) {
 
     var result = $("<div>").addClass("productContent");
@@ -21,11 +22,17 @@ function cardTemplate(itemData) {
 
 }
 
+function goHome() {
+    return location.href = "./home"
+}
+
 function productCardClick(productId) {
     location.href = './product?productId='+productId;
 }
 
 function showLoginPopup() {
+
+
 
     $("#loginPopup").dxPopup("show");
 
@@ -78,15 +85,116 @@ function loginForm() {
         onClick: function (e) {
             var loginForm = $("#loginForm").dxForm('instance');
             var logForm = {
-                login: loginForm.getEditor('login').option('value'),
+                username: loginForm.getEditor('login').option('value'),
                 password: loginForm.getEditor('password').option('value')
             };
+            logForm = JSON.stringify(logForm);
+            $.ajax({
+                url: './api/auth/signin',
+                type: 'post',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: logForm,
+                success: function (data) {
+                    $.cookie('token',data.accessToken);
+                    $.ajaxSetup({
+                        headers:{
+                            'Authorization': "Bearer " + $.cookie('token')
+                        }
+                    });
+                    $.get("./users/current",function (data) {
+                        user = data;
+                        userLoginName(user);
 
-            $.post('./login', logForm, function (result) {
-            }).done(function () {
-                location.href = './home';
-                $("#loginPopup").dxPopup("hide");
-            })
+                });
+                    $("#loginButton").dxButton("instance").option("onClick",null);
+                    $("#loginMenu").dxTooltip({
+                        target: "#loginButton",
+                        showEvent: "dxclick",
+                        contentTemplate: function (contentElement) {
+                            contentElement.append(
+                                $("<div />").attr("id", "userButton").dxButton({
+                                    text:"Profil",
+                                    onClick: function () {
+                                        location.href = "./user"
+                                    }
+                                }),
+                                $("<div />").attr("id", "logoutButton").dxButton({
+                                    text:"Wyloguj",
+                                    onClick: function () {
+                                        $.post('./logout',function () {
+                                            $.removeCookie('token');
+                                            location.reload();
+                                        });
+                                    }
+                                })
+                            )
+                        }
+                    });
+
+
+                    $("#loginPopup").dxPopup("hide");
+
+                }
+            }).fail(function () {
+                var error = '<p>Niepoprawne dane logowania!</p>';
+                $("#badText").append(error);
+            });
         }
     });
+}
+
+function userLoginName(user){
+    $("#loginButton").dxButton({
+        icon: 'user',
+        stylingMode: "text"
+    }).dxButton("instance");
+    if (matchMedia) {
+        var mm = window.matchMedia(" (max-width: 992px)");
+        mm.addListener(mediaMediumChange);
+        mediaMediumChange(mm);
+        var ml = window.matchMedia("(min-width: 992px) and (max-width: 1200px)");
+        ml.addListener(mediaLargeChange);
+        mediaLargeChange(ml);
+    }
+
+    function mediaMediumChange(mm){
+        if(mm.matches ){
+            $("#loginButton").dxButton("instance").option("text","");
+        }else {
+            $("#loginButton").dxButton("instance").option("text", user.login);
+        }
+
+    }
+
+    function mediaLargeChange(ml){
+        if(ml.matches){
+            $("#loginButton").dxButton("instance").option("text",user.login );
+        }
+    }
+}
+
+function userLoginText(){
+    if (matchMedia) {
+        var mm = window.matchMedia("(max-width: 992px)");
+        mm.addListener(mediaMediumChange);
+        mediaMediumChange(mm);
+        var ml = window.matchMedia("(min-width: 992px) and (max-width: 1200px)");
+        ml.addListener(mediaLargeChange);
+        mediaLargeChange(ml);
+    }
+
+    function mediaMediumChange(mm){
+        if(mm.matches){
+            $("#loginButton").dxButton("instance").option("text","");
+        }else{
+            $("#loginButton").dxButton("instance").option("text","Zaloguj się" );
+        }
+    }
+
+    function mediaLargeChange(ml){
+        if(ml.matches){
+            $("#loginButton").dxButton("instance").option("text","Zaloguj się" );
+        }
+    }
 }

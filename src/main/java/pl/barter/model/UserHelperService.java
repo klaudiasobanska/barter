@@ -11,7 +11,7 @@ public class UserHelperService {
         UserDto userDto = new UserDto();
         userDto.setForename(user.getForename());
         userDto.setEmail(user.getEmail());
-        userDto.setLogin(user.getLogin());
+        userDto.setLogin(user.getUsername());
         userDto.setSurname(user.getSurname());
         userDto.setAddress(user.getAddress());
         userDto.setCity(user.getCity());

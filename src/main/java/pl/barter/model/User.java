@@ -25,8 +25,8 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_ID_SEQ")
-    @SequenceGenerator(name = "USER_ID_SEQ", sequenceName = "user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USERS_ID_SEQ")
+    @SequenceGenerator(name = "USERS_ID_SEQ", sequenceName = "users_id_seq", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
@@ -36,8 +36,8 @@ public class User {
     @Column(name = "surname")
     private String surname;
 
-    @Column(name = "login")
-    private String login;
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "password")
     private String password;
@@ -79,7 +79,8 @@ public class User {
     @JoinTable(name = "favourites",
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "product_id") })
-    @JsonManagedReference
+    //@JsonManagedReference
+    //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class , property = "id")
     private Set<Product> fav = new HashSet<>();
 
 

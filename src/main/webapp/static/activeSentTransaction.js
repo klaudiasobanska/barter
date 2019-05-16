@@ -14,6 +14,20 @@ function activeSentTransactionSettings() {
     }).dxPopup("instance");
 
 
+    if (matchMedia) {
+        var ms = window.matchMedia(" (max-width: 768px)");
+        ms.addListener(mediaSmallChange);
+        mediaSmallChange(ms);
+    }
+
+    function mediaSmallChange(ms){
+        if(ms.matches){
+            $("#activeSentTransactionPopup").dxPopup("instance").option("minHeight",550);
+            $("#activeSentTransactionPopup").dxPopup("instance").option("closeOnOutsideClick",true);
+        }else{
+            $("#activeSentTransactionPopup").dxPopup("instance").option("height",600);
+        }
+    }
 
     showSentActiveTransactionList();
 
@@ -21,9 +35,9 @@ function activeSentTransactionSettings() {
 
 function showSentActiveTransactionList() {
 
+    $("#popoverNoActiveSentShow").hide();
 
-
-    $.get('./transaction/active/sent/proposal?userId='+ currentUserId, function (data){
+    $.get('./transaction/active/sent/proposal?userId='+ user.id, function (data){
 
         var activeSentTransactionList = $("#userSentActiveTransactionList").dxList({
             dataSource: data,
@@ -51,7 +65,23 @@ function showSentActiveTransactionList() {
 
 function showSentActiveTransactionPopup(transaction) {
 
-    $("#activeSentTransactionPopup").dxPopup("show");
+    $("#activeSentTransactionPopup").dxPopup({
+        contentTemplate: function(container) {
+            var scrollView = $("<div id='scrollView'></div>");
+            var content = $( "<div id='aSentActiveTransactionForm'></div>"+
+                "<div id='aSentActiveOfferGrid'></div>");
+            scrollView.append(content);
+            scrollView.dxScrollView({
+                height: '100%',
+                width: '100%'
+
+            });
+
+            container.append(scrollView);
+            return container;
+        }
+    }).dxPopup("show");
+
 
     showSentAnswerActiveForm(transaction);
 
@@ -62,10 +92,10 @@ function showSentAnswerActiveForm(transaction) {
 
     var transactionData, userSide;
 
-    if (currentUserId === transaction.clientId) {
+    if (user.id === transaction.clientId) {
         userSide = "client"
     }
-    if (currentUserId === transaction.ownerId) {
+    if (user.id === transaction.ownerId) {
         userSide = "owner"
     }
 
@@ -214,7 +244,10 @@ function showProposedSentOffersActive(transaction,userSide) {
             mode: "single"
         },
         paging:{
-            pageSize: 4
+            pageSize: 2
+        },
+        pager:{
+            visible: true
         },
         showBorders: true,
         hoverStateEnabled: true,
@@ -257,17 +290,26 @@ function showProposedSentOffersActive(transaction,userSide) {
                     })
                     .appendTo(container);
             }
-        }]
+
+        }],
+        onRowPrepared: function (data) {
+            if(data.rowType === 'data'){
+                if (data.data.offerActive === false){
+                    data.rowElement.css('background', '#e9e9e9');
+                }
+            }
+
+        }
 
     });
 
     if (userSide === "client") {
-        $("#aOfferGrid").dxDataGrid("instance").columnOption(2, "caption", "Twoja akceptacja");
-        $("#aOfferGrid").dxDataGrid("instance").columnOption(3, "caption", "Akceptacja właściciela");
+        $("#aSentActiveOfferGrid").dxDataGrid("instance").columnOption(2, "caption", "Twoja akceptacja");
+        $("#aSentActiveOfferGrid").dxDataGrid("instance").columnOption(3, "caption", "Akceptacja kontrahenta");
 
     }else{
-        $("#aOfferGrid").dxDataGrid("instance").columnOption(2, "caption", "Akceptacja właściciela");
-        $("#aOfferGrid").dxDataGrid("instance").columnOption(3, "caption", "Twoja akceptacja");
+        $("#aSentActiveOfferGrid").dxDataGrid("instance").columnOption(2, "caption", "Akceptacja kontrahenta");
+        $("#aSentActiveOfferGrid").dxDataGrid("instance").columnOption(3, "caption", "Twoja akceptacja");
     }
 
     if (matchMedia) {
@@ -281,7 +323,7 @@ function showProposedSentOffersActive(transaction,userSide) {
         if (ms.matches) {
             $("#aSentActiveOfferGrid").dxDataGrid("instance").option("page.pageSize",2);
         }else{
-            $("#aSentActiveOfferGrid").dxDataGrid("instance").option("page.pageSize",4);
+            $("#aSentActiveOfferGrid").dxDataGrid("instance").option("page.pageSize",2);
 
         }
     }

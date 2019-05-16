@@ -13,20 +13,24 @@ import java.util.*;
 
 @RestController
 public class OfferImageController {
+    private static Long DEFAULT_IMAGE = 0L;
 
     @Autowired
     OfferImageRepository offerImageRepository;
 
 
     @GetMapping("/image/offer")
-    public List<String> getImageOffer(@RequestParam("offerId") Long offerId){
+    public List<String> getImageOffer(@RequestParam("offerId") Long offerId) {
 
-        List<OfferImage> bytes= offerImageRepository.findByOfferId(offerId);
+        List<OfferImage> images = offerImageRepository.findByOfferId(offerId);
+
+        if (images.size() == 0) {
+            images.add(offerImageRepository.findById(DEFAULT_IMAGE).get());
+        }
 
         List<String> imageStringList = new ArrayList<>();
-        for(OfferImage of: bytes){
-
-            imageStringList.add("data:"+of.getType()+";base64,"+Base64Utils.encodeToString(of.getImage()));
+        for (OfferImage of : images) {
+            imageStringList.add("data:" + of.getType() + ";base64," + Base64Utils.encodeToString(of.getImage()));
         }
 
         return imageStringList;

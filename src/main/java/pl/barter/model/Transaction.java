@@ -62,6 +62,9 @@ public class Transaction {
     @Transient
     private String messageClient;
 
+    @Transient
+    private Product product;
+
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "transactionId")
     @Fetch(value = FetchMode.SUBSELECT)

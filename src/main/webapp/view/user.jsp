@@ -8,26 +8,28 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <script>window.jQuery || document.write(decodeURIComponent('%3Cscript src="js/jquery.min.js"%3E%3C/script%3E'))</script>
 
-    <link rel="stylesheet" type="text/css" href="/static/dx.spa.css" />
-    <link rel="stylesheet" type="text/css" href="/static/dx.common.css" />
-    <link rel="stylesheet" type="text/css" href="/static/generic.light.custom.css" />
 
-    <script src="/static/dx.all.js"></script>
-    <script src="/static/user.js"></script>
-    <script src="/static/newTransaction.js"></script>
-    <script src="/static/sentTransaction.js"></script>
-    <script src="/static/activeNewTransaction.js"></script>
-    <script src="/static/activeSentTransaction.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/stylesUser.css" />
+    <link rel="stylesheet" type="text/css" href="./static/dx.spa.css" />
+    <link rel="stylesheet" type="text/css" href="./static/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="./static/generic.light.custom.css" />
+
+    <script src="./static/dx.all.js"></script>
+    <script src="./static/user.js"></script>
+    <script src="./static/newTransaction.js"></script>
+    <script src="./static/sentTransaction.js"></script>
+    <script src="./static/activeNewTransaction.js"></script>
+    <script src="./static/activeSentTransaction.js"></script>
+    <link rel="stylesheet" type="text/css" href="./static/stylesUser.css" />
 
 
 </head>
 <body class="dx-viewport allBackground allContent" >
 
     <div class="headerContainer">
-    <img id="logo" src="./static/logo.png">
+    <img id="logo" src="./static/logo.png" onclick="goHome()" style="cursor: pointer">
         <div class="userLoginContent">
             <div id="logoutButton"></div>
             <div id="drawerButton"></div>
@@ -107,6 +109,7 @@
             <div id="headerUserReceiveText"></div>
             <div id="userReceiveOfferList"></div>
             <div id="ReceiveOfferPopup">
+                <div id="popupContent">
                 <div id="popoverActiveOffer">
                     <p>Ta oferta jest już nieaktywna i nie może być brana pod uwagę w tej transakcji. Usuń ją z proponowanych</p>
                 </div>
@@ -129,7 +132,7 @@
                     <div id="rejectNewTransactionButton"></div>
                     <%--<div id="cancelROfferButton"></div>--%>
                 </div>
-
+                </div>
             </div>
         </div>
 
@@ -180,7 +183,7 @@
             <div id="headerUserSentActiveText"></div>
             <div id="userSentActiveTransactionList"></div>
             <div id="popoverNoActiveSentShow">
-                <p>Ta oferta jest już nieaktywna i nie może być brana pod uwagę w tej transakcji. Usuń ją z proponowanych</p>
+                <p>Ta oferta jest już nieaktywna i nie może być brana pod uwagę w tej transakcji.</p>
             </div>
             <div id="activeSentTransactionPopup">
                 <div id="aSentActiveTransactionForm"></div>
@@ -226,6 +229,7 @@
         <div id="restoreUserProductToast"></div>
         <div id="updateUserDataToast"></div>
         <div id="noProposalOfferToast"></div>
+        <div id="badOldPasswordToast"></div>
     </div>
         </div>
     </div>

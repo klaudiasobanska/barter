@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.barter.exception.ResourceNotFoundException;
@@ -13,11 +14,8 @@ import pl.barter.model.dto.ProductDto;
 import pl.barter.repository.OfferImageRepository;
 import pl.barter.repository.ProductRepository;
 
-import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @RestController
@@ -62,7 +60,30 @@ public class ProductController extends AbstractController {
         return p;
     }
 
-    @PostMapping(path = "/products/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    private Product fromDtoUpdate(ProductDto productDto, List<OfferImage> files) {
+        Product p = new Product();
+        p.setId(productDto.getId());
+        p.setName(productDto.getName());
+        p.setOwnerId(productDto.getOwnerId());
+        p.setActive(productDto.getActive());
+        p.setDescription(productDto.getDescription());
+        p.setCategoryId(productDto.getCategoryId());
+        p.setCityId(productDto.getCityId());
+        p.setCreationDate(productDto.getCreationDate());
+
+        for (OfferImage offerImage : files) {
+            offerImage.setId(offerImageRepository.getNextSeriesId());
+            offerImage.setOfferId(p.getId());
+
+            p.getOfferImagesList().add(offerImage);
+        }
+
+
+        return p;
+
+    }
+
+    @PostMapping(path = "/auth/products/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Product addProduct(@RequestBody ProductDto productDto) {
 
 
@@ -92,20 +113,32 @@ public class ProductController extends AbstractController {
     }
 
 
-    @PutMapping("/products/{id}")
-    public ResponseEntity updateProduct(@PathVariable(value = "id") Long id,
-                                        @Valid @RequestBody Product productDetails) {
+    @PutMapping(path ="/auth/products/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> updateProduct(@PathVariable(value = "id") Long id,
+                                        @RequestBody ProductDto productDto) {
 
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
 
-        product.setName(productDetails.getName());
-        product.setCategoryId(productDetails.getCategoryId());
-        product.setDescription(productDetails.getDescription());
+        List<OfferImage> files = (List<OfferImage>) session.getAttribute("files");
+        if (files == null) {
+            files = new ArrayList<>();
+        }
 
+        productDto.setId(product.getId());
 
-        Product updatedProduct = productRepository.save(product);
-        return ResponseEntity.ok().build();
+        Product newProduct = fromDtoUpdate(productDto, files);
+
+        product.setName(newProduct.getName());
+        product.setCategoryId(newProduct.getCategoryId());
+        product.setCityId(newProduct.getCityId());
+        product.setDescription(newProduct.getDescription());
+        product.setOfferImagesList(newProduct.getOfferImagesList());
+
+        productRepository.save(product);
+        session.setAttribute("files", new ArrayList<>());
+
+        return simpleOkResult();
     }
 
     @GetMapping("/products/search")
@@ -198,7 +231,7 @@ public class ProductController extends AbstractController {
         return products;
     }
 
-    @GetMapping("/products/owner")
+    @GetMapping("/auth/products/owner")
     public Page<Product> getProductByUserId(@RequestParam("ownerId") Long ownerId,
                                             @RequestParam("active") Boolean active,
                                             Pageable pageable) {
@@ -207,7 +240,7 @@ public class ProductController extends AbstractController {
         return products;
     }
 
-    @GetMapping("/products/owner/list")
+    @GetMapping("/auth/products/owner/list")
     public List<Product> getProductByUserIdAndActiveList(@RequestParam("ownerId") Long ownerId,
                                                          @RequestParam("active") Boolean active) {
         List<Product> products = productRepository.findByOwnerIdAndActive(ownerId, active);
@@ -215,7 +248,7 @@ public class ProductController extends AbstractController {
         return products;
     }
 
-    @GetMapping("products/owner/another")
+    @GetMapping("/auth/products/owner/another")
     public List<Product> getProductsByAnotherList(/*@RequestBody ArrayId ids,*/
                                                   @RequestParam("ownerId") Long ownerId) {
         List<Product> products = productRepository.findByOwnerIdAndActive(ownerId, true);
@@ -245,7 +278,7 @@ public class ProductController extends AbstractController {
         return products;
     }
 
-    @GetMapping("products/owner/another/one")
+    @GetMapping("/products/owner/another/one")
     public List<Product> getProductsByAnotherListOne(@RequestParam("productId") Long productId,
                                                   @RequestParam("ownerId") Long ownerId) {
         List<Product> products = productRepository.findProductNotInProductPage(productId, ownerId);
@@ -254,7 +287,7 @@ public class ProductController extends AbstractController {
     }
 
 
-    @PostMapping("/products/delete")
+    @PostMapping("/auth/products/delete")
     public ResponseEntity deleteProduct(@RequestParam("id") Long id) {
 
         productRepository.deleteProduct(id);
@@ -263,15 +296,27 @@ public class ProductController extends AbstractController {
 
     }
 
+    @GetMapping("/auth/products/deleting")
+    public List<Product> getProductsToDelete(@RequestParam("ownerId") Long ownerId){
 
-    @PostMapping("/products/active")
+        List<Product> products = productRepository.findProductToDelete(ownerId);
+
+        products.forEach(p->productMap.map(p));
+
+        return products;
+    }
+
+
+    @PostMapping("/auth/products/active")
     public ResponseEntity activeProduct(@RequestParam("id") Long id,
                                         @RequestParam("active") Boolean active) {
         productRepository.activeProduct(id, active);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(path = "/products/update")
+
+
+    @PostMapping(path = "/auth/products/update")
     public ResponseEntity changeProduct(@RequestParam("id") Long id,
                                         @RequestParam("name") String name,
                                         @RequestParam("categoryId") Long categoryId,
@@ -281,7 +326,7 @@ public class ProductController extends AbstractController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/products/image/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/auth/products/image/upload", method = RequestMethod.POST)
     public @ResponseBody
     Boolean uploadDocument(@RequestParam("file") MultipartFile file
     ) throws IOException {
@@ -297,6 +342,49 @@ public class ProductController extends AbstractController {
         session.setAttribute("files", files);
         return true;
     }
+
+    @RequestMapping(value = "/auth/products/image/upload/string", method = RequestMethod.POST)
+    public @ResponseBody
+    List<Map<String, Object>> uploadDocumentString(@RequestBody List<OfferImageString> offerImageString
+    ) throws IOException {
+
+        List<OfferImage> files = (List<OfferImage>) session.getAttribute("files");
+        if (files == null)
+            files = new ArrayList<>();
+
+        for (OfferImageString o: offerImageString) {
+            OfferImage i  = new OfferImage();
+            i.setImage(Base64.getDecoder().decode(o.getImage()));
+            i.setType(o.getType());
+            files.add(i);
+        }
+
+        session.setAttribute("files", files);
+        return simpleOkResultArray();
+    }
+
+    @GetMapping("/products/list")
+    List<Product> getProductByIds( @RequestParam List<Long> ids){
+
+        List<Product> products = productRepository.findByIdIn(ids);
+
+        products.forEach(p->productMap.map(p));
+
+        List<OfferImage> images = new ArrayList<>();
+
+        for (Product p : products){
+            if(p.getOfferImagesList().size() > 0){
+                images.add(p.getOfferImagesList().get(0));
+                p.setOfferImagesList(images);
+            }
+
+
+        }
+
+        return products;
+    }
+
+
 
 
 

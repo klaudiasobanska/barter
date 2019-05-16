@@ -4,7 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.imageio.ImageIO;
 import javax.persistence.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
 
 @Entity
 @Table(name = "offers_images")
@@ -25,4 +32,7 @@ public class OfferImage {
 
     @Column(name = "type")
     private String type;
+
+
+
 }

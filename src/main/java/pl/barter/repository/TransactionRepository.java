@@ -18,18 +18,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             true)
     Long getNextSeriesId();
 
-    /*@Query(value = "select t.id, t.owner_id, t.client_id, t.offer_id, t.status, t.owner_accept, t.client_accept " +
-            " from transactions t left join transaction_state ts on t.id = ts.transaction_id " +
-            " where (( :ownerId = -1 or t.owner_id = cast(:ownerId as int) ) and (t.status = cast(1 as int)) and (ts.side_flag = cast(1 as int))) " +
-            " group by t.id, t.owner_id, t.client_id, t.offer_id, t.status, t.owner_accept, t.client_accept, ts.transaction_id " +
-            " having max(ts.step) = 1",
-            countQuery = "select count(*) from ( select t.id, t.owner_id, t.client_id, t.offer_id, t.status, t.owner_accept, t.client_accept " +
-                    "from transactions t left join transaction_state ts on t.id = ts.transaction_id " +
-                    "where (( :ownerId = -1 or t.owner_id = cast(:ownerId as int) ) and (t.status = cast(1 as int)) and (ts.side_flag = cast(1 as int))) " +
-                    "group by t.id, t.owner_id, t.client_id, t.offer_id, t.status, t.owner_accept, t.client_accept, ts.transaction_id  " +
-                    "having max(ts.step) = cast(1 as int) ))",
-            nativeQuery = true
-    )*/
     @Query(value="select t.id, t.owner_id, t.client_id, t.offer_id, t.status, t.owner_accept, t.client_accept " +
             " from transactions t left join transaction_state ts on t.id = ts.transaction_id " +
             " where (( :ownerId = -1 or t.owner_id = cast(:ownerId as int)) and (t.status = cast(1 as int)) and (ts.side_flag = cast(1 as int)) " +
@@ -46,14 +34,16 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     @Query(value = "select t.id, t.owner_id, t.client_id, t.offer_id, t.status, t.owner_accept, t.client_accept " +
             " from transactions t left join transaction_state ts on t.id = ts.transaction_id " +
-            " where (( :userId = -1 or t.client_id = cast(:userId as int) ) and (t.status = cast(1 as int)) and (ts.side_flag = cast(1 as int))) " +
-            " group by t.id, t.owner_id, t.client_id, t.offer_id, t.status, t.owner_accept, t.client_accept, ts.transaction_id " +
-            " having max(ts.step) = 1",
+            " where (( :userId = -1 or t.client_id = cast(:userId as int) ) and (t.status = cast(1 as int)) and (ts.side_flag = cast(1 as int)) " +
+            "  and (1 in (select max(tss.step) from transaction_state tss where tss.transaction_id = t.id ))) " +
+            " group by t.id, t.owner_id, t.client_id, t.offer_id, t.status, t.owner_accept, t.client_accept, ts.transaction_id "// +
+            /*" having max(ts.step) = 1"*/,
             countQuery = "select count(*) from ( select t.id, t.owner_id, t.client_id, t.offer_id, t.status, t.owner_accept, t.client_accept " +
                     "from transactions t left join transaction_state ts on t.id = ts.transaction_id " +
-                    "where (( :userId = -1 or t.client_id = cast(:userId as int) ) and (t.status = cast(1 as int)) and (ts.side_flag = cast(1 as int))) " +
-                    "group by t.id, t.owner_id, t.client_id, t.offer_id, t.status, t.owner_accept, t.client_accept, ts.transaction_id  " +
-                    "having max(ts.step) = cast(1 as int) ))",
+                    "where (( :userId = -1 or t.client_id = cast(:userId as int) ) and (t.status = cast(1 as int)) and (ts.side_flag = cast(1 as int)) " +
+                    "  and (1 in (select max(tss.step) from transaction_state tss where tss.transaction_id = t.id ))) " +
+                    "group by t.id, t.owner_id, t.client_id, t.offer_id, t.status, t.owner_accept, t.client_accept, ts.transaction_id  " //+
+                    /*"having max(ts.step) = cast(1 as int) ))"*/,
             nativeQuery = true
     )
     List<Transaction> findSendProposal(@Param("userId") Long userId, Pageable pageable);

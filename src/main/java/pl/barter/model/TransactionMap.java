@@ -28,14 +28,14 @@ public class TransactionMap {
 
             User user = userRepository.findById(t.getClientId()).orElse(null);
             if(user != null){
-                t.setClientLogin(user.getLogin());
+                t.setClientLogin(user.getUsername());
             }
         }
         if(t.getOwnerId() != null) {
 
             User user = userRepository.findById(t.getOwnerId()).orElse(null);
             if(user != null){
-                t.setOwnerLogin(user.getLogin());
+                t.setOwnerLogin(user.getUsername());
             }
         }
         if(t.getOfferId() != null) {
@@ -45,6 +45,8 @@ public class TransactionMap {
                 t.setOfferName(product.getName());
             }
         }
+
+
 
 
         return t;

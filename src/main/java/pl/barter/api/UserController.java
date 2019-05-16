@@ -1,34 +1,34 @@
 package pl.barter.api;
 
-import org.apache.el.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.barter.exception.ResourceNotFoundException;
-import pl.barter.model.BestUserData;
-import pl.barter.model.Product;
-import pl.barter.model.User;
-import pl.barter.model.UserHelperService;
+import pl.barter.model.*;
 import pl.barter.model.dto.UserDto;
 import pl.barter.repository.BestUserDataRepository;
 import pl.barter.repository.ProductRepository;
 import pl.barter.repository.UserRepository;
+import pl.barter.security.CurrentUser;
+import pl.barter.security.UserPrincipal;
 
 
 import javax.validation.Valid;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 public class UserController extends AbstractController {
+
+    private static Long DEFAULT_IMAGE = 0L;
 
     @Autowired
     UserRepository usersRepository;
@@ -42,14 +42,20 @@ public class UserController extends AbstractController {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    ProductMap productMap;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @RequestMapping("/users/all")
     public List<User> findAll() {
         return usersRepository.findAll();
     }
 
-    @PostMapping(path = "/users/add", produces = MediaType.APPLICATION_JSON_VALUE)
+   /* @PostMapping(path = "/users/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> createUser(@RequestBody User user) {
-        List<User> ret = usersRepository.findByLogin(user.getLogin());
+        List<User> ret = usersRepository.findByLogin(user.getUsername());
         if (ret.size() > 0) {
             return simpleErrorResult("Login jest zajęty");
         }
@@ -58,7 +64,7 @@ public class UserController extends AbstractController {
 
         usersRepository.save(user);
         return simpleOkResult();
-    }
+    }*/
 
 
     @GetMapping("/users/find/{id}")
@@ -77,12 +83,15 @@ public class UserController extends AbstractController {
         return userDto;
     }
 
-    @PutMapping("/users/{id}")
-    public User changeUser(@PathVariable(value = "id") Long id,
+
+
+
+    @RequestMapping(path = "/users/update", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public  Map<String, Object>  changeUser(@CurrentUser UserPrincipal currentUser,
                            @Valid @RequestBody User userDetails) {
 
-        User user = usersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+        User user = usersRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", currentUser.getId()));
 
         user.setForename(userDetails.getForename());
         user.setSurname(userDetails.getSurname());
@@ -92,40 +101,54 @@ public class UserController extends AbstractController {
         user.setZipCode(userDetails.getZipCode());
 
 
-        User updatedUser = usersRepository.save(user);
-        return updatedUser;
+         usersRepository.save(user);
+        return simpleOkResult();
     }
 
-    @PostMapping("/users/edit")
-    public ResponseEntity updateUser(@RequestParam("id") Long id,
-                                     @RequestParam("forename") String forename,
-                                     @RequestParam("surname") String surname,
-                                     @RequestParam("email") String email,
-                                     @RequestParam("address") String address,
-                                     @RequestParam("city") String city,
-                                     @RequestParam("zipCode") String zipCode
-    ) {
-        usersRepository.updateUser(id, forename, surname, email, address, city, zipCode);
-        return ResponseEntity.ok().build();
-    }
+    @RequestMapping(path = "/users/update/password", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public  Map<String, Object>  changeUser(@CurrentUser UserPrincipal currentUser,
+                                            @Valid @RequestBody NewPasswordRequest passwordRequest) {
 
-    @GetMapping("/users/current")
-    public UserDto getCurrentUser() {
-        if (session.getAttribute("user") != null) {
-            User user = (User) session.getAttribute("user");
-            String imageStringList = "";
-            if(user.getImage()!=null){
-                 imageStringList = ("data:"+user.getImageType()+";base64,"+Base64Utils.encodeToString(user.getImage())) ;
-            }
+        User user = usersRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", currentUser.getId()));
 
-            UserDto userDto = userHelperService.mapToDto(user);
-            userDto.setImageString(imageStringList);
 
-            return userDto;
-        } else {
-            return new UserDto();
+        if(!passwordEncoder.matches(passwordRequest.getOldPassword(),user.getPassword())){
+            return simpleErrorResult("old");
         }
 
+
+        user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
+
+        usersRepository.save(user);
+        return simpleOkResult();
+    }
+
+
+    @GetMapping("/users/current")
+    public UserDto getCurrentUser(@CurrentUser UserPrincipal currentUser) {
+
+        User user = usersRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "userId", currentUser.getId()));
+
+        String imageStringList = "";
+        if(user.getImage()==null){
+            User user0 = usersRepository.findById(DEFAULT_IMAGE).get();
+            imageStringList = ("data:"+user0.getImageType()+";base64,"+Base64Utils.encodeToString(user0.getImage())) ;
+        }
+
+        if(user.getImage()!=null){
+            imageStringList= ("data:"+user.getImageType()+";base64,"+Base64Utils.encodeToString(user.getImage())) ;
+
+        }
+
+
+        UserDto userDto = userHelperService.mapToDto(user);
+        userDto.setImageString(imageStringList);
+
+        userDto.getFav().forEach(p-> productMap.map(p));
+
+        return userDto;
     }
 
     @GetMapping("/users/rating")
@@ -152,24 +175,40 @@ public class UserController extends AbstractController {
         return true;
     }
 
+    @RequestMapping(value = "/image/upload/string", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> uploadDocument(@Valid @RequestBody UserImage userImage) throws IOException {
+        byte[] encoded = Base64.getDecoder().decode(userImage.getFile());
+        usersRepository.addImage(encoded, userImage.getId());
+        usersRepository.addImageType(userImage.getType(),userImage.getId());
+        return simpleOkResult();
+    }
+
+
     @GetMapping("/image/user")
     public List<String> getImageUser(@RequestParam("userId") Long userId){
 
         User user = usersRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
 
-
         List<String> imageStringList = new ArrayList<>();
+
         if(user.getImage()!=null){
             imageStringList.add("data:"+user.getImageType()+";base64,"+Base64Utils.encodeToString(user.getImage())) ;
 
         }
+
+        if(user.getImage()==null){
+            User user0 = usersRepository.findById(DEFAULT_IMAGE).get();
+            imageStringList.add("data:"+user0.getImageType() + ";base64,"+Base64Utils.encodeToString(user0.getImage()));
+        }
+
 
         return imageStringList;
 
     }
 
     @PostMapping("/users/delete/fav")
-    public Map<String, Object> deleteFav(@RequestParam("productId") Long productId, @RequestParam("userId") Long userId) {
+    public UserDto deleteFav(@RequestParam("productId") Long productId, @RequestParam("userId") Long userId) {
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
@@ -183,12 +222,14 @@ public class UserController extends AbstractController {
 
         usersRepository.save(user);
 
-        return simpleOkResult();
+        return userHelperService.mapToDto(user);
     }
 
 
     @PostMapping("/users/add/fav")
-    public  Map<String, Object> addFav(@RequestParam("productId") Long productId, @RequestParam("userId") Long userId) {
+    public  Map<String, Object> addFav(@RequestParam("productId") Long productId,
+                                       @CurrentUser UserPrincipal currentUser,
+                                       @RequestParam("userId") Long userId) {
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
@@ -196,22 +237,25 @@ public class UserController extends AbstractController {
         User user = usersRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
 
-        /*POBRAC ZALOGOWANEGO UZYTKOWNIKA*/
+        User current = usersRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "userId", currentUser.getId()));
 
-        /*if(user.getId() == currentUser){
-            return simpleErrorResult("Oferta należy do użytkownika");
+
+        if(user.getId().equals(current.getId())){
+            return simpleErrorResult("owner");
         }
-*/
-        if(user.getFav().contains(product)){
+        if(current.getFav().contains(product)){
             return simpleErrorResult("inFav");
         }else {
 
-            user.getFav().add(product);
-            product.getUsers().add(user);
+            current.getFav().add(product);
+            product.getUsers().add(current);
 
-            usersRepository.save(user);
+            usersRepository.save(current);
             return simpleOkResult();
         }
     }
+
+
 
 }
