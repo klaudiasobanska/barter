@@ -1,7 +1,9 @@
-package pl.barter.model;
+package pl.barter.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.barter.model.City;
+import pl.barter.model.Filter;
 import pl.barter.repository.CityRepository;
 
 @Service

@@ -1,4 +1,4 @@
-package pl.barter.model;
+package pl.barter.model.enums;
 
 import lombok.Getter;
 

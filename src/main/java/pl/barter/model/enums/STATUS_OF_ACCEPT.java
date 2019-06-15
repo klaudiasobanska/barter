@@ -1,4 +1,4 @@
-package pl.barter.model;
+package pl.barter.model.enums;
 
 import lombok.Getter;
 
@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 public enum STATUS_OF_ACCEPT {
 
     ACCEPT(true, "Zaakceptowano"),
-    DISAPPROVAL(false, "Niezaakceptowano");
+    DISAPPROVAL(false, "Nie zaakceptowano");
 
     private Boolean status;
     private String name;

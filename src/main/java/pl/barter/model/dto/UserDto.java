@@ -27,8 +27,6 @@ public class UserDto {
 
     private String email;
 
-    private Double rating;
-
     private String city;
 
     private String zipCode;

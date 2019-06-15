@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.barter.exception.ResourceNotFoundException;
 import pl.barter.mail.SendEmail;
+import pl.barter.mapper.TransactionMap;
 import pl.barter.model.*;
 import pl.barter.model.dto.UserDto;
 import pl.barter.repository.ProductRepository;
@@ -16,21 +17,15 @@ import pl.barter.repository.UserRepository;
 import pl.barter.security.CurrentUser;
 import pl.barter.security.UserPrincipal;
 import pl.barter.service.TransactionStateService;
+import pl.barter.service.UserHelperService;
 
 import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.OptionalInt;
 
 @RestController
 public class TransactionController extends AbstractController{
-
-    @Autowired
-    TransactionRepository transactionRepository;
-
-    @Autowired
-    TransactionStateService transactionStateService;
 
     @Autowired
     TransactionStateRepository transactionStateRepository;
@@ -47,7 +42,11 @@ public class TransactionController extends AbstractController{
     @Autowired
     UserHelperService userHelperService;
 
+    @Autowired
+    TransactionRepository transactionRepository;
 
+    @Autowired
+    TransactionStateService transactionStateService;
 
     @PostMapping(path = "/transaction/save", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> save(@RequestBody Transaction transaction) {
@@ -127,12 +126,12 @@ public class TransactionController extends AbstractController{
 
         for(TransactionState t: transactionState){
             if(userSide.equals("owner")) {
-                if (t.getDelete() == true && t.getSellerAccept() == false && t.getBuyerAccept()==true && t.getOfferActive()==true) {
+                if ((t.getDelete()) && (!t.getSellerAccept()) && (t.getBuyerAccept()) && (t.getOfferActive())) {
                     transactionStateDeleted.add(t);
                 }
             }
             if(userSide.equals("client")){
-                if (t.getDelete() == true && t.getBuyerAccept() == false && t.getSellerAccept()==true && t.getOfferActive()==true) {
+                if (t.getDelete() && !t.getBuyerAccept() && t.getSellerAccept() && (t.getOfferActive())) {
                     transactionStateDeleted.add(t);
                 }
             }
@@ -163,11 +162,11 @@ public class TransactionController extends AbstractController{
             String toAddressDw = userClient.getEmail();
             String subject = "Transakcja zakończona sukcesem: " + offerOwner.getName();
             String message = "<hr3> Drogi użytkowniku!</hr3>" +
-                    "<p>Uprzejmnie informujemy, że transakcja między użytkownikami: " + "<b>" + userOwner.getLogin() + "</b>" + " oraz " + "<b>" + userClient.getLogin() + "</b>" +
+                    "<p>Uprzejmie informujemy, że transakcja między użytkownikami: " + "<b>" + userOwner.getLogin() + "</b>" + " oraz " + "<b>" + userClient.getLogin() + "</b>" +
                     " została zakończona pomyślnie. </p>" +
                     "<p> Oferta " + "<b>" + offerOwner.getName() + "</b>" + " została wymieniona na ofertę/oferty: " + "<b>" + offersClientToString + "</b>" + ".</p>" +
                     "<p>Oferty zostały zarchiwizowane</p>"+
-                    "<p>Przypominamy, że wymiany naelży dokonać w sposób ustalony między użytkownikami.</p>"
+                    "<p>Przypominamy, że wymiany należy dokonać w sposób ustalony między użytkownikami.</p>"
                     + "<p>Pozdrawiamy</p>";
 
 
@@ -206,7 +205,7 @@ public class TransactionController extends AbstractController{
         String toAddressDw = userClient.getEmail();
         String subject = "Transakcja anulowana: "+offerOwner.getName();
         String message = "<hr3> Drogi użytkowniku!</hr3>" +
-                "<p>Uprzejmnie informujemy, że transakcja między użytkownikami: "+ "<b>"+ userOwner.getLogin() +"</b>" + " oraz "+"<b>"+ userClient.getLogin()+"</b>" +
+                "<p>Uprzejmie informujemy, że transakcja między użytkownikami: "+ "<b>"+ userOwner.getLogin() +"</b>" + " oraz "+"<b>"+ userClient.getLogin()+"</b>" +
                 " dotycząca oferty "+ "<b>"+offerOwner.getName()+"</b>" +" została odrzucona. </p>"
                 + "<p>Pozdrawiamy</p>";
 
@@ -250,7 +249,7 @@ public class TransactionController extends AbstractController{
         String toAddressDw = userClient.getEmail();
         String subject = "Wycofanie transakcji: "+offerOwner.getName();
         String message = "<hr3> Drogi użytkowniku!</hr3>" +
-                "<p>Uprzejmnie informujemy, że transakcja rozpoczęta przez: "+ "<b>"+ userClient.getLogin() +"</b>" +
+                "<p>Uprzejmie informujemy, że transakcja rozpoczęta przez: "+ "<b>"+ userClient.getLogin() +"</b>" +
                 " dotycząca oferty "+ "<b>"+offerOwner.getName()+"</b>" +" została wycofana. </p>"
                 + "<p>Pozdrawiamy</p>";
 
@@ -278,13 +277,13 @@ public class TransactionController extends AbstractController{
         List<Transaction> transactionListWait = new ArrayList<>();
 
         for (Transaction t: transactionList){
-            if(currentUser.getId() == t.getOwnerId()){
-                if(t.getTransactionStateMaxStep().get(0).getSideFlag()== 1){
+            if(currentUser.getId().equals( t.getOwnerId())){
+                if(t.getTransactionStateMaxStep().get(0).getSideFlag().equals(1)){
                     transactionListWait.add(t);
                 }
             }
-            if(currentUser.getId()==t.getClientId()){
-                if(t.getTransactionStateMaxStep().get(0).getSideFlag() == 0){
+            if(currentUser.getId().equals(t.getClientId())){
+                if(t.getTransactionStateMaxStep().get(0).getSideFlag().equals(0)){
                     transactionListWait.add(t);
                 }
             }
@@ -310,13 +309,13 @@ public class TransactionController extends AbstractController{
         List<Transaction> transactionListSent = new ArrayList<>();
 
         for (Transaction t: transactionList){
-            if(currentUser.getId() == t.getOwnerId()){
-                if(t.getTransactionStateMaxStep().get(0).getSideFlag()== 0){
+            if(currentUser.getId().equals(t.getOwnerId())){
+                if(t.getTransactionStateMaxStep().get(0).getSideFlag().equals(0)){
                     transactionListSent.add(t);
                 }
             }
-            if(currentUser.getId()==t.getClientId()){
-                if(t.getTransactionStateMaxStep().get(0).getSideFlag() == 1){
+            if(currentUser.getId().equals(t.getClientId())){
+                if(t.getTransactionStateMaxStep().get(0).getSideFlag().equals(1)){
                     transactionListSent.add(t);
                 }
             }
@@ -333,14 +332,14 @@ public class TransactionController extends AbstractController{
         for(Transaction t: transactionList){
             Product product = productRepository.findById(t.getOfferId())
                     .orElseThrow(() -> new ResourceNotFoundException("User", "id", t.getOfferId()));
-            if(product.getActive()==false){
+            if(!product.getActive()){
                 transactionRepository.rejectTransaction(t.getId());
                 List<UserDto> users = getTransactionDataUser(t);
                 String toAddress = users.get(0).getEmail();
                 String toAddressDw = users.get(1).getEmail();
                 String subject = "Usunięcie transakcji: "+ product.getName();
                 String message = "<hr3> Drogi użytkowniku!</hr3>" +
-                        "<p>Uprzejmnie informujemy, że oferta: "+ "<b>"+ product.getName() +"</b>" +" będąca przedmiotem transakcji między użytkownikami: "+ "<b>"+ users.get(1).getLogin() +"</b>" +
+                        "<p>Uprzejmie informujemy, że oferta: "+ "<b>"+ product.getName() +"</b>" +" będąca przedmiotem transakcji między użytkownikami: "+ "<b>"+ users.get(1).getLogin() +"</b>" +
                         " i "+ "<b>"+ users.get(0).getLogin() +"</b>" +
                         " została wymieniona w innej transakcji lub została usunięta z systemu."+ "</p>"+
                         "<p>Nie jest możlwe dalsze prowadzenie wymiany, transakcja została usunięta i nie będzie widoczna w 'Propozycje wymiany' użytkowników. </p>"

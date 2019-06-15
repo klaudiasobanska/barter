@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.barter.api.AbstractController;
 import pl.barter.model.Filter;
-import pl.barter.model.ProductMap;
+import pl.barter.mapper.ProductMap;
 import pl.barter.repository.ProductRepository;
 
 
@@ -40,10 +40,5 @@ public class ListsPageController extends AbstractController {
         return "lists";
     }
 
-    /*@RequestMapping(value="/lists/latest")
-    public String listsLatest(@RequestParam("latest") boolean latest){
-        session.setAttribute("latest", latest);
-        return "lists";
-    }*/
 
 }

@@ -16,7 +16,7 @@
     <link rel="stylesheet" type="text/css" href="./static/generic.light.custom.css" />
 
     <script src="./static/dx.all.js"></script>
-    <script src="./static/registration.js"></script>
+    <script src="./static/barter/registration.js"></script>
     <link rel="stylesheet" type="text/css" href="./static/stylesGreenRegistration.css" />
 
 </head>

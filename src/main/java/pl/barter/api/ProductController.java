@@ -5,10 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.barter.exception.ResourceNotFoundException;
+import pl.barter.mapper.FilterMap;
+import pl.barter.mapper.ProductMap;
 import pl.barter.model.*;
 import pl.barter.model.dto.ProductDto;
 import pl.barter.repository.OfferImageRepository;
@@ -259,7 +260,7 @@ public class ProductController extends AbstractController {
 
         for( Product p: products){
             for (TransactionState ts: transactionState){
-                if((ts.getOfferId() == p.getId()) && (ts.getDelete() == false)){
+                if((ts.getOfferId().equals( p.getId())) && (!ts.getDelete())){
                     toRemove.add(p);
                 }
             }
@@ -376,6 +377,7 @@ public class ProductController extends AbstractController {
             if(p.getOfferImagesList().size() > 0){
                 images.add(p.getOfferImagesList().get(0));
                 p.setOfferImagesList(images);
+                images.clear();
             }
 
 

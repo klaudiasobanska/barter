@@ -20,10 +20,6 @@ public class CategoryController {
         return categoryRepository.findAll();
     }
 
-    /*@PostMapping("/categories/add")
-    public Category createCategory(@Valid @RequestBody Category category) {
-        return categoryRepository.save(category);
-    }*/
 
     @GetMapping("/categories/{id}")
     public Category getCategoryById(@PathVariable(value = "id") Long id) {
@@ -31,16 +27,4 @@ public class CategoryController {
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
     }
 
-    /*@PutMapping("/categories/{id}")
-    public Category updateCategory(@PathVariable(value = "id") Long id,
-                                 @Valid @RequestBody Category categoryDetails) {
-
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
-
-        category.setName(categoryDetails.getName());
-
-        Category updatedCategory = categoryRepository.save(category);
-        return updatedCategory;
-    }*/
 }

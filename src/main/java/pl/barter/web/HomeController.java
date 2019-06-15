@@ -18,13 +18,6 @@ public class HomeController extends AbstractController {
     @Autowired
     UserRepository userRepository;
 
-    /*@RequestMapping(value = "/home/login", method = RequestMethod.GET)
-    public String homeLogin() {
-        Principal principal = req.getUserPrincipal();
-        User user = userRepository.findByLoginEquals(principal.getName());
-        session.setAttribute("user", user);
-        return "home";
-    }*/
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String home() {

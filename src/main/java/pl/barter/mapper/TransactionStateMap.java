@@ -1,7 +1,11 @@
-package pl.barter.model;
+package pl.barter.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.barter.mapper.ProductMap;
+import pl.barter.model.Product;
+import pl.barter.model.TransactionState;
+import pl.barter.model.enums.STATUS_OF_ACCEPT;
 import pl.barter.repository.ProductRepository;
 
 @Service

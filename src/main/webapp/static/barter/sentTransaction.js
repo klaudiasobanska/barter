@@ -218,10 +218,9 @@ function  showSendProposedOffers(transactionId) {
                 $('<a id="showLink"/>').addClass('dx-link')
                     .text("Pokaż ofertę")
                     .on('dxclick', function () {
-                        if(options.data.offerActie === true){
+                        if(options.data.offerActive === true){
                             openInTab('./product?productId='+options.data.offerId);
                         }
-
                     })
                     .appendTo(container);
             }

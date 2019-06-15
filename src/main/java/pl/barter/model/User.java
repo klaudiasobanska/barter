@@ -48,9 +48,6 @@ public class User {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "rating")
-    private Double rating;
-
     @Column(name = "city")
     private String city;
 

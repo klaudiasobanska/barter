@@ -289,6 +289,7 @@ function showProposedSentOffersActive(transaction,userSide) {
                         }
                     })
                     .appendTo(container);
+
             }
 
         }],

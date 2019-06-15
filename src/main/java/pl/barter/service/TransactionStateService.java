@@ -4,11 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.barter.model.Transaction;
 import pl.barter.model.TransactionState;
-import pl.barter.model.TransactionStateMap;
+import pl.barter.mapper.TransactionStateMap;
 import pl.barter.repository.TransactionStateRepository;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -16,10 +14,10 @@ import java.util.List;
 public class TransactionStateService {
 
     @Autowired
-    TransactionStateRepository transactionStateRepository;
+    TransactionStateMap transactionStateMap;
 
     @Autowired
-    TransactionStateMap transactionStateMap;
+    TransactionStateRepository transactionStateRepository;
 
     public void createTransactionStateToSendProposal(Transaction transaction){
 
@@ -36,18 +34,13 @@ public class TransactionStateService {
             transactionState.setDate( new Date());
 
 
-
-            //System.out.println(transactionOffer.getId());
             transaction.getTransactionState().add(transactionState);
         }
-
-
-
     }
 
-    public void mapTransactionState(List<Transaction> trnsactionList){
+    public void mapTransactionState(List<Transaction> transactionList){
 
-        for (Transaction i: trnsactionList){
+        for (Transaction i: transactionList){
             i.getTransactionState().forEach(to -> transactionStateMap.map(to));
         }
 

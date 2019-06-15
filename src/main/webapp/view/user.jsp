@@ -17,11 +17,11 @@
     <link rel="stylesheet" type="text/css" href="./static/generic.light.custom.css" />
 
     <script src="./static/dx.all.js"></script>
-    <script src="./static/user.js"></script>
-    <script src="./static/newTransaction.js"></script>
-    <script src="./static/sentTransaction.js"></script>
-    <script src="./static/activeNewTransaction.js"></script>
-    <script src="./static/activeSentTransaction.js"></script>
+    <script src="./static/barter/user.js"></script>
+    <script src="./static/barter/newTransaction.js"></script>
+    <script src="./static/barter/sentTransaction.js"></script>
+    <script src="./static/barter/activeNewTransaction.js"></script>
+    <script src="./static/barter/activeSentTransaction.js"></script>
     <link rel="stylesheet" type="text/css" href="./static/stylesUser.css" />
 
 

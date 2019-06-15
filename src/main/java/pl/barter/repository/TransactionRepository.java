@@ -5,18 +5,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import pl.barter.model.Transaction;
 
 import javax.transaction.Transactional;
 import java.util.List;
 
+@Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    List<Transaction> findAll();
-
-    @Query(value = "SELECT nextval('transactions_id_seq')", nativeQuery =
-            true)
+    @Query(value = "SELECT nextval('transactions_id_seq')", nativeQuery = true)
     Long getNextSeriesId();
+
+    List<Transaction> findAll();
 
     @Query(value="select t.id, t.owner_id, t.client_id, t.offer_id, t.status, t.owner_accept, t.client_accept " +
             " from transactions t left join transaction_state ts on t.id = ts.transaction_id " +

@@ -1,6 +1,7 @@
-package pl.barter.model;
+package pl.barter.service;
 
 import org.springframework.stereotype.Service;
+import pl.barter.model.User;
 import pl.barter.model.dto.UserDto;
 
 @Service
@@ -16,7 +17,6 @@ public class UserHelperService {
         userDto.setAddress(user.getAddress());
         userDto.setCity(user.getCity());
         userDto.setZipCode(user.getZipCode());
-        userDto.setRating(user.getRating());
         userDto.setPhoneNumber(user.getPhoneNumber());
         userDto.setBirthDate(user.getBirthDate());
         userDto.setId(user.getId());

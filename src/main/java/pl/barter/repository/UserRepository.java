@@ -28,9 +28,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     Boolean existsByEmail(String email);
 
-    @Query(value="select * from users  where (rating >= 4.8) order by random() limit 5", nativeQuery = true )
-    List<User> findByBestRating1();
-
 
     @Query(value = "select u from User u where u.id=:ownerId")
     User findByProduct(@Param("ownerId") Long ownerId);

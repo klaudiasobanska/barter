@@ -81,9 +81,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Product findActiveProduct(@Param("productId") Long productId);
 
 
-    @Query(value = "select distinct p.* from transactions t, products p, transaction_state ts " +
-            " where (ts.transaction_id = t.id) and (p.id = ts.offer_id) and (p.active = false) and (t.status <> 2) and (p.owner_id = :ownerId) " +
-            " and (p.id not in (select distinct t.offer_id from transactions t where p.id = t.offer_id )) ",
+    @Query(value = "select distinct p.* from products p " +
+            " where p.active = false and p.owner_id = :ownerId " +
+            " and p.id not in  " +
+            " (select ts.offer_id from transactions t left join transaction_state ts on t.id = ts.transaction_id where t.status = 2) ",
     nativeQuery = true)
     List<Product> findProductToDelete(@Param("ownerId") Long ownerId);
 

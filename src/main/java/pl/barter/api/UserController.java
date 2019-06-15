@@ -9,13 +9,14 @@ import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.barter.exception.ResourceNotFoundException;
+import pl.barter.mapper.ProductMap;
 import pl.barter.model.*;
 import pl.barter.model.dto.UserDto;
-import pl.barter.repository.BestUserDataRepository;
 import pl.barter.repository.ProductRepository;
 import pl.barter.repository.UserRepository;
 import pl.barter.security.CurrentUser;
 import pl.barter.security.UserPrincipal;
+import pl.barter.service.UserHelperService;
 
 
 import javax.validation.Valid;
@@ -35,9 +36,6 @@ public class UserController extends AbstractController {
 
     @Autowired
     UserHelperService userHelperService;
-
-    @Autowired
-    BestUserDataRepository bestUserDataRepository;
 
     @Autowired
     ProductRepository productRepository;
@@ -151,11 +149,6 @@ public class UserController extends AbstractController {
         return userDto;
     }
 
-    @GetMapping("/users/rating")
-    public List<BestUserData> getUserByRating() {
-        List<BestUserData> users = bestUserDataRepository.getRating();
-        return users;
-    }
 
 
     @GetMapping("/users/product")

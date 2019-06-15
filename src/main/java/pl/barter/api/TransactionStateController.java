@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
+import pl.barter.mapper.ProductMap;
+import pl.barter.mapper.TransactionStateMap;
 import pl.barter.model.*;
 import pl.barter.repository.ProductRepository;
 import pl.barter.repository.TransactionStateRepository;
@@ -141,7 +143,7 @@ public class TransactionStateController extends AbstractController {
             transactionState = transactionStateRepository.findByTransactionIdAndMaxStep(transactionId);
 
             for(TransactionState ts: transactionState){
-                if(ts.getSideFlag()==0){
+                if(ts.getSideFlag().equals(0)){
                     ts.setSideFlag(1);
                 }else{
                     ts.setSideFlag(0);

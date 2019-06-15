@@ -22,8 +22,8 @@
     <%--<link rel="dx-theme" data-theme="generic.light" href="https://cdn3.devexpress.com/jslib/18.2.3/css/dx.light.css" />--%>
 
     <script src="./static/dx.all.js"></script>
-    <script src="./static/home.js"></script>
-    <script src="./static/functions.js"></script>
+    <script src="./static/barter/home.js"></script>
+    <script src="./static/barter/functions.js"></script>
     <link rel="stylesheet" type="text/css" href="./static/stylesGreen.css" />
     <link rel="stylesheet" type="text/css" href="./static/stylesLogin.css" />
     <link rel="stylesheet" type="text/css" href="./static/stylesProductCard.css" />
@@ -32,7 +32,7 @@
 <body class="dx-viewport allBackground allContent" >
 
     <div class="headerContainer">
-        <img id="logo" src="./static/logo.png"></img>
+        <img id="logo" src="./static/logo.png">
         <div class="searchContent">
             <div id="searchBar"></div>
             <div id="searchCity"></div>

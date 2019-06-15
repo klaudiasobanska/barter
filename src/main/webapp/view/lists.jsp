@@ -17,8 +17,8 @@
     <link rel="stylesheet" type="text/css" href="./static/generic.light.custom.css" />
 
     <script src="./static/dx.all.js"></script>
-    <script src="./static/lists.js"></script>
-    <script src="./static/functions.js"></script>
+    <script src="./static/barter/lists.js"></script>
+    <script src="./static/barter/functions.js"></script>
     <%--<script src="/static/home.js"></script>--%>
     <link rel="stylesheet" type="text/css" href="./static/stylesGreenList.css" />
     <link rel="stylesheet" type="text/css" href="./static/stylesLogin.css" />
